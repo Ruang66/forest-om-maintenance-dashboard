@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Forest Energy O&M - Login</title>
+<style>
+* { box-sizing: border-box; }
+body { margin: 0; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif; background: #0d2830; min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+.card { background: #fff; border-radius: 10px; padding: 40px; width: 380px; max-width: 94vw; box-shadow: 0 12px 40px rgba(0,0,0,0.35); border-top: 5px solid #114d5d; }
+.logo-row { display: flex; align-items: center; gap: 12px; margin-bottom: 28px; }
+.logo { width: 40px; height: 40px; border-radius: 6px; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAIIUlEQVR42u2bfYyURx3HPzPz7Mu9c3AcpRQsCZUqYKUlQWpbLSVaw0uEICIKNAilldpCy8tRoeWgJfZSFEurtWer2LcQii1RI0ltiBpMrS1aIYBXKgkpNAL3fnt7u88zM/6xL94du3t7d3srOW6SvctdnuzM7zvz+36/85t5RPncpZYruEmu8DYEwJUOgJPPzoQQKJkZc20M1trBB4AQgqjn0dYezvhcUTBIwO/LGwhOvoKPRF0mXDOahbfNwGIRiC7PWGsRQnDwnSMc+eA0hQE/Jg8g5AUAKQQd0SifHDOahbfNwGIRiC7PWGsRQnDwnSMc+eA0hQE/Jg8g5AUAKQQd0SifHDOahbfNwGIRiC7PWGsRQnDwnSMc+eA0hQE/Jg8g5AUAKQQd0SifHDOahbfNwGIRiC7PWGsRQnDwnSMc+eA0hQE/Jg8g5AUAKQQd0Sif'); background-size: cover; background-position: center; flex-shrink: 0; }
+.brand { font-weight: 700; font-size: 15px; color: #114d5d; line-height: 1.3; }
+.brand small { display: block; font-weight: 400; font-size: 11px; color: #8ca6ae; text-transform: uppercase; letter-spacing: 0.4px; }
+h2 { margin: 0 0 20px; color: #114d5d; font-size: 18px; font-weight: 700; }
+label { display: block; font-size: 11px; font-weight: 700; color: #46717e; margin: 12px 0 4px; text-transform: uppercase; letter-spacing: 0.3px; }
+input { width: 100%; padding: 10px 12px; border: 1px solid #dde4e6; border-radius: 6px; font-size: 14px; font-family: inherit; color: #0d2830; }
+input:focus { outline: none; border-color: #114d5d; box-shadow: 0 0 0 2px rgba(17,77,93,0.15); }
+button { width: 100%; margin-top: 20px; padding: 12px; background: #114d5d; color: #fff; border: none; border-radius: 6px; font-size: 14px; font-weight: 700; font-family: inherit; cursor: pointer; }
+button:hover { background: #46717e; }
+.error { margin-top: 12px; padding: 10px 12px; background: #fdeaea; color: #a01818; border-radius: 6px; font-size: 13px; display: none; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="logo-row">
+    <div class="logo"></div>
+    <div class="brand">FOREST ENERGY <small>O&M Maintenance Dashboard</small></div>
+  </div>
+  <h2>Sign in</h2>
+  <label for="email">Email address</label>
+  <input type="email" id="email" placeholder="you@forestenergy.co.za" autocomplete="username">
+  <label for="password">Password</label>
+  <input type="password" id="password" placeholder="Your password" autocomplete="current-password">
+  <button id="btnLogin">Sign in</button>
+  <div class="error" id="errMsg"></div>
+</div>
+<script>
+const TOKEN_KEY = 'fe_om_token';
+
+async function login() {
+  const email = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value;
+  const err = document.getElementById('errMsg');
+  err.style.display = 'none';
+  if (!email || !password) { err.textContent = 'Email and password required.'; err.style.display = 'block'; return; }
+  try {
+    const res = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+    const data = await res.json();
+    if (!res.ok) { err.textContent = data.error || 'Login failed.'; err.style.display = 'block'; return; }
+    localStorage.setItem(TOKEN_KEY, data.token);
+    window.location.href = '/';
+  } catch(e) {
+    err.textContent = 'Network error. Please try again.';
+    err.style.display = 'block';
+  }
+}
+
+document.getElementById('btnLogin').addEventListener('click', login);
+document.getElementById('password').addEventListener('keydown', e => { if (e.key === 'Enter') login(); });
+
+// If already logged in, redirect
+if (localStorage.getItem(TOKEN_KEY)) window.location.href = '/';
+</script>
+</body>
+</html>

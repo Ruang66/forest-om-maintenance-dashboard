@@ -1,0 +1,1134 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:mso="urn:schemas-microsoft-com:office:office" xmlns:msdt="uuid:C2F41010-65B3-11d1-A29F-00AA00C14882">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Forest Energy O&M Dashboard 2026</title>
+<style>
+:root {
+  color-scheme: light;
+  --fe-blue:#114d5d; --fe-light-blue:#46717e; --fe-grey-blue:#8ca6ae;
+  --fe-grey:#dde4e6; --fe-dark:#0d2830; --fe-orange:#ffb977;
+  --fe-turquoise:#16e7cf;
+  --w-id:70px; --w-name:200px; --w-loc:170px; --w-cont:160px; --w-kwp:80px; --w-month:88px;
+}
+* { box-sizing: border-box; }
+body { margin:0; font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif; color:#0d2830; background:var(--fe-grey); font-size:13px; }
+.app { display:flex; flex-direction:column; height:100vh; }
+header.top { background: linear-gradient(135deg,var(--fe-dark) 0%, var(--fe-blue) 60%, var(--fe-light-blue) 100%); color:#fff; padding:12px 20px; display:flex; align-items:center; gap:14px; box-shadow:0 2px 8px rgba(13,40,48,0.18); }
+header.top .logo { width:40px; height:40px; border-radius:6px; background-image:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAIIUlEQVR42u2bfYyURx3HPzPz7Mu9c3AcpRQsCZUqYKUlQWpbLSVaw0uEICIKNEilldpCy8tRoeWgJfZSFEurtWer2LcQii1RI0ltiBpMrS1aIYBXKgkpNAL3fnt7u88zM/6xL94du3t7d3srOW6SvctdnuzM7zvz+36/85t5RPncpZYruEmu8DYEwJUOgJPPzoQQKJkZc20M1trBB4AQgqjn0dYezvhcUTBIwO/LGwhOvoKPRF0mXDOahbfNwGIRiC7PWGsRQnDwnSMc+eA0hQE/Jg8g5AUAKQQd0SifHDOazUsXZnz2QnMzh4+dpLgggNF28KWApzXGWKTsugK0NigliURdhBCDlwQdpTDiUgAEAqVkXoPvtwxKKZDy/6ekQsT67w9osu/BS0LhCG3tYWSeZy3BK1obWtvb8bTu8xj6BIDPUdQ3NnH3nFlsXvo16ptbcJTKX/BS0hGNUlZcyM/Xr2bksFLaI9EePUZOOMDnKC40tTDvlunsWr0CKSXnLjbw0wO/p3L4MFxPD/jMe1ojpeQXG+9j5tQpXHtVJXMf3oHraRxHYowdmBXgKEVDSxs3T76elzevRcQH88yau1k08xbON7bgc9SA5rzFEu6IsKfqfmZOnUJH1OXWKZ/i5e+vocONYoztFSfI7IOXtLS3M3HcGPZXr6e4IIi1Nrns9lR9j1k3TaG+uRXfAKSDiM9+Y2uIZ9Z8h/m3TsfTmqDfh6c1sz93Ez978B6aQ+0IASKXAEgpCXVEqCwv443tGxlVPgxtTJKBrYWg38/eR9fx2QnjaWwL5ZwTlFJcbGphx8pvsnL2LDytk304SuFpzfIv307NqmXUN7dmrU4ym2Xnuh5Bn59fV29gwpjRMdPSqQMpBdoYhpcU8/r2jXxi1EjawmGUyo1E+pTiQmMTD359HlVLFnQJvnN6elrz0KJ5rF/8VS42t2RFilmN0DOGfVvXMW3iBFytUwampEQbw9jKCt54rIqyoiI6Im6fmLk76Z5vamb5nTPZee9daGPSfmcChJpVy1j2pS/S1BbqsX+ZTe5Za/nz0RPJv9MuUynxtGbStWN5rXo9SgpcT1/i+nqrOHNmTKN23Xcx1iKFSEtyxhgcpTh3sYGTZ84S8PW8q+wRAGMtBQE/W194lSf3HkiinEkpPK35/OTrefHhvjFzUnFa25gxaSKvbF6bVJe0wVuLlJLmUDsLHqnh3boPKchiR5nd+rSWEeWlbHzuRX558FDWIMy9eRrPro0xsxQia2ZWStESCjPxmqvZv20DJYUFGGPSur3ELEdcj8XbdvK3f52iorQEbUxuOMDGMKCsqJB7fvQsv/nLu1mDcNedt/PEqqVEmluQWSiDkgovrjivP1bFVZ0UJ13widRYUfM0B9/5OxVlJbha50YFOnckhSDo9/OtHbs4fOxE1iCsXTiXe78xn/ONTT32E3GjFPh97K/ewHUpFKf7xGgT8yIP7H6eV978E5XlZb1yo72iaGMtPqUwxrDw0Sc5dvoMjlIZl5qSCmMtu+9fycrZs+KzKVKzbdxz7HnkIaZeNx4vjeL8r4agcZRk26/28dT+3zKyl8EDiL4cjCglCYU7GFMxgrd+WM24yoqM8tR91kR6quHjhgauHjE8uazTSnPcC/zkwEFW/7g265zPyW5Qa0NxQQFn/nOB+VueoKGlFSUzb0JsfAWJjKaLXgW/99BhHtj9PMNLivtcP+yzS/G0pqy4iPdPnWZR9U7CkShCkFZ3E14+W67pKfg/vPdPVtQ8TXFBMOlV8l4R8rRmRFkJbx05yvIfPBVXC9uvknYmv6B1zOi8V/chi7ftREmFUrJf1eN+m3XX01SWl7Lv0GFW73oOKWMDynU9V5tY0fSDsx+zYEsN4ahLwOf0au+fks8KJt6w9ZI6W9xuChn/3cPHGktpcSF/fP84xljuuHFKss6fi2bi2+7zjc3M2fQ4H12opzRujrIaI3H7nGI8TncSirguWht6O4cCKAoE2F77EkGfj6ol85P2tD8tkU7n6huYs2kHR+v+TXFJEU1toew3/fGqs5SCoM/XJTKn80amKdTOukXz+Mr0G2Ma3MvBx2oDFk9rtDH4nNxU3RMF0Me/vYTSosKM5ivTCvrriTq2vPAqxcFgkjeczoP3XI/J48dx22c+zeXSEmk0trKCsZUV/UslY/A8E/vO7gAkciAciaKNSVl06BW55Pi8IOH5+0yg8apWdxpwUi03JWWXet/lshJUP0hVSZnSXwzdEBkC4ApvTirJ0Magjcn7Se1AtcQuMRWJOt33owV+P0rKy4oA+9sSsRQGAnTHwOksM47jcOLMR7x9vA7X83IPghAoKUinZkKAMTbn94O0tThK8o9Tp3GU7OIEuxREhICo68Vvag2ElvXsXm3yR86xRwqJ3+ekTwFrwe/zIRiczaaoGzipHNeVdHnYyXeHPVWF8j0BeQXAWEvEdTMPSKm8KpCTz+ALA34qR41MPcMWhBTUN7fQGu7I272jvACgpKS1LcQXbpjEa1vXpzwb0NrgOIr7dtVS+7s3qSgrwdNmcKWAFAKfo/BZdYkeWmkRMuYTBjUJJs4HZDcEtLUoRN4VKO8AiMRHpP7/0G5wCIAhAAYvByRK5sZYpL1UBi02r6/L5BUAay0+x4lVmlVqBwjk9XWZvAFgrCUY8HPyzFk21b4UC7CbDFhjUUry9vE6CoOBfp/5Za1K+XpzVAiB63m0tnfE796l0EcLRcHA4HtpqnMKjBxWmrl6M1hfm+tMgkMyOATAEACXTfsvy1musnl7NToAAAAASUVORK5CYII='); background-size:cover; background-position:center; flex-shrink:0; }
+header.top .brand { font-weight:700; font-size:16px; letter-spacing:0.3px; }
+header.top .brand small { display:block; font-weight:400; font-size:11px; opacity:0.85; letter-spacing:0.5px; text-transform:uppercase; }
+header.top .spacer { flex:1; }
+header.top button { background:rgba(255,255,255,0.12); color:#fff; border:1px solid rgba(255,255,255,0.3); padding:7px 14px; border-radius:6px; cursor:pointer; font-size:12px; font-weight:500; font-family:inherit; }
+header.top button:hover { background:rgba(255,255,255,0.22); }
+header.top button.primary { background:var(--fe-orange); border-color:var(--fe-orange); color:var(--fe-dark); font-weight:700; }
+header.top button.primary:hover { background:#ffc794; }
+.kpis { display:grid; grid-template-columns:repeat(6,1fr); gap:12px; padding:14px 20px; background:#fff; border-bottom:1px solid var(--fe-grey); }
+.kpi { background:#f7fafb; border:1px solid var(--fe-grey); border-radius:8px; padding:10px 14px; border-left:4px solid var(--fe-blue); }
+.kpi .lbl { font-size:11px; color:var(--fe-light-blue); text-transform:uppercase; letter-spacing:0.4px; font-weight:700; }
+.kpi .val { font-size:22px; font-weight:700; color:var(--fe-blue); margin-top:4px; }
+.kpi.warn { border-left-color:#c62828; } .kpi.warn .val { color:#c62828; }
+.kpi.good { border-left-color:var(--fe-turquoise); } .kpi.good .val { color:var(--fe-blue); }
+.kpi .sub { font-size:11px; color:var(--fe-grey-blue); margin-top:2px; }
+.filters { display:flex; gap:10px; padding:10px 20px; background:#fff; border-bottom:1px solid var(--fe-grey); align-items:center; flex-wrap:wrap; }
+.filters input, .filters select { padding:6px 10px; border:1px solid var(--fe-grey); border-radius:6px; font-size:13px; background:#fff; color:var(--fe-dark); font-family:inherit; }
+.filters input.search { flex:1; min-width:180px; }
+.filters input:focus, .filters select:focus { outline:none; border-color:var(--fe-blue); box-shadow:0 0 0 2px rgba(17,77,93,0.15); }
+.filters .pill { padding:5px 11px; border:1px solid var(--fe-grey); border-radius:14px; cursor:pointer; background:#fff; font-size:12px; user-select:none; color:var(--fe-light-blue); font-weight:500; }
+.filters .pill:hover { border-color:var(--fe-light-blue); }
+.filters .pill.active { background:var(--fe-blue); color:#fff; border-color:var(--fe-blue); }
+.filters .pill.warn.active { background:#c62828; border-color:#c62828; color:#fff; }
+.grid-wrap { flex:1; overflow:auto; background:#fff; position:relative; }
+table.grid { border-collapse: separate; border-spacing:0; table-layout:fixed; width:100%; min-width:1400px; }
+table.grid colgroup col.c-id { width:var(--w-id); }
+table.grid colgroup col.c-name { width:var(--w-name); }
+table.grid colgroup col.c-loc { width:var(--w-loc); }
+table.grid colgroup col.c-cont { width:var(--w-cont); }
+table.grid colgroup col.c-kwp { width:var(--w-kwp); }
+table.grid colgroup col.c-month { min-width:var(--w-month); }
+table.grid thead th { position:sticky; top:0; background:var(--fe-blue); color:#fff; padding:9px 6px; font-size:11px; font-weight:700; text-align:center; z-index:5; border-right:1px solid rgba(255,255,255,0.12); white-space:nowrap; letter-spacing:0.3px; text-transform:uppercase; }
+table.grid thead th.month.current { background:var(--fe-orange); color:var(--fe-dark); }
+table.grid thead th.month.past { background:var(--fe-grey-blue); }
+table.grid tbody td { border-bottom:1px solid var(--fe-grey); border-right:1px solid var(--fe-grey); padding:5px 6px; font-size:12px; vertical-align:middle; background:#fff; }
+table.grid tbody tr:hover td { background:#f7fafb; }
+th.s-id, td.s-id { position:sticky; left:0; z-index:4; background:#fff; }
+th.s-name, td.s-name { position:sticky; left:var(--w-id); z-index:4; background:#fff; }
+thead th.s-id, thead th.s-name { z-index:8; background:var(--fe-blue); }
+tbody tr:hover td.s-id, tbody tr:hover td.s-name { background:#f7fafb; }
+td.s-id { font-family:ui-monospace,SFMono-Regular,Consolas,monospace; font-size:11px; color:var(--fe-grey-blue); }
+td.s-name { cursor:pointer; }
+td.s-name strong { color:var(--fe-blue); font-weight:700; border-bottom:1px dashed transparent; transition:border-color 0.15s; }
+td.s-name:hover strong { border-bottom-color:var(--fe-blue); }
+td.s-name .edit-hint { display:inline-block; font-size:10px; color:var(--fe-grey-blue); margin-left:4px; opacity:0; transition:opacity 0.15s; }
+td.s-name:hover .edit-hint { opacity:1; }
+td.s-kwp { text-align:right; color:var(--fe-light-blue); font-weight:500; }
+/* Strong divider between project metadata and calendar months */
+table.grid thead th:nth-child(5),
+table.grid tbody td.s-kwp { border-right:3px solid var(--fe-blue) !important; box-shadow:2px 0 4px -2px rgba(13,40,48,0.18); }
+
+td.month-cell { padding:4px; text-align:center; user-select:none; }
+td.month-cell.empty { background:#fafcfc; cursor:cell; }
+td.month-cell.empty:hover { background:#eef4f5; }
+.chip-stack { display:flex; flex-direction:column; gap:3px; align-items:stretch; }
+.chip { display:block; padding:3px 6px; border-radius:5px; font-size:10.5px; font-weight:600; line-height:1.4; white-space:nowrap; border:1px solid transparent; font-family:inherit; cursor:pointer; transition:transform 0.08s; }
+.chip:hover { transform:scale(1.04); }
+.chip.cln { background:#e7f0f3; color:var(--fe-blue); border-color:var(--fe-grey-blue); }
+.chip.insp { background:#fff1de; color:#7a4a14; border-color:var(--fe-orange); }
+.chip.annual { background:#e0f9f4; color:#0a4a3d; border-color:var(--fe-turquoise); font-weight:700; }
+.chip.done { background:var(--fe-blue) !important; color:#fff !important; border-color:var(--fe-dark) !important; }
+.chip.done::before { content:"\2713 "; font-weight:700; }
+.chip.overdue { background:#fdeaea; color:#a01818; border-color:#d94545; animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100% { box-shadow:0 0 0 0 rgba(217,69,69,0); } 50% { box-shadow:0 0 0 3px rgba(217,69,69,0.25); } }
+.modal-bg { display:none; position:fixed; inset:0; background:rgba(13,40,48,0.65); z-index:50; align-items:center; justify-content:center; }
+.modal-bg.show { display:flex; }
+.modal { background:#fff; border-radius:10px; padding:24px; width:760px; max-width:96vw; max-height:92vh; overflow:auto; box-shadow:0 12px 40px rgba(13,40,48,0.3); border-top:5px solid var(--fe-blue); }
+.modal h2 { margin:0 0 4px 0; color:var(--fe-blue); font-size:18px; font-weight:700; }
+.modal h2 small { display:block; font-size:11px; color:var(--fe-grey-blue); font-weight:500; text-transform:uppercase; letter-spacing:0.3px; margin-top:4px; }
+.modal label.fld { display:block; font-size:11px; font-weight:700; color:var(--fe-light-blue); margin:10px 0 4px; text-transform:uppercase; letter-spacing:0.3px; }
+.modal input.fi, .modal select.fi { width:100%; padding:8px 10px; border:1px solid var(--fe-grey); border-radius:6px; font-size:13px; font-family:inherit; color:var(--fe-dark); }
+.modal input.fi:focus, .modal select.fi:focus { outline:none; border-color:var(--fe-blue); box-shadow:0 0 0 2px rgba(17,77,93,0.15); }
+.modal-actions { display:flex; justify-content:flex-end; gap:10px; margin-top:20px; padding-top:14px; border-top:1px solid var(--fe-grey); }
+.modal-actions .left { margin-right:auto; }
+.modal-actions button { padding:9px 18px; border-radius:6px; border:none; cursor:pointer; font-weight:700; font-size:13px; font-family:inherit; }
+.btn-primary { background:var(--fe-blue); color:#fff; }
+.btn-primary:hover { background:var(--fe-light-blue); }
+.btn-secondary { background:var(--fe-grey); color:var(--fe-dark); }
+.btn-secondary:hover { background:#cbd6d9; }
+.btn-danger { background:#fff; color:#c62828; border:1px solid #c62828 !important; }
+.btn-danger:hover { background:#c62828; color:#fff; }
+.month-toggles { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-top:6px; }
+@media (max-width:640px) { .month-toggles { grid-template-columns:repeat(2,1fr); } }
+.mt { display:flex; flex-direction:column; gap:5px; padding:8px; border:1px solid var(--fe-grey); border-radius:6px; background:#f7fafb; }
+.mt .mn { font-weight:700; color:var(--fe-blue); font-size:12px; text-transform:uppercase; letter-spacing:0.3px; }
+.mt select.cln-sel { padding:4px 6px; font-size:11px; border:1px solid var(--fe-grey); border-radius:4px; font-family:inherit; background:#fff; }
+.mt label.cbx { display:flex; align-items:center; gap:5px; font-size:11px; color:var(--fe-light-blue); cursor:pointer; font-weight:500; }
+.mt label.cbx input { width:14px; height:14px; accent-color:var(--fe-blue); cursor:pointer; }
+.mt .preview { display:inline-block; padding:2px 6px; border-radius:4px; font-size:10px; background:var(--fe-blue); color:#fff; font-weight:600; min-height:14px; }
+.mt .preview:empty { background:transparent; }
+
+footer.bot { background:#fff; border-top:1px solid var(--fe-grey); padding:8px 20px; font-size:11px; color:var(--fe-light-blue); display:flex; justify-content:space-between; align-items:center; gap:14px; flex-wrap:wrap; }
+.legend { display:flex; gap:14px; align-items:center; flex-wrap:wrap; }
+.legend .item { display:flex; gap:6px; align-items:center; }
+.legend .chip { cursor:default; } .legend .chip:hover { transform:none; }
+.toast { position:fixed; bottom:24px; right:24px; background:var(--fe-blue); color:#fff; padding:10px 18px; border-radius:8px; font-size:13px; font-weight:500; box-shadow:0 6px 20px rgba(13,40,48,0.25); opacity:0; transform:translateY(10px); transition:all 0.25s; z-index:60; }
+.toast.show { opacity:1; transform:translateY(0); }
+.toast.warn { background:#c62828; }
+
+.view-toggle { display:inline-flex; gap:0; background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.3); border-radius:6px; overflow:hidden; }
+.view-toggle button { background:transparent; border:none; color:#fff; padding:7px 14px; cursor:pointer; font-size:12px; font-weight:600; font-family:inherit; border-radius:0; }
+.view-toggle button.active { background:var(--fe-orange); color:var(--fe-dark); }
+.view-toggle button:not(.active):hover { background:rgba(255,255,255,0.1); }
+#mapView { display:none; flex:1; flex-direction:column; background:#fff; min-height:0; }
+#mapView.show { display:flex; }
+#mainArea.hide { display:none; }
+.map-toolbar { display:flex; gap:10px; padding:10px 20px; background:#fff; border-bottom:1px solid var(--fe-grey); align-items:center; flex-wrap:wrap; }
+.map-toolbar .info { color:var(--fe-light-blue); font-size:12px; }
+.map-toolbar .info strong { color:var(--fe-blue); }
+#mapContainer { flex:1; position:relative; min-height:300px; }
+#leafletMap { position:absolute; inset:0; }
+.sel-panel { position:absolute; top:14px; right:14px; background:#fff; border:1px solid var(--fe-grey); border-top:4px solid var(--fe-orange); border-radius:8px; box-shadow:0 6px 20px rgba(13,40,48,0.18); padding:14px; width:300px; z-index:1000; display:none; max-height:calc(100% - 28px); overflow:auto; }
+.sel-panel.show { display:block; }
+.sel-panel h3 { margin:0 0 4px 0; color:var(--fe-blue); font-size:14px; font-weight:700; }
+.sel-panel .count { font-size:11px; color:var(--fe-light-blue); text-transform:uppercase; letter-spacing:0.3px; font-weight:600; margin-bottom:10px; }
+.sel-panel ul.sel-list { list-style:none; padding:0; margin:8px 0 12px 0; max-height:140px; overflow:auto; border:1px solid var(--fe-grey); border-radius:5px; background:#f7fafb; }
+.sel-panel ul.sel-list li { padding:5px 8px; font-size:11px; color:var(--fe-dark); border-bottom:1px solid var(--fe-grey); }
+.sel-panel ul.sel-list li:last-child { border-bottom:none; }
+.sel-panel ul.sel-list li strong { color:var(--fe-blue); }
+.sel-panel label.fld { display:block; font-size:10px; font-weight:700; color:var(--fe-light-blue); margin:8px 0 3px; text-transform:uppercase; letter-spacing:0.3px; }
+.sel-panel select, .sel-panel input { width:100%; padding:6px 8px; border:1px solid var(--fe-grey); border-radius:5px; font-size:12px; font-family:inherit; }
+.sel-panel .btn-row { display:flex; gap:6px; margin-top:10px; }
+.sel-panel button { flex:1; padding:7px 10px; border-radius:5px; border:none; cursor:pointer; font-size:12px; font-weight:700; font-family:inherit; }
+.coord-row { display:flex; gap:6px; align-items:flex-end; }
+.coord-row > div { flex:1; }
+.coord-row button.pickbtn { padding:8px 10px; border-radius:6px; border:1px solid var(--fe-blue); background:#fff; color:var(--fe-blue); cursor:pointer; font-size:11px; font-weight:600; font-family:inherit; white-space:nowrap; }
+.coord-row button.pickbtn:hover { background:var(--fe-blue); color:#fff; }
+#pickerOverlay { display:none; position:fixed; inset:0; background:rgba(13,40,48,0.7); z-index:200; align-items:center; justify-content:center; }
+#pickerOverlay.show { display:flex; }
+.picker-box { background:#fff; border-radius:10px; width:90vw; max-width:800px; height:80vh; padding:14px; display:flex; flex-direction:column; }
+.picker-box h3 { margin:0 0 8px 0; color:var(--fe-blue); font-size:15px; }
+#pickerMap { flex:1; border:1px solid var(--fe-grey); border-radius:6px; }
+.picker-actions { display:flex; gap:8px; justify-content:flex-end; margin-top:10px; }
+.fa-warn { background:#fff8e1; border-left:3px solid var(--fe-orange); padding:6px 8px; border-radius:4px; font-size:11px; color:#7a4a14; margin-top:8px; }
+
+.sla-section { background:#f7fafb; border:1px dashed var(--fe-grey-blue); border-radius:6px; padding:12px; margin-top:6px; }
+.sla-section .sla-current { display:flex; align-items:center; gap:10px; padding:8px; background:#fff; border:1px solid var(--fe-grey); border-radius:5px; margin-bottom:8px; }
+.sla-section .sla-current .ico { font-size:20px; color:var(--fe-blue); flex-shrink:0; }
+.sla-section .sla-current .meta { flex:1; font-size:12px; color:var(--fe-dark); min-width:0; }
+.sla-section .sla-current .meta strong { display:block; color:var(--fe-blue); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.sla-section .sla-current .meta .sub { font-size:10px; color:var(--fe-grey-blue); }
+.sla-section .sla-actions { display:flex; gap:6px; }
+.sla-section .sla-actions button { padding:6px 10px; border-radius:5px; border:1px solid var(--fe-grey); background:#fff; cursor:pointer; font-size:11px; font-weight:600; font-family:inherit; color:var(--fe-blue); }
+.sla-section .sla-actions button:hover { background:var(--fe-blue); color:#fff; }
+.sla-section .sla-actions button.btn-danger-sm { color:#c62828; border-color:#c62828; }
+.sla-section .sla-actions button.btn-danger-sm:hover { background:#c62828; color:#fff; }
+.sla-empty-row { display:flex; gap:10px; align-items:center; padding:8px; background:#fff; border:1px dashed var(--fe-grey); border-radius:5px; }
+.sla-empty-row .hint { flex:1; font-size:11px; color:var(--fe-grey-blue); }
+.sla-empty-row label.upload-btn { display:inline-block; padding:7px 14px; background:var(--fe-blue); color:#fff; border-radius:5px; cursor:pointer; font-size:12px; font-weight:700; font-family:inherit; }
+.sla-empty-row label.upload-btn:hover { background:var(--fe-light-blue); }
+.sla-empty-row input[type=file] { display:none; }
+.sla-progress { font-size:11px; color:var(--fe-light-blue); margin-top:6px; }
+td.s-name .sla-clip { display:inline-block; margin-left:6px; font-size:11px; color:var(--fe-orange); cursor:help; }
+/* User menu */
+.user-menu { display:flex; align-items:center; gap:8px; }
+.user-menu .user-badge { font-size:11px; color:rgba(255,255,255,0.8); }
+.user-menu .user-badge strong { color:#fff; display:block; }
+.user-menu .user-badge .role-pill { display:inline-block; padding:2px 6px; border-radius:3px; background:rgba(255,255,255,0.15); font-size:10px; text-transform:uppercase; letter-spacing:0.3px; margin-top:1px; }
+</style>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
+<link rel="stylesheet" href="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+<script src="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.js"></script>
+<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+
+<!--[if gte mso 9]><xml>
+<mso:CustomDocumentProperties>
+<mso:MediaServiceImageTags msdt:dt="string"></mso:MediaServiceImageTags>
+<mso:lcf76f155ced4ddcb4097134ff3c332f msdt:dt="string"></mso:lcf76f155ced4ddcb4097134ff3c332f>
+<mso:TaxCatchAll msdt:dt="string"></mso:TaxCatchAll>
+</mso:CustomDocumentProperties>
+</xml><![endif]-->
+</head>
+<body>
+<div class="app">
+<header class="top">
+  <div class="logo" aria-hidden="true"></div>
+  <div class="brand">FOREST ENERGY <small>Preventative Maintenance Dashboard 2026</small></div>
+  <div class="spacer"></div>
+  <div class="view-toggle">
+    <button id="btnViewCal" class="active">Calendar</button>
+    <button id="btnViewMap">Map</button>
+  </div>
+  <button id="btnAdd" class="primary">+ Add Plant</button>
+  <button id="btnExport">Export JSON</button>
+  <button id="btnImport">Import JSON</button>
+  <button id="btnReset" title="Clear all done-status and added plants">Reset</button>
+  <div class="user-menu" id="userMenu" style="display:none">
+    <div class="user-badge">
+      <strong id="userEmail"></strong>
+      <span class="role-pill" id="userRole"></span>
+    </div>
+    <button id="btnLogout">Logout</button>
+  </div>
+</header>
+<div id="mainArea">
+<section class="kpis" id="kpis"></section>
+<section class="filters">
+  <input type="text" class="search" id="search" placeholder="Search site, location...">
+  <select id="filterContractor"><option value="">All contractors</option></select>
+  <select id="filterRegion"><option value="">All regions</option></select>
+  <span class="pill" data-filter="all">All</span>
+  <span class="pill warn" data-filter="overdue">Overdue</span>
+  <span class="pill" data-filter="due">Due this month</span>
+  <span class="pill" data-filter="upcoming">Upcoming</span>
+</section>
+<div class="grid-wrap"><table class="grid" id="grid"></table></div>
+</div><!-- /mainArea -->
+
+<section id="mapView">
+  <div class="map-toolbar">
+    <div class="info"><strong id="mapSiteCount">0</strong> sites with coordinates / <strong id="mapTotalCount">0</strong> total</div>
+    <div class="info">Use the <strong>polygon</strong> or <strong>rectangle</strong> tool on the left edge to lasso-select sites for batch scheduling.</div>
+    <div style="flex:1"></div>
+    <button id="btnClearSel" class="btn-secondary" style="padding:6px 12px; border:none; border-radius:5px; font-weight:600; cursor:pointer; font-size:12px;">Clear selection</button>
+  </div>
+  <div id="mapContainer">
+    <div id="leafletMap"></div>
+    <div id="selPanel" class="sel-panel">
+      <h3>Bulk schedule</h3>
+      <div class="count"><span id="selCount">0</span> sites selected</div>
+      <ul class="sel-list" id="selList"></ul>
+      <label class="fld">Activity</label>
+      <select id="bulkActivity">
+        <option value="cln">Panel Clean</option>
+        <option value="insp">Partial Inspection</option>
+        <option value="annual">Full Annual Inspection</option>
+      </select>
+      <label class="fld" id="cleanNumLbl">Clean number</label>
+      <select id="bulkCleanNum">
+        <option value="1">Clean 1</option>
+        <option value="2">Clean 2</option>
+        <option value="3">Clean 3</option>
+        <option value="4">Clean 4</option>
+      </select>
+      <label class="fld">Month</label>
+      <select id="bulkMonth"></select>
+      <div id="bulkWarn" class="fa-warn" style="display:none"></div>
+      <div class="btn-row">
+        <button class="btn-secondary" id="btnBulkCancel">Cancel</button>
+        <button class="btn-primary" id="btnBulkApply">Apply to selected</button>
+      </div>
+    </div>
+  </div>
+</section>
+<div id="pickerOverlay">
+  <div class="picker-box">
+    <h3>Click on the map to set this site's location</h3>
+    <div id="pickerMap"></div>
+    <div class="picker-actions">
+      <button class="btn-secondary" id="pickerCancel" style="padding:8px 16px; border:none; border-radius:5px; cursor:pointer; font-weight:600;">Cancel</button>
+      <button class="btn-primary" id="pickerOk" style="padding:8px 16px; border:none; border-radius:5px; cursor:pointer; font-weight:600;">Use this location</button>
+    </div>
+  </div>
+</div>
+
+<footer class="bot">
+  <div class="legend">
+    <span class="item"><span class="chip cln">cln</span> Panel Clean</span>
+    <span class="item"><span class="chip insp">Insp</span> Partial Inspection</span>
+    <span class="item"><span class="chip annual">F Insp</span> Full Annual Inspection</span>
+    <span class="item"><span class="chip done">Done</span> Completed</span>
+    <span class="item"><span class="chip overdue">Overdue</span> Past, not done</span>
+  </div>
+  <div id="lastSaved">Tip: each chip ticks independently. Click a site name to edit its details.</div>
+</footer>
+</div>
+
+<div class="modal-bg" id="modalPlant">
+  <div class="modal">
+    <h2 id="modalTitle">Add new plant<small id="modalSub">Capture site details and 12-month schedule</small></h2>
+    <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px;">
+      <div><label class="fld">Site ID</label><input class="fi" id="np_id" placeholder="e.g. 26050"></div>
+      <div><label class="fld">Site Name</label><input class="fi" id="np_name" placeholder="e.g. Cape Quarter"></div>
+      <div><label class="fld">Location</label><input class="fi" id="np_location" placeholder="City, Province"></div>
+      <div><label class="fld">Capacity (kWp)</label><input class="fi" id="np_kwp" type="number" step="0.01"></div>
+      <div><label class="fld">Modules</label><input class="fi" id="np_modules" type="number"></div>
+      <div><label class="fld">Contractor</label><select class="fi" id="np_contractor"><option value="">- Select -</option></select></div>
+      <div style="grid-column:span 3"><label class="fld">Coordinates (decimal degrees)</label>
+        <div class="coord-row">
+          <div><input class="fi" id="np_lat" type="number" step="0.000001" placeholder="Latitude e.g. -33.9249"></div>
+          <div><input class="fi" id="np_lng" type="number" step="0.000001" placeholder="Longitude e.g. 18.4241"></div>
+          <button type="button" class="pickbtn" id="btnPickLoc">Pick on map</button>
+        </div></div>
+      <div style="grid-column:span 3"><label class="fld">Service Level Agreement (SLA)</label>
+        <div class="sla-section" id="slaSection">
+          <div id="slaCurrent" style="display:none"></div>
+          <div id="slaEmpty" class="sla-empty-row">
+            <div class="hint">No SLA on file. Upload PDF, DOCX, or image (max 5MB).</div>
+            <label class="upload-btn">Upload SLA<input type="file" id="slaFileInput" accept=".pdf,.docx,.doc,.jpg,.jpeg,.png"></label>
+          </div>
+          <div id="slaProgress" class="sla-progress" style="display:none"></div>
+        </div></div>
+      <div><label class="fld">Cleans / yr (SLA)</label><select class="fi" id="np_cleans"><option value="">-</option><option>1</option><option>2</option><option>3</option><option>4</option></select></div>
+      <div><label class="fld">Partial Insp / yr (SLA)</label><select class="fi" id="np_partial"><option value="">-</option><option>1</option><option>2</option><option>3</option><option>4</option></select></div>
+      <div><label class="fld">Annual Inspection</label><select class="fi" id="np_annual"><option value="1">1 (per year)</option><option value="0">None</option></select></div>
+    </div>
+    
+
+    <label class="fld" style="margin-top:18px">Schedule per month</label>
+    <div style="font-size:11px; color:var(--fe-grey-blue); margin-bottom:6px;">Tick which activities happen in each month. Clean # is the sequence (1st, 2nd, 3rd, 4th of the year). Annual is the once-a-year full inspection.</div>
+    <div class="month-toggles" id="np_months"></div>
+
+    <div class="modal-actions">
+      <button class="btn-danger left" id="btnDelete" style="display:none">Delete plant</button>
+      <button class="btn-secondary" id="btnCancel">Cancel</button>
+      <button class="btn-primary" id="btnSavePlant">Save plant</button>
+    </div>
+  </div>
+</div>
+
+<input type="file" id="fileImport" accept="application/json" style="display:none">
+<div class="toast" id="toast"></div>
+
+<script>
+// ---- Auth & API helpers ----
+const TOKEN_KEY = 'fe_om_token';
+let currentUser = null;
+
+async function apiFetch(path, opts = {}) {
+  const token = localStorage.getItem(TOKEN_KEY);
+  const headers = { ...(opts.headers || {}) };
+  if (token) headers['Authorization'] = 'Bearer ' + token;
+  if (opts.body && !(opts.body instanceof FormData)) headers['Content-Type'] = 'application/json';
+  const res = await fetch(path, { ...opts, headers });
+  if (res.status === 401) { localStorage.removeItem(TOKEN_KEY); window.location.href = '/login.html'; return null; }
+  return res;
+}
+
+function renderUserMenu() {
+  if (!currentUser) return;
+  document.getElementById('userMenu').style.display = 'flex';
+  document.getElementById('userEmail').textContent = currentUser.email;
+  document.getElementById('userRole').textContent = currentUser.role;
+}
+
+function applyRole(role) {
+  const isViewer = role === 'viewer';
+  ['btnAdd','btnImport','btnReset'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = isViewer ? 'none' : '';
+  });
+  document.getElementById('btnExport').style.display = '';
+  // Chip clicking is gated inside renderChip via window._isViewer
+  window._isViewer = isViewer;
+}
+
+document.addEventListener('click', e => {
+  if (e.target.id === 'btnLogout') {
+    localStorage.removeItem(TOKEN_KEY);
+    window.location.href = '/login.html';
+  }
+});
+
+async function init() {
+  try {
+    const meRes = await apiFetch('/api/auth/me');
+    if (!meRes) return;
+    currentUser = await meRes.json();
+    const [sitesRes, doneRes] = await Promise.all([apiFetch('/api/sites'), apiFetch('/api/done')]);
+    if (!sitesRes || !doneRes) return;
+    state.sites = await sitesRes.json();
+    state.done = await doneRes.json();
+    applyRole(currentUser.role);
+    renderUserMenu();
+    renderAll();
+    document.getElementById('lastSaved').textContent = 'Loaded from server';
+  } catch(e) {
+    toast('Failed to load data. Please refresh.', true);
+  }
+}
+// ---- End Auth ----
+
+const SEED_SITES = [{"id":"26024","name":"Motus","location":"Mbombela, Mpumalanga","capacity_kwp":"57.60","modules":96,"contractor":"Exosolar","cleans_per_year":4,"partial_inspections":4,"annual_inspection":1,"monthly_income":null,"annual_sla":null,"annual_cost":null,"months":{"Jan":"","Feb":"1 cln","Mar":"","Apr":"","May":"2 cln","Jun":"","Jul":"","Aug":"3 cln","Sep":"","Oct":"","Nov":"4 cln 1 Inps","Dec":""}},{"id":"26007","name":"Rynfield","location":"Benoni, JHB","capacity_kwp":"80.59","modules":140,"contractor":"Solar Panel Cleaners","cleans_per_year":3,"partial_inspections":3,"annual_inspection":1,"monthly_income":1795.74,"annual_sla":21548.88,"annual_cost":15180,"months":{"Jan":"","Feb":"1 cln","Mar":"","Apr":"","May":"","Jun":"2 cln","Jul":"","Aug":"","Sep":"3 cln 1 Insp","Oct":"","Nov":"","Dec":""}},{"id":"26008","name":"Randpark","location":"Randburg, JHB","capacity_kwp":"96.6","modules":168,"contractor":"Solar Panel Cleaners","cleans_per_year":3,"partial_inspections":3,"annual_inspection":1,"monthly_income":1885.9,"annual_sla":22630.800000000003,"annual_cost":15180,"months":{"Jan":"","Feb":"1 cln","Mar":"","Apr":"","May":"","Jun":"2 cln","Jul":"","Aug":"","Sep":"3 cln 1 Insp","Oct":"","Nov":"","Dec":""}},{"id":"26012","name":"Raslouw","location":"Centurion, Tshwane","capacity_kwp":"172.80","modules":300,"contractor":"Solar Panel Cleaners","cleans_per_year":3,"partial_inspections":3,"annual_inspection":1,"monthly_income":2722.3,"annual_sla":32667.600000000002,"annual_cost":15180,"months":{"Jan":"","Feb":"1 cln","Mar":"","Apr":"","May":"","Jun":"2 cln","Jul":"","Aug":"","Sep":"","Oct":"3 cln 1 Insp","Nov":"","Dec":""}},{"id":"26011","name":"Pecanwood","location":"Hartbeespoort, North West","capacity_kwp":"149.76","modules":260,"contractor":"Solar Panel Cleaners","cleans_per_year":3,"partial_inspections":3,"annual_inspection":1,"monthly_income":4530.37,"annual_sla":54364.44,"annual_cost":25668,"months":{"Jan":"","Feb":"1 cln","Mar":"","Apr":"","May":"","Jun":"2 cln","Jul":"","Aug":"","Sep":"","Oct":"3 cln 1 Insp","Nov":"","Dec":""}},{"id":"26013","name":"Southdowns","location":"Centurion, Tshwane","capacity_kwp":"369.58","modules":642,"contractor":"Solar Panel Cleaners","cleans_per_year":3,"partial_inspections":3,"annual_inspection":1,"monthly_income":5912.86,"annual_sla":70954.31999999999,"annual_cost":21044.66,"months":{"Jan":"","Feb":"1 cln","Mar":"","Apr":"","May":"","Jun":"2 cln","Jul":"","Aug":"","Sep":"","Oct":"3 cln 1 Insp","Nov":"","Dec":""}},{"id":"26025","name":"Kyalami","location":"Kyalami, Midrand","capacity_kwp":"103.50","modules":180,"contractor":"Solar Panel Cleaners","cleans_per_year":4,"partial_inspections":4,"annual_inspection":1,"monthly_income":2575,"annual_sla":30900,"annual_cost":27600,"months":{"Jan":"","Feb":"","Mar":"1 cln","Apr":"","May":"","Jun":"2 cln","Jul":"","Aug":"","Sep":"3 cln 1 Insp","Oct":"","Nov":"","Dec":"4 cln"}},{"id":"26026","name":"Lonehill Prep","location":"Sandton, JHB","capacity_kwp":"73.60","modules":128,"contractor":"Solar Panel Cleaners","cleans_per_year":4,"partial_inspections":4,"annual_inspection":1,"monthly_income":2550,"annual_sla":30600,"annual_cost":18975,"months":{"Jan":"","Feb":"","Mar":"1 cln","Apr":"","May":"","Jun":"2 cln","Jul":"","Aug":"","Sep":"3 cln 1 Insp","Oct":"","Nov":"","Dec":"4 cln"}},{"id":"26027","name":"Mooikloof","location":"Pretoria, Tshwane","capacity_kwp":"73.81","modules":122,"contractor":"Solar Panel Cleaners","cleans_per_year":4,"partial_inspections":4,"annual_inspection":1,"monthly_income":1740,"annual_sla":20880,"annual_cost":18975,"months":{"Jan":"","Feb":"","Mar":"","Apr":"1 cln","May":"","Jun":"","Jul":"2 cln","Aug":"","Sep":"","Oct":"3 cln 1 Insp","Nov":"","Dec":"4 cln"}},{"id":"24267","name":"Curro Magic Beings","location":"Randburg, JHB","capacity_kwp":63,"modules":114,"contractor":"Solar Panel Cleaners","cleans_per_year":1,"partial_inspections":1,"annual_inspection":1,"monthly_income":2010,"annual_sla":24120,"annual_cost":11040,"months":{"Jan":"","Feb":"","Mar":"","Apr":"1 cln","May":"","Jun":"","Jul":"","Aug":"1 Inps","Sep":"","Oct":"","Nov":"","Dec":""}},{"id":"24263","name":"Irvines Africa TwelveB","location":"Sandton, JHB","capacity_kwp":60,"modules":104,"contractor":"Solar Panel Cleaners","cleans_per_year":null,"partial_inspections":null,"annual_inspection":null,"monthly_income":null,"annual_sla":0,"annual_cost":null,"months":{"Jan":"","Feb":"","Mar":"","Apr":"","May":"","Jun":"","Jul":"","Aug":"","Sep":"","Oct":"","Nov":"","Dec":""}},{"id":"26028","name":"Fourways","location":"Sandton, JHB","capacity_kwp":"142.78","modules":236,"contractor":"Solar Panel Cleaners","cleans_per_year":4,"partial_inspections":4,"annual_inspection":1,"monthly_income":3407,"annual_sla":40884,"annual_cost":11040,"months":{"Jan":"","Feb":"","Mar":"1 cln","Apr":"","May":"","Jun":"2 cln","Jul":"","Aug":"","Sep":"3 cln 1 Insp","Oct":"","Nov":"","Dec":"4 cln"}},{"id":"O26003","name":"Carlswald Shopping Centre","location":"Midrand, JHB","capacity_kwp":"987.28","modules":2408,"contractor":"Solar Panel Cleaners","cleans_per_year":null,"partial_inspections":null,"annual_inspection":null,"monthly_income":null,"annual_sla":0,"annual_cost":null,"months":{"Jan":"","Feb":"","Mar":"","Apr":"","May":"","Jun":"","Jul":"","Aug":"","Sep":"","Oct":"","Nov":"","Dec":""}},{"id":"24232","name":"CFW Assegai","location":"Parow, CPT","capacity_kwp":"217.8","modules":396,"contractor":"Manno Solfield","cleans_per_year":1,"partial_inspections":1,"annual_inspection":1,"monthly_income":null,"annual_sla":0,"annual_cost":null,"months":{"Jan":"","Feb":"","Mar":"","Apr":"1 cln 1 F Insp","May":"","Jun":"","Jul":"","Aug":"","Sep":"","Oct":"","Nov":"","Dec":""}},{"id":"24232b","name":"CFW Parin","location":"Parow, CPT","capacity_kwp":"180.95","modules":329,"contractor":"Manno Solfield","cleans_per_year":1,"partial_inspections":1,"annual_inspection":1,"monthly_income":null,"annual_sla":0,"annual_cost":null,"months":{"Jan":"","Feb":"","Mar":"","Apr":"1 cln 1 F Insp","May":"","Jun":"","Jul":"","Aug":"","Sep":"","Oct":"","Nov":"","Dec":""}},{"id":"24246","name":"Curro Century City","location":"Century City, CPT","capacity_kwp":"70.95","modules":129,"contractor":"Solar Shine Solutions & FE","cleans_per_year":1,"partial_inspections":1,"annual_inspection":1,"monthly_income":2010,"annual_sla":24120,"annual_cost":2888,"months":{"Jan":"","Feb":"","Mar":"","Apr":"1 cln","May":"","Jun":"","Jul":"","Aug":"1 F Inps","Sep":"","Oct":"","Nov":"","Dec":""}},{"id":"24248","name":"Curro Langebaan","location":"Langebaan, WCP","capacity_kwp":"90.48","modules":156,"contractor":"Solar Shine Solutions & FE","cleans_per_year":1,"partial_inspections":1,"annual_inspection":1,"monthly_income":2010,"annual_sla":24120,"annual_cost":4274,"months":{"Jan":"","Feb":"","Mar":"","Apr":"1 cln","May":"","Jun":"","Jul":"","Aug":"","Sep":"1 F Inps","Oct":"","Nov":"","Dec":""}},{"id":"24264","name":"The New National","location":"Parow, CPT","capacity_kwp":"51.7","modules":94,"contractor":"Solar Shine Solutions & FE","cleans_per_year":2,"partial_inspections":1,"annual_inspection":1,"monthly_income":null,"annual_sla":0,"annual_cost":null,"months":{"Jan":"","Feb":"","Mar":"","Apr":"","May":"","Jun":"","Jul":"","Aug":"","Sep":"","Oct":"","Nov":"","Dec":""}},{"id":"24280","name":"Du Kloof","location":"Paarl, WCP","capacity_kwp":"170.6","modules":282,"contractor":"Solar Shine Solutions & FE","cleans_per_year":2,"partial_inspections":4,"annual_inspection":1,"monthly_income":null,"annual_sla":0,"annual_cost":null,"months":{"Jan":"","Feb":"","Mar":"","Apr":"","May":"","Jun":"","Jul":"","Aug":"","Sep":"","Oct":"","Nov":"","Dec":""}},{"id":"22024","name":"Soetendal","location":"Wellington, WCP","capacity_kwp":"45.5","modules":100,"contractor":"Solar Shine Solutions & FE","cleans_per_year":null,"partial_inspections":null,"annual_inspection":null,"monthly_income":null,"annual_sla":0,"annual_cost":null,"months":{"Jan":"","Feb":"","Mar":"","Apr":"","May":"","Jun":"","Jul":"","Aug":"","Sep":"","Oct":"","Nov":"","Dec":""}},{"id":"22059","name":"Voorspoed","location":"Wellington, WCP","capacity_kwp":18,"modules":32,"contractor":"Solar Shine Solutions & FE","cleans_per_year":null,"partial_inspections":null,"annual_inspection":null,"monthly_income":null,"annual_sla":0,"annual_cost":null,"months":{"Jan":"","Feb":"","Mar":"","Apr":"","May":"","Jun":"","Jul":"","Aug":"","Sep":"","Oct":"","Nov":"","Dec":""}},{"id":"24278","name":"CPOA","location":"Grassy Park, CPT","capacity_kwp":90,"modules":148,"contractor":"Solar Shine Solutions & FE","cleans_per_year":null,"partial_inspections":null,"annual_inspection":null,"monthly_income":null,"annual_sla":0,"annual_cost":null,"months":{"Jan":"","Feb":"","Mar":"","Apr":"","May":"","Jun":"","Jul":"","Aug":"","Sep":"","Oct":"","Nov":"","Dec":""}},{"id":"23119","name":"3C Metal","location":"Bellville, CPT","capacity_kwp":361,"modules":656,"contractor":"Solar Shine Solutions & FE","cleans_per_year":null,"partial_inspections":null,"annual_inspection":null,"monthly_income":null,"annual_sla":0,"annual_cost":null,"months":{"Jan":"","Feb":"","Mar":"","Apr":"","May":"","Jun":"","Jul":"","Aug":"","Sep":"","Oct":"","Nov":"","Dec":""}},{"id":"23153","name":"Vastech Electron 23","location":"Stellenbosch, WCP","capacity_kwp":114,"modules":248,"contractor":"Solar Shine Solutions & FE","cleans_per_year":null,"partial_inspections":null,"annual_inspection":null,"monthly_income":null,"annual_sla":0,"annual_cost":null,"months":{"Jan":"","Feb":"","Mar":"","Apr":"","May":"","Jun":"","Jul":"","Aug":"","Sep":"","Oct":"","Nov":"","Dec":""}},{"id":"23187","name":"Groenvlei","location":"Wellington, WCP","capacity_kwp":374,"modules":676,"contractor":"Solar Shine Solutions & FE","cleans_per_year":null,"partial_inspections":null,"annual_inspection":null,"monthly_income":null,"annual_sla":0,"annual_cost":null,"months":{"Jan":"","Feb":"","Mar":"","Apr":"","May":"","Jun":"","Jul":"","Aug":"","Sep":"","Oct":"","Nov":"","Dec":""}},{"id":"23188","name":"CRF","location":"Waterfornt, CPT","capacity_kwp":70,"modules":127,"contractor":"Solar Shine Solutions & FE","cleans_per_year":null,"partial_inspections":null,"annual_inspection":null,"monthly_income":null,"annual_sla":0,"annual_cost":null,"months":{"Jan":"","Feb":"","Mar":"","Apr":"","May":"","Jun":"","Jul":"","Aug":"","Sep":"","Oct":"","Nov":"","Dec":""}},{"id":"23211","name":"Doornekraal","location":"Malmesbury, WCP","capacity_kwp":77,"modules":140,"contractor":"Solar Shine Solutions & FE","cleans_per_year":null,"partial_inspections":null,"annual_inspection":null,"monthly_income":null,"annual_sla":0,"annual_cost":null,"months":{"Jan":"","Feb":"","Mar":"","Apr":"","May":"","Jun":"","Jul":"","Aug":"","Sep":"","Oct":"","Nov":"","Dec":""}},{"id":"23215","name":"Huis Stilbaai","location":"Still Bay, WCP","capacity_kwp":117,"modules":212,"contractor":"Solar Shine Solutions & FE","cleans_per_year":null,"partial_inspections":null,"annual_inspection":null,"monthly_income":null,"annual_sla":0,"annual_cost":null,"months":{"Jan":"","Feb":"","Mar":"","Apr":"","May":"","Jun":"","Jul":"","Aug":"","Sep":"","Oct":"","Nov":"","Dec":""}},{"id":"23216","name":"Vastech Photon 5","location":"Stellenbosch, WCP","capacity_kwp":405,"modules":736,"contractor":"Solar Shine Solutions & FE","cleans_per_year":null,"partial_inspections":null,"annual_inspection":null,"monthly_income":null,"annual_sla":0,"annual_cost":null,"months":{"Jan":"","Feb":"","Mar":"","Apr":"","May":"","Jun":"","Jul":"","Aug":"","Sep":"","Oct":"","Nov":"","Dec":""}},{"id":"23220","name":"Fountain Rez","location":"Rondebosch, CPT","capacity_kwp":50,"modules":90,"contractor":"Solar Shine Solutions & FE","cleans_per_year":null,"partial_inspections":null,"annual_inspection":null,"monthly_income":null,"annual_sla":0,"annual_cost":null,"months":{"Jan":"","Feb":"","Mar":"","Apr":"","May":"","Jun":"","Jul":"","Aug":"","Sep":"","Oct":"","Nov":"","Dec":""}},{"id":"24238","name":"Herfsvreudge","location":"Bonnievale, WCP","capacity_kwp":41,"modules":74,"contractor":"Solar Shine Solutions & FE","cleans_per_year":null,"partial_inspections":null,"annual_inspection":null,"monthly_income":null,"annual_sla":0,"annual_cost":null,"months":{"Jan":"","Feb":"","Mar":"","Apr":"","May":"","Jun":"","Jul":"","Aug":"","Sep":"","Oct":"","Nov":"","Dec":""}},{"id":"24240","name":"Jon Stoffberg","location":"Paarl, WCP","capacity_kwp":45,"modules":82,"contractor":"Solar Shine Solutions & FE","cleans_per_year":null,"partial_inspections":null,"annual_inspection":null,"monthly_income":null,"annual_sla":0,"annual_cost":null,"months":{"Jan":"","Feb":"","Mar":"","Apr":"","May":"","Jun":"","Jul":"","Aug":"","Sep":"","Oct":"","Nov":"","Dec":""}},{"id":"24243","name":"Bay Village","location":"Gordon's Bay, CPT","capacity_kwp":49,"modules":89,"contractor":"Solar Shine Solutions & FE","cleans_per_year":null,"partial_inspections":null,"annual_inspection":null,"monthly_income":null,"annual_sla":0,"annual_cost":null,"months":{"Jan":"","Feb":"","Mar":"","Apr":"","May":"","Jun":"","Jul":"","Aug":"","Sep":"","Oct":"","Nov":"","Dec":""}},{"id":"24254","name":"Meshco Blackheath","location":"Blackheath, CPT","capacity_kwp":933,"modules":1608,"contractor":"Solar Shine Solutions & FE","cleans_per_year":null,"partial_inspections":null,"annual_inspection":null,"monthly_income":null,"annual_sla":0,"annual_cost":null,"months":{"Jan":"","Feb":"","Mar":"","Apr":"","May":"","Jun":"","Jul":"","Aug":"","Sep":"","Oct":"","Nov":"","Dec":""}},{"id":"24258","name":"Baby Foods Office","location":"Ottery, CPT","capacity_kwp":42,"modules":75,"contractor":"Solar Shine Solutions & FE","cleans_per_year":null,"partial_inspections":null,"annual_inspection":null,"monthly_income":null,"annual_sla":0,"annual_cost":null,"months":{"Jan":"","Feb":"","Mar":"","Apr":"","May":"","Jun":"","Jul":"","Aug":"","Sep":"","Oct":"","Nov":"","Dec":""}},{"id":"24259","name":"Baby Foods Factory","location":"Ottery, CPT","capacity_kwp":164,"modules":299,"contractor":"Solar Shine Solutions & FE","cleans_per_year":null,"partial_inspections":null,"annual_inspection":null,"monthly_income":null,"annual_sla":0,"annual_cost":null,"months":{"Jan":"","Feb":"","Mar":"","Apr":"","May":"","Jun":"","Jul":"","Aug":"","Sep":"","Oct":"","Nov":"","Dec":""}},{"id":"24274","name":"Laerskool Marble Hall","location":"Marble Hall, LIMPOPO","capacity_kwp":39,"modules":64,"contractor":"Solar Shine Solutions & FE","cleans_per_year":null,"partial_inspections":null,"annual_inspection":null,"monthly_income":null,"annual_sla":0,"annual_cost":null,"months":{"Jan":"","Feb":"","Mar":"","Apr":"","May":"","Jun":"","Jul":"","Aug":"","Sep":"","Oct":"","Nov":"","Dec":""}},{"id":"24285","name":"Parow Business Park Khusela","location":"Parow, CPT","capacity_kwp":46,"modules":74,"contractor":"Solar Shine Solutions & FE","cleans_per_year":null,"partial_inspections":null,"annual_inspection":null,"monthly_income":null,"annual_sla":0,"annual_cost":null,"months":{"Jan":"","Feb":"","Mar":"","Apr":"","May":"","Jun":"","Jul":"","Aug":"","Sep":"","Oct":"","Nov":"","Dec":""}},{"id":"26014","name":"KWV","location":"Paarl, WCP","capacity_kwp":1002,"modules":1630,"contractor":"Solar Shine Solutions & FE","cleans_per_year":null,"partial_inspections":null,"annual_inspection":null,"monthly_income":null,"annual_sla":0,"annual_cost":null,"months":{"Jan":"","Feb":"","Mar":"","Apr":"","May":"","Jun":"","Jul":"","Aug":"","Sep":"","Oct":"","Nov":"","Dec":""}},{"id":"26019","name":"President Hotel","location":"Sea Point, CPT","capacity_kwp":149,"modules":229,"contractor":"Solar Shine Solutions & FE","cleans_per_year":null,"partial_inspections":null,"annual_inspection":null,"monthly_income":null,"annual_sla":0,"annual_cost":null,"months":{"Jan":"","Feb":"","Mar":"","Apr":"","May":"","Jun":"","Jul":"","Aug":"","Sep":"","Oct":"","Nov":"","Dec":""}},{"id":"O26001","name":"Harbour Bay Mall","location":"Simon's Town, WCP","capacity_kwp":484,"modules":1100,"contractor":"Solar Shine Solutions & FE","cleans_per_year":4,"partial_inspections":4,"annual_inspection":1,"monthly_income":null,"annual_sla":0,"annual_cost":32678.4,"months":{"Jan":"","Feb":"","Mar":"1 cln 1 F Insp","Apr":"","May":"","Jun":"2 cln Insp","Jul":"","Aug":"","Sep":"2 cln Insp","Oct":"","Nov":"","Dec":"2 cln Insp"}},{"id":"O26002","name":"The Walk Shopping Centre","location":"Bloemfontein, FS","capacity_kwp":"369.82","modules":902,"contractor":"Solar Panel Cleaners & FE","cleans_per_year":4,"partial_inspections":4,"annual_inspection":1,"monthly_income":null,"annual_sla":0,"annual_cost":null,"months":{"Jan":"","Feb":"","Mar":"","Apr":"","May":"","Jun":"","Jul":"","Aug":"","Sep":"","Oct":"","Nov":"","Dec":""}}];
+const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const STORAGE_KEY = "fe_om_dash_v3_2026";
+const TODAY = new Date();
+const CURRENT_MONTH_IDX = TODAY.getMonth();
+const CURRENT_YEAR = TODAY.getFullYear();
+const PLAN_YEAR = 2026;
+const monthIsPast = (idx) => (CURRENT_YEAR > PLAN_YEAR) || (CURRENT_YEAR === PLAN_YEAR && idx < CURRENT_MONTH_IDX);
+const monthIsCurrent = (idx) => (CURRENT_YEAR === PLAN_YEAR && idx === CURRENT_MONTH_IDX);
+
+let state = { sites: [], done: {} };
+let editingId = null;
+
+function saveState() { /* state is persisted via API calls */ }
+
+function parseActivity(code) {
+  if (!code) return null;
+  const c = code.trim();
+  const cleanMatch = c.match(/(\d+)\s*cln/i);
+  const cleanLabel = cleanMatch ? cleanMatch[0].replace(/\s+/g,' ').trim() : null;
+  let remainder = c.replace(/\d+\s*cln/i, '').trim();
+  let inspectionLabel = remainder || null;
+  const isAnnual = inspectionLabel ? /F\s*Insp/i.test(inspectionLabel) : false;
+  if (inspectionLabel && !/^\d/.test(inspectionLabel) && /Insp/i.test(inspectionLabel)) inspectionLabel = "1 " + inspectionLabel;
+  return { clean: cleanLabel, inspection: inspectionLabel, isAnnual };
+}
+
+// Decompose code into structured booleans for the modal
+function decomposeCode(code) {
+  if (!code) return { cleanNum: 0, partial: false, annual: false };
+  const c = code.trim();
+  const cleanMatch = c.match(/(\d+)\s*cln/i);
+  const cleanNum = cleanMatch ? parseInt(cleanMatch[1]) : 0;
+  const remainder = c.replace(/\d+\s*cln/i, '').trim();
+  const annual = /F\s*Insp/i.test(remainder);
+  const partial = !annual && /Insp/i.test(remainder);
+  return { cleanNum, partial, annual };
+}
+
+// Build code from structured booleans
+function composeCode(cleanNum, partial, annual) {
+  const parts = [];
+  if (cleanNum && cleanNum > 0) parts.push(cleanNum + " cln");
+  if (annual) parts.push("1 F Insp");
+  else if (partial) parts.push("1 Insp");
+  return parts.join(" ");
+}
+
+function doneKey(siteId, monthIdx, comp) { return siteId + "::" + monthIdx + "::" + comp; }
+function isDone(siteId, monthIdx, comp) { return !!state.done[doneKey(siteId, monthIdx, comp)]; }
+async function setDone(siteId, monthIdx, comp, val) {
+  if (window._isViewer) return;
+  const k = doneKey(siteId, monthIdx, comp);
+  if (val) state.done[k] = { at: new Date().toISOString() }; else delete state.done[k];
+  renderGrid(); renderKpis();
+  await apiFetch('/api/done', { method: 'POST', body: JSON.stringify({ site_id: siteId, month_idx: monthIdx, component: comp, done: val }) });
+}
+function clearDoneForSite(siteId) { Object.keys(state.done).forEach(k => { if (k.startsWith(siteId + "::")) delete state.done[k]; }); }
+
+function toast(msg, warn) { const t = document.getElementById('toast'); t.textContent = msg; t.className = 'toast show' + (warn ? ' warn' : ''); setTimeout(() => { t.className = 'toast'; }, 2200); }
+function getRegion(loc) { if (!loc) return "Unknown"; const parts = loc.split(","); return (parts[parts.length-1] || "Unknown").trim(); }
+
+let activeStatus = "all", searchTerm = "", filterContractor = "", filterRegion = "";
+
+function filteredSites() {
+  return state.sites.filter(s => {
+    if (searchTerm) { const q = searchTerm.toLowerCase(); if (!(s.name||"").toLowerCase().includes(q) && !(s.location||"").toLowerCase().includes(q) && !String(s.id).includes(q)) return false; }
+    if (filterContractor && s.contractor !== filterContractor) return false;
+    if (filterRegion && getRegion(s.location) !== filterRegion) return false;
+    if (activeStatus !== "all") {
+      let hit = false;
+      MONTHS.forEach((m, idx) => { const parts = parseActivity(s.months[m]); if (!parts) return;
+        ['cln','insp'].forEach(comp => {
+          if (comp === 'cln' && !parts.clean) return; if (comp === 'insp' && !parts.inspection) return;
+          const done = isDone(s.id, idx, comp);
+          if (activeStatus === "overdue" && monthIsPast(idx) && !done) hit = true;
+          if (activeStatus === "due" && monthIsCurrent(idx) && !done) hit = true;
+          if (activeStatus === "upcoming" && !monthIsPast(idx) && !monthIsCurrent(idx)) hit = true;
+        });
+      });
+      if (!hit) return false;
+    }
+    return true;
+  });
+}
+
+function computeKpis() {
+  let tcp=0, cd=0, tpp=0, pd=0, ap=0, ad=0, oc=0, dt=0;
+  state.sites.forEach(s => { MONTHS.forEach((m, idx) => {
+    const parts = parseActivity(s.months[m]); if (!parts) return;
+    if (parts.clean) { tcp++; const d=isDone(s.id, idx, 'cln'); if (d) cd++; if (monthIsPast(idx) && !d) oc++; if (monthIsCurrent(idx) && !d) dt++; }
+    if (parts.inspection) { const d=isDone(s.id, idx, 'insp'); if (parts.isAnnual) { ap++; if (d) ad++; } else { tpp++; if (d) pd++; } if (monthIsPast(idx) && !d) oc++; if (monthIsCurrent(idx) && !d) dt++; }
+  }); });
+  const tot = tcp+tpp+ap, done = cd+pd+ad, comp = tot>0 ? Math.round(done/tot*100) : 0;
+  return { sites: state.sites.length, totalCleansPlanned:tcp, cleansDone:cd, totalPartialPlanned:tpp, partialDone:pd, annualPlanned:ap, annualDone:ad, overdueCount:oc, dueThisMonth:dt, compliance:comp };
+}
+
+function renderKpis() {
+  const k = computeKpis();
+  document.getElementById('kpis').innerHTML =
+    '<div class="kpi"><div class="lbl">Total Sites</div><div class="val">' + k.sites + '</div></div>'
+    + '<div class="kpi ' + (k.overdueCount>0?'warn':'good') + '"><div class="lbl">Overdue</div><div class="val">' + k.overdueCount + '</div><div class="sub">activities past month, not done</div></div>'
+    + '<div class="kpi"><div class="lbl">Due This Month</div><div class="val">' + k.dueThisMonth + '</div><div class="sub">' + MONTHS[CURRENT_MONTH_IDX] + ' ' + PLAN_YEAR + '</div></div>'
+    + '<div class="kpi"><div class="lbl">Cleans YTD</div><div class="val">' + k.cleansDone + '<span style="font-size:14px; color:#8ca6ae;">/' + k.totalCleansPlanned + '</span></div></div>'
+    + '<div class="kpi"><div class="lbl">Partial Insp YTD</div><div class="val">' + k.partialDone + '<span style="font-size:14px; color:#8ca6ae;">/' + k.totalPartialPlanned + '</span></div></div>'
+    + '<div class="kpi good"><div class="lbl">SLA Compliance</div><div class="val">' + k.compliance + '%</div><div class="sub">' + (k.cleansDone+k.partialDone+k.annualDone) + ' of ' + (k.totalCleansPlanned+k.totalPartialPlanned+k.annualPlanned) + ' done</div></div>';
+}
+
+function chipHtml(label, baseCls, sid, midx, comp) {
+  const done = isDone(sid, midx, comp); const overdue = !done && monthIsPast(midx);
+  let cls = 'chip ' + baseCls; if (done) cls = 'chip done'; else if (overdue) cls = 'chip overdue';
+  const tt = done?'Done - click to undo':overdue?'OVERDUE - click to mark done':'Click to mark done';
+  return '<span class="' + cls + '" data-comp="' + comp + '" title="' + tt + '">' + escapeHtml(label) + '</span>';
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  const sites = filteredSites();
+  let html = '<colgroup><col class="c-id"><col class="c-name"><col class="c-loc"><col class="c-cont"><col class="c-kwp">';
+  for (let i=0;i<12;i++) html += '<col class="c-month">';
+  html += '</colgroup><thead><tr><th class="s-id">ID</th><th class="s-name">Site</th><th>Location</th><th>Contractor</th><th>kWp</th>';
+  MONTHS.forEach((m, idx) => { let cls = 'month'; if (monthIsPast(idx)) cls += ' past'; if (monthIsCurrent(idx)) cls += ' current'; html += '<th class="' + cls + '">' + m + '</th>'; });
+  html += '</tr></thead><tbody>';
+  sites.forEach(s => {
+    html += '<tr><td class="s-id">' + s.id + '</td><td class="s-name" data-edit-site="' + s.id + '" title="Click to edit"><strong>' + escapeHtml(s.name||'') + '</strong>' + (s.sla_filename ? '<span class="sla-clip" title="SLA: ' + escapeHtml(s.sla_filename) + '">📎</span>' : '') + '<span class="edit-hint">edit</span>' + '</td><td>' + escapeHtml(s.location||'') + '</td><td>' + escapeHtml(s.contractor||'') + '</td><td class="s-kwp">' + (s.capacity_kwp||'') + '</td>';
+    MONTHS.forEach((m, idx) => {
+      const code = (s.months[m]||'').trim();
+      if (!code) html += '<td class="month-cell empty" data-site="' + s.id + '" data-month="' + idx + '" title="Empty - click to schedule"></td>';
+      else {
+        const p = parseActivity(code);
+        let cell = '<td class="month-cell" data-site="' + s.id + '" data-month="' + idx + '"><div class="chip-stack">';
+        if (p.clean) cell += chipHtml(p.clean, 'cln', s.id, idx, 'cln');
+        if (p.inspection) cell += chipHtml(p.inspection, p.isAnnual ? 'annual' : 'insp', s.id, idx, 'insp');
+        cell += '</div></td>'; html += cell;
+      }
+    });
+    html += '</tr>';
+  });
+  html += '</tbody>';
+  grid.innerHTML = html;
+
+  grid.querySelectorAll('span.chip[data-comp]').forEach(chip => {
+    chip.addEventListener('click', e => { e.stopPropagation(); const td = chip.closest('td'); const sid = td.dataset.site; const midx = parseInt(td.dataset.month); const comp = chip.dataset.comp;
+      const currently = isDone(sid, midx, comp); setDone(sid, midx, comp, !currently); renderAll(); toast(currently ? "Marked as not done" : "Marked as done");
+    });
+  });
+  grid.querySelectorAll('td.month-cell.empty').forEach(td => {
+    td.addEventListener('click', () => { const sid = td.dataset.site; const midx = parseInt(td.dataset.month); const site = state.sites.find(x => x.id == sid); if (!site) return; openEditModal(sid); });
+  });
+  grid.querySelectorAll('td.s-name[data-edit-site]').forEach(td => {
+    td.addEventListener('click', () => openEditModal(td.dataset.editSite));
+  });
+}
+
+function escapeHtml(s) { return String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+
+function populateFilters() {
+  const contractors = [...new Set(state.sites.map(s => s.contractor).filter(Boolean))].sort();
+  const regions = [...new Set(state.sites.map(s => getRegion(s.location)).filter(Boolean))].sort();
+  document.getElementById('filterContractor').innerHTML = '<option value="">All contractors</option>' + contractors.map(c => '<option>' + escapeHtml(c) + '</option>').join('');
+  document.getElementById('filterRegion').innerHTML = '<option value="">All regions</option>' + regions.map(r => '<option>' + escapeHtml(r) + '</option>').join('');
+  window._contractors = contractors;
+}
+
+function renderAll() { renderKpis(); populateFilters(); document.getElementById('filterContractor').value = filterContractor; document.getElementById('filterRegion').value = filterRegion; renderGrid(); }
+
+document.getElementById('search').addEventListener('input', e => { searchTerm = e.target.value; renderGrid(); });
+document.getElementById('filterContractor').addEventListener('change', e => { filterContractor = e.target.value; renderGrid(); });
+document.getElementById('filterRegion').addEventListener('change', e => { filterRegion = e.target.value; renderGrid(); });
+document.querySelectorAll('.pill').forEach(p => { p.addEventListener('click', () => { document.querySelectorAll('.pill').forEach(x => x.classList.remove('active')); p.classList.add('active'); activeStatus = p.dataset.filter; renderGrid(); }); });
+document.querySelector('.pill[data-filter="all"]').classList.add('active');
+
+// Build the per-month tile UI
+function buildMonthTiles() {
+  const wrap = document.getElementById('np_months');
+  wrap.innerHTML = MONTHS.map(m => {
+    const cleanOpts = ['<option value="0">Clean: -</option>'];
+    for (let i=1;i<=4;i++) cleanOpts.push('<option value="'+i+'">Clean ' + i + '</option>');
+    return '<div class="mt" data-month="' + m + '">'
+      + '<div style="display:flex; align-items:center; justify-content:space-between;"><span class="mn">' + m + '</span><span class="preview" data-preview="' + m + '"></span></div>'
+      + '<select class="cln-sel" data-field="clean" data-month="' + m + '">' + cleanOpts.join('') + '</select>'
+      + '<label class="cbx"><input type="checkbox" data-field="partial" data-month="' + m + '"> Partial Insp</label>'
+      + '<label class="cbx"><input type="checkbox" data-field="annual" data-month="' + m + '"> Annual Insp</label>'
+      + '</div>';
+  }).join('');
+  // Listeners to update preview & enforce annual XOR partial
+  wrap.querySelectorAll('select.cln-sel, input[type=checkbox]').forEach(el => {
+    el.addEventListener('change', () => {
+      const m = el.dataset.month;
+      // Annual and partial are mutually exclusive (you don't do partial in the same month as annual full)
+      if (el.dataset.field === 'annual' && el.checked) {
+        const p = wrap.querySelector('input[data-month="'+m+'"][data-field="partial"]');
+        if (p) p.checked = false;
+      }
+      if (el.dataset.field === 'partial' && el.checked) {
+        const a = wrap.querySelector('input[data-month="'+m+'"][data-field="annual"]');
+        if (a) a.checked = false;
+      }
+      updateMonthPreview(m);
+    });
+  });
+}
+
+function updateMonthPreview(m) {
+  const wrap = document.getElementById('np_months');
+  const cleanSel = wrap.querySelector('select[data-month="'+m+'"][data-field="clean"]');
+  const partial = wrap.querySelector('input[data-month="'+m+'"][data-field="partial"]');
+  const annual = wrap.querySelector('input[data-month="'+m+'"][data-field="annual"]');
+  const code = composeCode(parseInt(cleanSel.value), partial.checked, annual.checked);
+  const prev = wrap.querySelector('span[data-preview="'+m+'"]');
+  prev.textContent = code;
+}
+
+function setMonthTilesFromSite(site) {
+  const wrap = document.getElementById('np_months');
+  MONTHS.forEach(m => {
+    const code = site && site.months ? site.months[m] : '';
+    const d = decomposeCode(code);
+    wrap.querySelector('select[data-month="'+m+'"][data-field="clean"]').value = String(d.cleanNum);
+    wrap.querySelector('input[data-month="'+m+'"][data-field="partial"]').checked = d.partial;
+    wrap.querySelector('input[data-month="'+m+'"][data-field="annual"]').checked = d.annual;
+    updateMonthPreview(m);
+  });
+}
+
+function populateContractorSelect(currentValue) {
+  const sel = document.getElementById('np_contractor');
+  const list = (window._contractors || []).slice();
+  if (currentValue && !list.includes(currentValue)) list.unshift(currentValue);
+  sel.innerHTML = '<option value="">- Select -</option>'
+    + list.map(c => '<option' + (c===currentValue?' selected':'') + '>' + escapeHtml(c) + '</option>').join('')
+    + '<option value="__add_new__">+ Add new contractor...</option>';
+}
+document.addEventListener('change', e => {
+  if (e.target && e.target.id === 'np_contractor' && e.target.value === '__add_new__') {
+    const name = prompt('Enter new contractor name:');
+    if (name && name.trim()) {
+      const v = name.trim();
+      if (!window._contractors) window._contractors = [];
+      if (!window._contractors.includes(v)) window._contractors.push(v);
+      populateContractorSelect(v);
+    } else {
+      e.target.value = '';
+    }
+  }
+});
+
+
+
+async function saveSlaBlob(siteId, file) {
+  const form = new FormData();
+  form.append('file', file);
+  const res = await apiFetch('/api/sites/' + siteId + '/sla', { method: 'POST', body: form });
+  if (!res || !res.ok) throw new Error('Upload failed');
+  return await res.json();
+}
+async function getSlaBlob(siteId) {
+  const res = await apiFetch('/api/sites/' + siteId + '/sla');
+  if (!res || !res.ok) return null;
+  return await res.blob();
+}
+async function deleteSlaBlob(siteId) {
+  await apiFetch('/api/sites/' + siteId + '/sla', { method: 'DELETE' });
+}
+
+function fmtBytes(n) {
+  if (n == null) return "";
+  if (n < 1024) return n + " B";
+  if (n < 1024*1024) return (n/1024).toFixed(1) + " KB";
+  return (n/1024/1024).toFixed(2) + " MB";
+}
+
+function renderSlaSection(site) {
+  const cur = document.getElementById('slaCurrent');
+  const empty = document.getElementById('slaEmpty');
+  if (site && site.sla_filename) {
+    cur.style.display = 'block';
+    empty.style.display = 'none';
+    const ext = (site.sla_filename.split('.').pop() || '').toUpperCase();
+    const ico = ext === 'PDF' ? '📄' : (ext.match(/JPG|JPEG|PNG/) ? '🖼' : '📝');
+    cur.innerHTML = '<div class="sla-current">'
+      + '<div class="ico">' + ico + '</div>'
+      + '<div class="meta"><strong>' + escapeHtml(site.sla_filename) + '</strong>'
+      + '<div class="sub">' + (ext || 'FILE') + ' / ' + fmtBytes(site.sla_size) + ' / Uploaded ' + (site.sla_uploaded_at ? new Date(site.sla_uploaded_at).toLocaleDateString() : '-') + '</div></div>'
+      + '<div class="sla-actions">'
+      + '<button type="button" id="slaDownload">Download</button>'
+      + '<button type="button" id="slaReplace">Replace</button>'
+      + '<button type="button" class="btn-danger-sm" id="slaRemove">Remove</button>'
+      + '</div></div>';
+    document.getElementById('slaDownload').addEventListener('click', () => downloadSla(site.id, site.sla_filename));
+    document.getElementById('slaReplace').addEventListener('click', () => document.getElementById('slaFileInput').click());
+    document.getElementById('slaRemove').addEventListener('click', () => removeSla(site.id));
+  } else {
+    cur.style.display = 'none';
+    empty.style.display = 'flex';
+  }
+}
+
+async function downloadSla(siteId, filename) {
+  try {
+    const blob = await getSlaBlob(siteId);
+    if (!blob) { toast("File not found in browser storage", true); return; }
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href = url; a.download = filename || ('SLA_' + siteId);
+    a.click(); URL.revokeObjectURL(url);
+  } catch(e) { toast("Could not download: " + e.message, true); }
+}
+
+async function removeSla(siteId) {
+  if (!confirm("Remove the SLA file for this site?")) return;
+  try {
+    await deleteSlaBlob(siteId);
+    const idx = state.sites.findIndex(s => String(s.id) === String(siteId));
+    if (idx >= 0) {
+      delete state.sites[idx].sla_filename;
+      delete state.sites[idx].sla_size;
+      delete state.sites[idx].sla_uploaded_at;
+      delete state.sites[idx].sla_mime;
+      saveState();
+      renderSlaSection(state.sites[idx]);
+    }
+    renderAll();
+    toast("SLA removed");
+  } catch(e) { toast("Could not remove: " + e.message, true); }
+}
+
+document.getElementById('slaFileInput').addEventListener('change', async e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  if (file.size > 5 * 1024 * 1024) { toast("File too large (max 5MB)", true); e.target.value = ''; return; }
+  let siteId = editingId;
+  if (!siteId) {
+    siteId = document.getElementById('np_id').value.trim();
+    if (!siteId) { toast("Enter a Site ID first, then upload SLA", true); e.target.value = ''; return; }
+  }
+  const prog = document.getElementById('slaProgress');
+  prog.style.display = 'block'; prog.textContent = 'Uploading ' + file.name + ' (' + fmtBytes(file.size) + ')...';
+  try {
+    await saveSlaBlob(siteId, file);
+    const idx = state.sites.findIndex(s => String(s.id) === String(siteId));
+    const meta = { sla_filename: file.name, sla_size: file.size, sla_uploaded_at: new Date().toISOString(), sla_mime: file.type };
+    if (idx >= 0) {
+      Object.assign(state.sites[idx], meta);
+      saveState();
+      renderSlaSection(state.sites[idx]);
+      renderAll();
+    } else {
+      window._pendingSlaMeta = meta;
+      renderSlaSection({ id: siteId, ...meta });
+    }
+    prog.textContent = 'Uploaded ' + file.name;
+    setTimeout(() => { prog.style.display = 'none'; }, 1500);
+    toast("SLA uploaded");
+  } catch(err) {
+    prog.textContent = 'Upload failed: ' + err.message;
+    toast("Upload failed", true);
+  }
+  e.target.value = '';
+});
+
+function openModal() { document.getElementById('modalPlant').classList.add('show'); }
+function closeModal() { document.getElementById('modalPlant').classList.remove('show'); editingId = null; }
+window.closeModal = closeModal;
+document.getElementById('modalPlant').addEventListener('click', e => { if (e.target.id === 'modalPlant') closeModal(); });
+document.getElementById('btnCancel').addEventListener('click', closeModal);
+
+document.getElementById('btnAdd').addEventListener('click', () => {
+  editingId = null;
+  document.getElementById('modalTitle').firstChild.textContent = 'Add new plant';
+  document.getElementById('modalSub').textContent = 'Capture site details and 12-month schedule';
+  document.getElementById('btnDelete').style.display = 'none';
+  // Reset fields
+  ['np_id','np_name','np_location','np_kwp','np_modules','np_lat','np_lng'].forEach(id => document.getElementById(id).value = '');
+  populateContractorSelect('');
+  document.getElementById('np_cleans').value = '3';
+  document.getElementById('np_partial').value = '3';
+  document.getElementById('np_annual').value = '1';
+  document.getElementById('np_id').disabled = false;
+  buildMonthTiles();
+  setMonthTilesFromSite(null);
+  renderSlaSection(null);
+  window._pendingSlaMeta = null;
+  openModal();
+});
+
+function openEditModal(siteId) {
+  const site = state.sites.find(s => String(s.id) === String(siteId));
+  if (!site) return;
+  editingId = site.id;
+  document.getElementById('modalTitle').firstChild.textContent = 'Edit plant';
+  document.getElementById('modalSub').textContent = site.name + ' - ID ' + site.id;
+  document.getElementById('btnDelete').style.display = 'inline-block';
+  document.getElementById('np_id').value = site.id;
+  document.getElementById('np_id').disabled = true; // ID is the key, don't allow change
+  document.getElementById('np_name').value = site.name||'';
+  document.getElementById('np_location').value = site.location||'';
+  document.getElementById('np_kwp').value = site.capacity_kwp||'';
+  document.getElementById('np_modules').value = site.modules||'';
+  populateContractorSelect(site.contractor||'');
+  document.getElementById('np_cleans').value = site.cleans_per_year != null ? String(site.cleans_per_year) : '';
+  document.getElementById('np_partial').value = site.partial_inspections != null ? String(site.partial_inspections) : '';
+  document.getElementById('np_lat').value = site.lat != null ? site.lat : '';
+  document.getElementById('np_lng').value = site.lng != null ? site.lng : '';
+  document.getElementById('np_annual').value = site.annual_inspection ? '1' : '0';
+  buildMonthTiles();
+  setMonthTilesFromSite(site);
+  renderSlaSection(site);
+  openModal();
+}
+
+document.getElementById('btnSavePlant').addEventListener('click', async () => {
+  const id = document.getElementById('np_id').value.trim();
+  const name = document.getElementById('np_name').value.trim();
+  if (!id || !name) { toast("Site ID and Name are required", true); return; }
+
+  // Build months from tiles
+  const months = {};
+  MONTHS.forEach(m => {
+    const cleanSel = document.querySelector('#np_months select[data-month="'+m+'"][data-field="clean"]');
+    const partial = document.querySelector('#np_months input[data-month="'+m+'"][data-field="partial"]');
+    const annual = document.querySelector('#np_months input[data-month="'+m+'"][data-field="annual"]');
+    months[m] = composeCode(parseInt(cleanSel.value), partial.checked, annual.checked);
+  });
+
+  const latVal = document.getElementById('np_lat').value; const lngVal = document.getElementById('np_lng').value;
+  const payload = {
+    id: id, name: name,
+    location: document.getElementById('np_location').value.trim(),
+    capacity_kwp: document.getElementById('np_kwp').value,
+    modules: parseInt(document.getElementById('np_modules').value)||null,
+    contractor: document.getElementById('np_contractor').value.trim(),
+    cleans_per_year: parseInt(document.getElementById('np_cleans').value)||null,
+    partial_inspections: parseInt(document.getElementById('np_partial').value)||null,
+    annual_inspection: document.getElementById('np_annual').value === '1' ? 1 : 0,
+    lat: latVal === '' ? null : parseFloat(latVal),
+    lng: lngVal === '' ? null : parseFloat(lngVal),
+    monthly_income: null, annual_sla: null, annual_cost: null,
+    months: months
+  };
+
+  if (editingId) {
+    const idx = state.sites.findIndex(s => String(s.id) === String(editingId));
+    if (idx >= 0) {
+      payload.monthly_income = state.sites[idx].monthly_income;
+      payload.annual_sla = state.sites[idx].annual_sla;
+      payload.annual_cost = state.sites[idx].annual_cost;
+      if (state.sites[idx].sla_filename) {
+        payload.sla_filename = state.sites[idx].sla_filename;
+        payload.sla_size = state.sites[idx].sla_size;
+        payload.sla_uploaded_at = state.sites[idx].sla_uploaded_at;
+        payload.sla_mime = state.sites[idx].sla_mime;
+      }
+      const res = await apiFetch('/api/sites/' + editingId, { method: 'PUT', body: JSON.stringify(payload) });
+      if (!res || !res.ok) { toast('Save failed', true); return; }
+      state.sites[idx] = payload;
+      closeModal(); renderAll(); toast("Updated " + name);
+      return;
+    }
+  }
+
+  if (state.sites.some(s => String(s.id) === id)) { toast("Site ID already exists", true); return; }
+  if (window._pendingSlaMeta) { Object.assign(payload, window._pendingSlaMeta); window._pendingSlaMeta = null; }
+  const res = await apiFetch('/api/sites', { method: 'POST', body: JSON.stringify(payload) });
+  if (!res || !res.ok) { const err = await res?.json(); toast(err?.error || 'Save failed', true); return; }
+  state.sites.push(payload);
+  closeModal(); renderAll(); toast("Plant added: " + name);
+});
+
+document.getElementById('btnDelete').addEventListener('click', async () => {
+  if (!editingId) return;
+  const site = state.sites.find(s => String(s.id) === String(editingId));
+  if (!site) return;
+  if (!confirm("Delete plant '" + site.name + "' (ID " + site.id + ")? This also clears its done-status. Cannot be undone.")) return;
+  const res = await apiFetch('/api/sites/' + editingId, { method: 'DELETE' });
+  if (!res || !res.ok) { toast('Delete failed', true); return; }
+  deleteSlaBlob(site.id).catch(()=>{});
+  state.sites = state.sites.filter(s => String(s.id) !== String(editingId));
+  clearDoneForSite(site.id);
+  closeModal(); renderAll(); toast("Deleted " + site.name);
+});
+
+document.getElementById('btnExport').addEventListener('click', () => {
+  const blob = new Blob([JSON.stringify({ sites: state.sites, done: state.done, exported_at: new Date().toISOString() }, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'fe_om_dashboard_' + new Date().toISOString().slice(0,10) + '.json'; a.click(); URL.revokeObjectURL(url);
+  toast("Exported JSON to downloads");
+});
+document.getElementById('btnImport').addEventListener('click', () => { document.getElementById('fileImport').click(); });
+document.getElementById('fileImport').addEventListener('change', e => {
+  const f = e.target.files[0]; if (!f) return; const r = new FileReader();
+  r.onload = ev => { try { const data = JSON.parse(ev.target.result); if (data.sites) state.sites = data.sites; if (data.done) state.done = data.done; saveState(); renderAll(); toast("Imported " + (data.sites?data.sites.length:0) + " sites"); } catch(err) { toast("Invalid JSON file", true); } };
+  r.readAsText(f); e.target.value = '';
+});
+document.getElementById('btnReset').addEventListener('click', async () => {
+  if (!confirm("Reload all data from server? This will refresh sites and done-status.")) return;
+  const [sitesRes, doneRes] = await Promise.all([apiFetch('/api/sites'), apiFetch('/api/done')]);
+  if (!sitesRes || !doneRes) return;
+  state.sites = await sitesRes.json();
+  state.done = await doneRes.json();
+  renderAll(); toast("Reloaded from server");
+});
+
+
+// =========================
+// MAP VIEW
+// =========================
+let leafletMap = null, markerCluster = null, drawnItems = null, drawControl = null;
+let siteMarkers = {}; // id -> marker
+let selectedSiteIds = new Set();
+let pickerMap = null, pickerMarker = null;
+
+function initMap() {
+  if (leafletMap) return;
+  leafletMap = L.map('leafletMap').setView([-30.5, 24], 5); // South Africa
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19, attribution: '&copy; OpenStreetMap'
+  }).addTo(leafletMap);
+  markerCluster = L.markerClusterGroup({ chunkedLoading: true, showCoverageOnHover: false });
+  leafletMap.addLayer(markerCluster);
+  drawnItems = new L.FeatureGroup().addTo(leafletMap);
+  drawControl = new L.Control.Draw({
+    draw: {
+      polygon: { allowIntersection:false, showArea:false, shapeOptions:{ color:'#114d5d', weight:2 } },
+      rectangle: { shapeOptions:{ color:'#114d5d', weight:2 } },
+      polyline:false, circle:false, marker:false, circlemarker:false
+    },
+    edit: { featureGroup: drawnItems, edit:false, remove:true }
+  });
+  leafletMap.addControl(drawControl);
+  leafletMap.on(L.Draw.Event.CREATED, e => {
+    drawnItems.clearLayers();
+    drawnItems.addLayer(e.layer);
+    selectSitesInLayer(e.layer);
+  });
+  leafletMap.on(L.Draw.Event.DELETED, () => clearSelection());
+  populateBulkMonthSelect();
+}
+
+function populateBulkMonthSelect() {
+  const sel = document.getElementById('bulkMonth');
+  sel.innerHTML = MONTHS.map(m => '<option value="' + m + '">' + m + '</option>').join('');
+}
+
+function pointInPolygon(point, polygon) {
+  // point: [lat, lng]; polygon: array of [lat, lng]
+  let inside = false;
+  for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+    const xi = polygon[i][0], yi = polygon[i][1];
+    const xj = polygon[j][0], yj = polygon[j][1];
+    const intersect = ((yi > point[1]) !== (yj > point[1])) && (point[0] < (xj - xi) * (point[1] - yi) / (yj - yi) + xi);
+    if (intersect) inside = !inside;
+  }
+  return inside;
+}
+
+function selectSitesInLayer(layer) {
+  selectedSiteIds.clear();
+  state.sites.forEach(s => {
+    if (s.lat == null || s.lng == null) return;
+    let inside = false;
+    if (layer instanceof L.Rectangle) {
+      const b = layer.getBounds();
+      inside = b.contains([s.lat, s.lng]);
+    } else if (layer instanceof L.Polygon) {
+      const latlngs = layer.getLatLngs()[0].map(p => [p.lat, p.lng]);
+      inside = pointInPolygon([s.lng, s.lat], latlngs.map(p => [p[1], p[0]]));
+    }
+    if (inside) selectedSiteIds.add(String(s.id));
+  });
+  renderSelectionPanel();
+}
+
+function clearSelection() {
+  selectedSiteIds.clear();
+  drawnItems.clearLayers();
+  document.getElementById('selPanel').classList.remove('show');
+  refreshMapMarkers();
+}
+
+function renderSelectionPanel() {
+  const panel = document.getElementById('selPanel');
+  if (selectedSiteIds.size === 0) { panel.classList.remove('show'); refreshMapMarkers(); return; }
+  panel.classList.add('show');
+  document.getElementById('selCount').textContent = selectedSiteIds.size;
+  const sites = state.sites.filter(s => selectedSiteIds.has(String(s.id)));
+  document.getElementById('selList').innerHTML = sites.map(s => '<li><strong>' + escapeHtml(s.name||'') + '</strong> - ' + escapeHtml(s.location||'') + '</li>').join('');
+  refreshMapMarkers();
+  updateBulkWarn();
+}
+
+function updateBulkWarn() {
+  const month = document.getElementById('bulkMonth').value;
+  const conflicts = [];
+  state.sites.forEach(s => {
+    if (!selectedSiteIds.has(String(s.id))) return;
+    const existing = (s.months[month]||'').trim();
+    if (existing) conflicts.push(s.name + ' (currently: ' + existing + ')');
+  });
+  const w = document.getElementById('bulkWarn');
+  if (conflicts.length) {
+    w.style.display = 'block';
+    w.innerHTML = '<strong>' + conflicts.length + ' site' + (conflicts.length>1?'s':'') + '</strong> already have something in ' + month + '. Activity will be merged.';
+  } else { w.style.display = 'none'; }
+}
+
+function refreshMapMarkers() {
+  if (!markerCluster) return;
+  markerCluster.clearLayers();
+  siteMarkers = {};
+  let withCoords = 0;
+  state.sites.forEach(s => {
+    if (s.lat == null || s.lng == null) return;
+    withCoords++;
+    const isSelected = selectedSiteIds.has(String(s.id));
+    // Compute overdue/due indicator for this site
+    let overdue = 0, due = 0;
+    MONTHS.forEach((m, idx) => {
+      const parts = parseActivity(s.months[m]); if (!parts) return;
+      ['cln','insp'].forEach(comp => {
+        if (comp === 'cln' && !parts.clean) return; if (comp === 'insp' && !parts.inspection) return;
+        const d = isDone(s.id, idx, comp);
+        if (monthIsPast(idx) && !d) overdue++;
+        if (monthIsCurrent(idx) && !d) due++;
+      });
+    });
+    let color = '#114d5d';
+    if (overdue > 0) color = '#c62828';
+    else if (due > 0) color = '#ffb977';
+    if (isSelected) color = '#16e7cf';
+    const html = '<div style="background:' + color + '; width:22px; height:22px; border-radius:50% 50% 50% 0; transform:rotate(-45deg); border:2px solid #fff; box-shadow:0 2px 4px rgba(0,0,0,0.3); display:flex; align-items:center; justify-content:center;"><span style="transform:rotate(45deg); color:#fff; font-size:10px; font-weight:700;">' + (overdue||'') + '</span></div>';
+    const icon = L.divIcon({ html: html, className: 'fe-marker', iconSize:[24,24], iconAnchor:[12,24] });
+    const m = L.marker([s.lat, s.lng], { icon }).bindPopup(
+      '<strong style="color:#114d5d;">' + escapeHtml(s.name||'') + '</strong><br>' +
+      '<span style="font-size:11px; color:#46717e;">ID ' + s.id + ' / ' + escapeHtml(s.contractor||'-') + '</span><br>' +
+      '<span style="font-size:11px;">' + escapeHtml(s.location||'') + '</span><br>' +
+      (overdue ? '<span style="color:#c62828; font-weight:600;">' + overdue + ' overdue</span><br>' : '') +
+      (due ? '<span style="color:#ffb977; font-weight:600;">' + due + ' due this month</span><br>' : '') +
+      (s.sla_filename ? '<a href="#" data-sla-id="' + s.id + '" data-sla-name="' + escapeHtml(s.sla_filename) + '" style="color:#114d5d; font-size:11px; display:block; margin-top:4px;">📎 ' + escapeHtml(s.sla_filename) + '</a>' : '') +
+      '<a href="#" data-edit-id="' + s.id + '" style="color:#114d5d; font-size:11px;">Edit details</a>'
+    );
+    m.on('popupopen', e => {
+      const link = e.popup.getElement().querySelector('a[data-edit-id]');
+      if (link) link.addEventListener('click', ev => { ev.preventDefault(); openEditModal(link.dataset.editId); leafletMap.closePopup(); });
+      const slaLink = e.popup.getElement().querySelector('a[data-sla-id]');
+      if (slaLink) slaLink.addEventListener('click', ev => { ev.preventDefault(); downloadSla(slaLink.dataset.slaId, slaLink.dataset.slaName); });
+    });
+    siteMarkers[s.id] = m;
+    markerCluster.addLayer(m);
+  });
+  document.getElementById('mapSiteCount').textContent = withCoords;
+  document.getElementById('mapTotalCount').textContent = state.sites.length;
+}
+
+// View toggle
+document.getElementById('btnViewCal').addEventListener('click', () => {
+  document.getElementById('btnViewCal').classList.add('active');
+  document.getElementById('btnViewMap').classList.remove('active');
+  document.getElementById('mainArea').classList.remove('hide');
+  document.getElementById('mapView').classList.remove('show');
+});
+document.getElementById('btnViewMap').addEventListener('click', () => {
+  document.getElementById('btnViewMap').classList.add('active');
+  document.getElementById('btnViewCal').classList.remove('active');
+  document.getElementById('mainArea').classList.add('hide');
+  document.getElementById('mapView').classList.add('show');
+  setTimeout(() => { initMap(); refreshMapMarkers(); leafletMap.invalidateSize(); }, 50);
+});
+
+// Bulk schedule controls
+document.getElementById('btnBulkCancel').addEventListener('click', clearSelection);
+document.getElementById('btnClearSel').addEventListener('click', clearSelection);
+document.getElementById('bulkActivity').addEventListener('change', () => {
+  const v = document.getElementById('bulkActivity').value;
+  document.getElementById('cleanNumLbl').style.display = v === 'cln' ? 'block' : 'none';
+  document.getElementById('bulkCleanNum').style.display = v === 'cln' ? 'block' : 'none';
+});
+document.getElementById('bulkMonth').addEventListener('change', updateBulkWarn);
+
+document.getElementById('btnBulkApply').addEventListener('click', () => {
+  if (selectedSiteIds.size === 0) return;
+  const month = document.getElementById('bulkMonth').value;
+  const activity = document.getElementById('bulkActivity').value;
+  const cleanNum = parseInt(document.getElementById('bulkCleanNum').value);
+  let count = 0;
+  state.sites.forEach(s => {
+    if (!selectedSiteIds.has(String(s.id))) return;
+    const existing = (s.months[month]||'').trim();
+    const dec = decomposeCode(existing);
+    if (activity === 'cln') dec.cleanNum = cleanNum;
+    else if (activity === 'insp') { dec.partial = true; dec.annual = false; }
+    else if (activity === 'annual') { dec.annual = true; dec.partial = false; }
+    s.months[month] = composeCode(dec.cleanNum, dec.partial, dec.annual);
+    count++;
+  });
+  saveState();
+  toast('Applied to ' + count + ' sites in ' + month);
+  clearSelection();
+  renderAll();
+});
+
+// Pick-on-map helper for the modal
+document.getElementById('btnPickLoc').addEventListener('click', () => {
+  const overlay = document.getElementById('pickerOverlay');
+  overlay.classList.add('show');
+  setTimeout(() => {
+    if (!pickerMap) {
+      pickerMap = L.map('pickerMap').setView([-30.5, 24], 5);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution:'&copy; OpenStreetMap' }).addTo(pickerMap);
+      pickerMap.on('click', e => {
+        if (pickerMarker) pickerMarker.setLatLng(e.latlng);
+        else pickerMarker = L.marker(e.latlng).addTo(pickerMap);
+      });
+    }
+    const lat = parseFloat(document.getElementById('np_lat').value);
+    const lng = parseFloat(document.getElementById('np_lng').value);
+    if (!isNaN(lat) && !isNaN(lng)) {
+      if (pickerMarker) pickerMarker.setLatLng([lat,lng]); else pickerMarker = L.marker([lat,lng]).addTo(pickerMap);
+      pickerMap.setView([lat,lng], 14);
+    }
+    pickerMap.invalidateSize();
+  }, 50);
+});
+document.getElementById('pickerCancel').addEventListener('click', () => { document.getElementById('pickerOverlay').classList.remove('show'); });
+document.getElementById('pickerOk').addEventListener('click', () => {
+  if (pickerMarker) {
+    const ll = pickerMarker.getLatLng();
+    document.getElementById('np_lat').value = ll.lat.toFixed(6);
+    document.getElementById('np_lng').value = ll.lng.toFixed(6);
+  }
+  document.getElementById('pickerOverlay').classList.remove('show');
+});
+
+// Refresh map when state changes (already covered via renderAll, but markers need explicit refresh)
+const _oldRenderAll = renderAll;
+renderAll = function() { _oldRenderAll(); if (leafletMap) refreshMapMarkers(); };
+
+
+init();
+</script>
+</body>
+</html>
