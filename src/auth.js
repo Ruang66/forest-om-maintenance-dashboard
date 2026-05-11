@@ -31,17 +31,29 @@ async function ensureAdminUser() {
   const { rows } = await pool.query('SELECT id FROM users WHERE email = $1', [adminEmail]);
   if (rows.length > 0) return;
 
-  const token = uuidv4();
-  const expires = new Date(Date.now() + 72 * 60 * 60 * 1000); // 72 hours
-  await pool.query(
-    'INSERT INTO users (email, role, invite_token, invite_expires_at) VALUES ($1, $2, $3, $4)',
-    [adminEmail, 'admin', token, expires]
-  );
-  const baseUrl = process.env.BASE_URL || 'http://localhost:' + (process.env.PORT || 3000);
-  console.log('\n==============================================');
-  console.log('ADMIN SETUP LINK (expires in 72 hours):');
-  console.log(baseUrl + '/set-password.html?token=' + token);
-  console.log('==============================================\n');
+  const adminPassword = process.env.ADMIN_PASSWORD;
+  if (adminPassword) {
+    const hash = await hashPassword(adminPassword);
+    await pool.query(
+      'INSERT INTO users (email, role, password_hash) VALUES ($1, $2, $3)',
+      [adminEmail, 'admin', hash]
+    );
+    console.log('\n==============================================');
+    console.log('Admin account created for:', adminEmail);
+    console.log('==============================================\n');
+  } else {
+    const token = uuidv4();
+    const expires = new Date(Date.now() + 72 * 60 * 60 * 1000);
+    await pool.query(
+      'INSERT INTO users (email, role, invite_token, invite_expires_at) VALUES ($1, $2, $3, $4)',
+      [adminEmail, 'admin', token, expires]
+    );
+    const baseUrl = process.env.BASE_URL || 'http://localhost:' + (process.env.PORT || 3000);
+    console.log('\n==============================================');
+    console.log('ADMIN SETUP LINK (expires in 72 hours):');
+    console.log(baseUrl + '/set-password.html?token=' + token);
+    console.log('==============================================\n');
+  }
 }
 
 module.exports = { signToken, verifyToken, hashPassword, checkPassword, ensureAdminUser };

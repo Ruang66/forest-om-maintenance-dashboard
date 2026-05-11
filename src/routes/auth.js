@@ -12,7 +12,7 @@ const loginLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 20, standardHead
 router.post('/login', loginLimiter, async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) return res.status(400).json({ error: 'Email and password required' });
-  const { rows } = await pool.query('SELECT * FROM users WHERE email = $1', [email.toLowerCase().trim()]);
+  const { rows } = await pool.query('SELECT * FROM users WHERE email = $1', [email.trim()]);
   const user = rows[0];
   if (!user || !user.password_hash) return res.status(401).json({ error: 'Invalid credentials' });
   const ok = await checkPassword(password, user.password_hash);
