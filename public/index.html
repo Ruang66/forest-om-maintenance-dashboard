@@ -1349,7 +1349,7 @@ let pickerMap = null, pickerMarker = null;
 function initMap() {
   if (leafletMap) return;
   leafletMap = L.map('leafletMap').setView([-30.5, 24], 5);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '&copy; OpenStreetMap' }).addTo(leafletMap);
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '&copy; OpenStreetMap' }).addTo(leafletMap);
   markerCluster = L.markerClusterGroup({ chunkedLoading: true, showCoverageOnHover: false });
   leafletMap.addLayer(markerCluster);
   drawnItems = new L.FeatureGroup().addTo(leafletMap);
@@ -1459,7 +1459,7 @@ document.getElementById('btnPickLoc').addEventListener('click', () => {
   setTimeout(() => {
     if (!pickerMap) {
       pickerMap = L.map('pickerMap').setView([-30.5, 24], 5);
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '&copy; OpenStreetMap' }).addTo(pickerMap);
+      L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '&copy; OpenStreetMap' }).addTo(pickerMap);
       pickerMap.on('click', e => { if (pickerMarker) pickerMarker.setLatLng(e.latlng); else pickerMarker = L.marker(e.latlng).addTo(pickerMap); });
     }
     const lat = parseFloat(document.getElementById('np_lat').value), lng = parseFloat(document.getElementById('np_lng').value);

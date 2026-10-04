@@ -21,7 +21,8 @@ Layer.prototype.handle_request = function (req, res, next) {
 
 const app = express();
 
-app.use(helmet({ contentSecurityPolicy: false }));
+// OpenStreetMap blocks tile requests without a Referer, so send the origin cross-site
+app.use(helmet({ contentSecurityPolicy: false, referrerPolicy: { policy: 'strict-origin-when-cross-origin' } }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '..', 'public')));
 
