@@ -1,183 +1,287 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:mso="urn:schemas-microsoft-com:office:office" xmlns:msdt="uuid:C2F41010-65B3-11d1-A29F-00AA00C14882">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Forest Energy O&M Dashboard 2026</title>
+<title>Forest Energy O&M Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
 <style>
 :root {
   color-scheme: light;
   --fe-blue:#114d5d; --fe-light-blue:#46717e; --fe-grey-blue:#8ca6ae;
   --fe-grey:#dde4e6; --fe-dark:#0d2830; --fe-orange:#ffb977;
   --fe-turquoise:#16e7cf;
-  --w-id:70px; --w-name:200px; --w-loc:170px; --w-cont:160px; --w-kwp:80px; --w-month:88px;
+  --surface:#ffffff; --surface-2:#f7fafb; --line:#e6ecee;
+  --ink:#0d2830; --ink-2:#46717e; --ink-3:#7f979e;
+  --danger:#c62828; --danger-bg:#fdeaea;
+  /* Status colours used by chips and charts */
+  --st-done:#114d5d; --st-overdue:#c62828; --st-due:#f0a050; --st-upcoming:#b8c9ce;
+  --w-id:72px; --w-name:210px; --w-loc:160px; --w-cont:150px; --w-kwp:70px; --w-plan:92px; --w-month:84px;
 }
-* { box-sizing: border-box; }
+* { box-sizing:border-box; }
 html, body { height:100%; margin:0; }
-body { font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif; color:#0d2830; background:var(--fe-grey); font-size:13px; }
+body { font-family:"Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif; color:var(--ink); background:#eef2f3; font-size:13px; }
+button { font-family:inherit; }
 .app { display:flex; flex-direction:column; height:100vh; }
-header.top { background: linear-gradient(135deg,var(--fe-dark) 0%, var(--fe-blue) 60%, var(--fe-light-blue) 100%); color:#fff; padding:12px 20px; display:flex; align-items:center; gap:14px; box-shadow:0 2px 8px rgba(13,40,48,0.18); }
-header.top .logo { width:40px; height:40px; border-radius:6px; background-image:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAIIUlEQVR42u2bfYyURx3HPzPz7Mu9c3AcpRQsCZUqYKUlQWpbLSVaw0uEICIKNEilldpCy8tRoeWgJfZSFEurtWer2LcQii1RI0ltiBpMrS1aIYBXKgkpNAL3fnt7u88zM/6xL94du3t7d3srOW6SvctdnuzM7zvz+36/85t5RPncpZYruEmu8DYEwJUOgJPPzoQQKJkZc20M1trBB4AQgqjn0dYezvhcUTBIwO/LGwhOvoKPRF0mXDOahbfNwGIRiC7PWGsRQnDwnSMc+eA0hQE/Jg8g5AUAKQQd0SifHDOazUsXZnz2QnMzh4+dpLgggNF28KWApzXGWKTsugK0NigliURdhBCDlwQdpTDiUgAEAqVkXoPvtwxKKZDy/6ekQsT67w9osu/BS0LhCG3tYWSeZy3BK1obWtvb8bTu8xj6BIDPUdQ3NnH3nFlsXvo16ptbcJTKX/BS0hGNUlZcyM/Xr2bksFLaI9EePUZOOMDnKC40tTDvlunsWr0CKSXnLjbw0wO/p3L4MFxPD/jMe1ojpeQXG+9j5tQpXHtVJXMf3oHraRxHYowdmBXgKEVDSxs3T76elzevRcQH88yau1k08xbON7bgc9SA5rzFEu6IsKfqfmZOnUJH1OXWKZ/i5e+vocONYoztFSfI7IOXtLS3M3HcGPZXr6e4IIi1Nrns9lR9j1k3TaG+uRXfAKSDiM9+Y2uIZ9Z8h/m3TsfTmqDfh6c1sz93Ez978B6aQ+0IASKXAEgpCXVEqCwv443tGxlVPgxtTJKBrYWg38/eR9fx2QnjaWwL5ZwTlFJcbGphx8pvsnL2LDytk304SuFpzfIv307NqmXUN7dmrU4ym2Xnuh5Bn59fV29gwpjRMdPSqQMpBdoYhpcU8/r2jXxi1EjawmGUyo1E+pTiQmMTD359HlVLFnQJvnN6elrz0KJ5rF/8VS42t2RFilmN0DOGfVvXMW3iBFytUwampEQbw9jKCt54rIqyoiI6Im6fmLk76Z5vamb5nTPZee9daGPSfmcChJpVy1j2pS/S1BbqsX+ZTe5Za/nz0RPJv9MuUynxtGbStWN5rXo9SgpcT1/i+nqrOHNmTKN23Xcx1iKFSEtyxhgcpTh3sYGTZ84S8PW8q+wRAGMtBQE/W194lSf3HkiinEkpPK35/OTrefHhvjFzUnFa25gxaSKvbF6bVJe0wVuLlJLmUDsLHqnh3boPKchiR5nd+rSWEeWlbHzuRX558FDWIMy9eRrPro0xsxQia2ZWStESCjPxmqvZv20DJYUFGGPSur3ELEdcj8XbdvK3f52iorQEbUxuOMDGMKCsqJB7fvQsv/nLu1mDcNedt/PEqqVEmluQWSiDkgovrjivP1bFVZ0UJ13widRYUfM0B9/5OxVlJbha50YFOnckhSDo9/OtHbs4fOxE1iCsXTiXe78xn/ONTT32E3GjFPh97K/ewHUpFKf7xGgT8yIP7H6eV978E5XlZb1yo72iaGMtPqUwxrDw0Sc5dvoMjlIZl5qSCmMtu+9fycrZs+KzKVKzbdxz7HnkIaZeNx4vjeL8r4agcZRk26/28dT+3zKyl8EDiL4cjCglCYU7GFMxgrd+WM24yoqM8tR91kR6quHjhgauHjE8uazTSnPcC/zkwEFW/7g265zPyW5Qa0NxQQFn/nOB+VueoKGlFSUzb0JsfAWJjKaLXgW/99BhHtj9PMNLivtcP+yzS/G0pqy4iPdPnWZR9U7CkShCkFZ3E14+W67pKfg/vPdPVtQ8TXFBMOlV8l4R8rRmRFkJbx05yvIfPBVXC9uvknYmv6B1zOi8V/chi7ftREmFUrJf1eN+m3XX01SWl7Lv0GFW73oOKWMDynU9V5tY0fSDsx+zYEsN4ahLwOf0au+fks8KJt6w9ZI6W9xuChn/3cPHGktpcSF/fP84xljuuHFKss6fi2bi2+7zjc3M2fQ4H12opzRujrIaI3H7nGI8TncSirguWht6O4cCKAoE2F77EkGfj6ol85P2tD8tkU7n6huYs2kHR+v+TXFJEU1toew3/fGqs5SCoM/XJTKn80amKdTOukXz+Mr0G2Ma3MvBx2oDFk9rtDH4nNxU3RMF0Me/vYTSosKM5ivTCvrriTq2vPAqxcFgkjeczoP3XI/J48dx22c+zeXSEmk0trKCsZUV/UslY/A8E/vO7gAkciAciaKNSVl06BW55Pi8IOH5+0yg8apWdxpwUi03JWWXet/lshJUP0hVSZnSXwzdEBkC4ApvTirJ0Magjcn7Se1AtcQuMRWJOt33owV+P0rKy4oA+9sSsRQGAnTHwOksM47jcOLMR7x9vA7X83IPghAoKUinZkKAMTbn94O0tThK8o9Tp3GU7OIEuxREhICo68Vvag2ElvXsXm3yR86xRwqJ3+ekTwFrwe/zIRiczaaoGzipHNeVdHnYyXeHPVWF8j0BeQXAWEvEdTMPSKm8KpCTz+ALA34qR41MPcMWhBTUN7fQGu7I272jvACgpKS1LcQXbpjEa1vXpzwb0NrgOIr7dtVS+7s3qSgrwdNmcKWAFAKfo/BZdYkeWmkRMuYTBjUJJs4HZDcEtLUoRN4VKO8AiMRHpP7/0G5wCIAhAAYvByRK5sZYpL1UBi02r6/L5BUAay0+x4lVmlVqBwjk9XWZvAFgrCUY8HPyzFk21b4UC7CbDFhjUUry9vE6CoOBfp/5Za1K+XpzVAiB63m0tnfE796l0EcLRcHA4HtpqnMKjBxWmrl6M1hfm+tMgkMyOATAEACXTfsvy1musnl7NToAAAAASUVORK5CYII='); background-size:cover; background-position:center; flex-shrink:0; }
-header.top .brand { font-weight:700; font-size:16px; letter-spacing:0.3px; }
-header.top .brand small { display:block; font-weight:400; font-size:11px; opacity:0.85; letter-spacing:0.5px; text-transform:uppercase; }
-header.top .spacer { flex:1; }
-header.top button { background:rgba(255,255,255,0.12); color:#fff; border:1px solid rgba(255,255,255,0.3); padding:7px 14px; border-radius:6px; cursor:pointer; font-size:12px; font-weight:500; font-family:inherit; }
-header.top button:hover { background:rgba(255,255,255,0.22); }
-header.top button.primary { background:var(--fe-orange); border-color:var(--fe-orange); color:var(--fe-dark); font-weight:700; }
-header.top button.primary:hover { background:#ffc794; }
-.kpis { display:grid; grid-template-columns:repeat(6,1fr); gap:12px; padding:14px 20px; background:#fff; border-bottom:1px solid var(--fe-grey); }
-.kpi { background:#f7fafb; border:1px solid var(--fe-grey); border-radius:8px; padding:10px 14px; border-left:4px solid var(--fe-blue); }
-.kpi .lbl { font-size:11px; color:var(--fe-light-blue); text-transform:uppercase; letter-spacing:0.4px; font-weight:700; }
-.kpi .val { font-size:22px; font-weight:700; color:var(--fe-blue); margin-top:4px; }
-.kpi.warn { border-left-color:#c62828; } .kpi.warn .val { color:#c62828; }
-.kpi.good { border-left-color:var(--fe-turquoise); } .kpi.good .val { color:var(--fe-blue); }
-.kpi .sub { font-size:11px; color:var(--fe-grey-blue); margin-top:2px; }
-.filters { display:flex; gap:10px; padding:10px 20px; background:#fff; border-bottom:1px solid var(--fe-grey); align-items:center; flex-wrap:wrap; }
-.filters input, .filters select { padding:6px 10px; border:1px solid var(--fe-grey); border-radius:6px; font-size:13px; background:#fff; color:var(--fe-dark); font-family:inherit; }
-.filters input.search { flex:1; min-width:180px; }
-.filters input:focus, .filters select:focus { outline:none; border-color:var(--fe-blue); box-shadow:0 0 0 2px rgba(17,77,93,0.15); }
-.filters .pill { padding:5px 11px; border:1px solid var(--fe-grey); border-radius:14px; cursor:pointer; background:#fff; font-size:12px; user-select:none; color:var(--fe-light-blue); font-weight:500; }
-.filters .pill:hover { border-color:var(--fe-light-blue); }
-.filters .pill.active { background:var(--fe-blue); color:#fff; border-color:var(--fe-blue); }
-.filters .pill.warn.active { background:#c62828; border-color:#c62828; color:#fff; }
-.grid-wrap { flex:1; overflow:auto; background:#fff; position:relative; min-height:0; }
-#mainArea { flex:1; display:flex; flex-direction:column; min-height:0; overflow:hidden; }
-table.grid { border-collapse: separate; border-spacing:0; table-layout:fixed; width:100%; min-width:1400px; }
-table.grid colgroup col.c-id { width:var(--w-id); }
-table.grid colgroup col.c-name { width:var(--w-name); }
-table.grid colgroup col.c-loc { width:var(--w-loc); }
-table.grid colgroup col.c-cont { width:var(--w-cont); }
-table.grid colgroup col.c-kwp { width:var(--w-kwp); }
-table.grid colgroup col.c-month { min-width:var(--w-month); }
-table.grid thead th { position:sticky; top:0; background:var(--fe-blue); color:#fff; padding:9px 6px; font-size:11px; font-weight:700; text-align:center; z-index:5; border-right:1px solid rgba(255,255,255,0.12); white-space:nowrap; letter-spacing:0.3px; text-transform:uppercase; }
-table.grid thead th.month.current { background:var(--fe-orange); color:var(--fe-dark); }
-table.grid thead th.month.past { background:var(--fe-grey-blue); }
-table.grid tbody td { border-bottom:1px solid var(--fe-grey); border-right:1px solid var(--fe-grey); padding:5px 6px; font-size:12px; vertical-align:middle; background:#fff; }
-table.grid tbody tr:hover td { background:#f7fafb; }
-th.s-id, td.s-id { position:sticky; left:0; z-index:4; background:#fff; }
-th.s-name, td.s-name { position:sticky; left:var(--w-id); z-index:4; background:#fff; }
-thead th.s-id, thead th.s-name { z-index:8; background:var(--fe-blue); }
-tbody tr:hover td.s-id, tbody tr:hover td.s-name { background:#f7fafb; }
-td.s-id { font-family:ui-monospace,SFMono-Regular,Consolas,monospace; font-size:11px; color:var(--fe-grey-blue); }
-td.s-name { cursor:pointer; }
-td.s-name strong { color:var(--fe-blue); font-weight:700; border-bottom:1px dashed transparent; transition:border-color 0.15s; }
-td.s-name:hover strong { border-bottom-color:var(--fe-blue); }
-td.s-name .edit-hint { display:inline-block; font-size:10px; color:var(--fe-grey-blue); margin-left:4px; opacity:0; transition:opacity 0.15s; }
-td.s-name:hover .edit-hint { opacity:1; }
-td.s-kwp { text-align:right; color:var(--fe-light-blue); font-weight:500; }
-/* Strong divider between project metadata and calendar months */
-table.grid thead th:nth-child(5),
-table.grid tbody td.s-kwp { border-right:3px solid var(--fe-blue) !important; box-shadow:2px 0 4px -2px rgba(13,40,48,0.18); }
 
+/* Header */
+header.top { background:linear-gradient(135deg,var(--fe-dark) 0%, var(--fe-blue) 70%, var(--fe-light-blue) 100%); color:#fff; padding:10px 20px; display:flex; align-items:center; gap:14px; flex-wrap:wrap; box-shadow:0 2px 8px rgba(13,40,48,0.18); position:relative; z-index:20; }
+header.top .logo { width:36px; height:36px; border-radius:6px; background-image:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAIIUlEQVR42u2bfYyURx3HPzPz7Mu9c3AcpRQsCZUqYKUlQWpbLSVaw0uEICIKNEilldpCy8tRoeWgJfZSFEurtWer2LcQii1RI0ltiBpMrS1aIYBXKgkpNAL3fnt7u88zM/6xL94du3t7d3srOW6SvctdnuzM7zvz+36/85t5RPncpZYruEmu8DYEwJUOgJPPzoQQKJkZc20M1trBB4AQgqjn0dYezvhcUTBIwO/LGwhOvoKPRF0mXDOahbfNwGIRiC7PWGsRQnDwnSMc+eA0hQE/Jg8g5AUAKQQd0SifHDOazUsXZnz2QnMzh4+dpLgggNF28KWApzXGWKTsugK0NigliURdhBCDlwQdpTDiUgAEAqVkXoPvtwxKKZDy/6ekQsT67w9osu/BS0LhCG3tYWSeZy3BK1obWtvb8bTu8xj6BIDPUdQ3NnH3nFlsXvo16ptbcJTKX/BS0hGNUlZcyM/Xr2bksFLaI9EePUZOOMDnKC40tTDvlunsWr0CKSXnLjbw0wO/p3L4MFxPD/jMe1ojpeQXG+9j5tQpXHtVJXMf3oHraRxHYowdmBXgKEVDSxs3T76elzevRcQH88yau1k08xbON7bgc9SA5rzFEu6IsKfqfmZOnUJH1OXWKZ/i5e+vocONYoztFSfI7IOXtLS3M3HcGPZXr6e4IIi1Nrns9lR9j1k3TaG+uRXfAKSDiM9+Y2uIZ9Z8h/m3TsfTmqDfh6c1sz93Ez978B6aQ+0IASKXAEgpCXVEqCwv443tGxlVPgxtTJKBrYWg38/eR9fx2QnjaWwL5ZwTlFJcbGphx8pvsnL2LDytk304SuFpzfIv307NqmXUN7dmrU4ym2Xnuh5Bn59fV29gwpjRMdPSqQMpBdoYhpcU8/r2jXxi1EjawmGUyo1E+pTiQmMTD359HlVLFnQJvnN6elrz0KJ5rF/8VS42t2RFilmN0DOGfVvXMW3iBFytUwampEQbw9jKCt54rIqyoiI6Im6fmLk76Z5vamb5nTPZee9daGPSfmcChJpVy1j2pS/S1BbqsX+ZTe5Za/nz0RPJv9MuUynxtGbStWN5rXo9SgpcT1/i+nqrOHNmTKN23Xcx1iKFSEtyxhgcpTh3sYGTZ84S8PW8q+wRAGMtBQE/W194lSf3HkiinEkpPK35/OTrefHhvjFzUnFa25gxaSKvbF6bVJe0wVuLlJLmUDsLHqnh3boPKchiR5nd+rSWEeWlbHzuRX558FDWIMy9eRrPro0xsxQia2ZWStESCjPxmqvZv20DJYUFGGPSur3ELEdcj8XbdvK3f52iorQEbUxuOMDGMKCsqJB7fvQsv/nLu1mDcNedt/PEqqVEmluQWSiDkgovrjivP1bFVZ0UJ13widRYUfM0B9/5OxVlJbha50YFOnckhSDo9/OtHbs4fOxE1iCsXTiXe78xn/ONTT32E3GjFPh97K/ewHUpFKf7xGgT8yIP7H6eV978E5XlZb1yo72iaGMtPqUwxrDw0Sc5dvoMjlIZl5qSCmMtu+9fycrZs+KzKVKzbdxz7HnkIaZeNx4vjeL8r4agcZRk26/28dT+3zKyl8EDiL4cjCglCYU7GFMxgrd+WM24yoqM8tR91kR6quHjhgauHjE8uazTSnPcC/zkwEFW/7g265zPyW5Qa0NxQQFn/nOB+VueoKGlFSUzb0JsfAWJjKaLXgW/99BhHtj9PMNLivtcP+yzS/G0pqy4iPdPnWZR9U7CkShCkFZ3E14+W67pKfg/vPdPVtQ8TXFBMOlV8l4R8rRmRFkJbx05yvIfPBVXC9uvknYmv6B1zOi8V/chi7ftREmFUrJf1eN+m3XX01SWl7Lv0GFW73oOKWMDynU9V5tY0fSDsx+zYEsN4ahLwOf0au+fks8KJt6w9ZI6W9xuChn/3cPHGktpcSF/fP84xljuuHFKss6fi2bi2+7zjc3M2fQ4H12opzRujrIaI3H7nGI8TncSirguWht6O4cCKAoE2F77EkGfj6ol85P2tD8tkU7n6huYs2kHR+v+TXFJEU1toew3/fGqs5SCoM/XJTKn80amKdTOukXz+Mr0G2Ma3MvBx2oDFk9rtDH4nNxU3RMF0Me/vYTSosKM5ivTCvrriTq2vPAqxcFgkjeczoP3XI/J48dx22c+zeXSEmk0trKCsZUV/UslY/A8E/vO7gAkciAciaKNSVl06BW55Pi8IOH5+0yg8apWdxpwUi03JWWXet/lshJUP0hVSZnSXwzdEBkC4ApvTirJ0Magjcn7Se1AtcQuMRWJOt33owV+P0rKy4oA+9sSsRQGAnTHwOksM47jcOLMR7x9vA7X83IPghAoKUinZkKAMTbn94O0tThK8o9Tp3GU7OIEuxREhICo68Vvag2ElvXsXm3yR86xRwqJ3+ekTwFrwe/zIRiczaaoGzipHNeVdHnYyXeHPVWF8j0BeQXAWEvEdTMPSKm8KpCTz+ALA34qR41MPcMWhBTUN7fQGu7I272jvACgpKS1LcQXbpjEa1vXpzwb0NrgOIr7dtVS+7s3qSgrwdNmcKWAFAKfo/BZdYkeWmkRMuYTBjUJJs4HZDcEtLUoRN4VKO8AiMRHpP7/0G5wCIAhAAYvByRK5sZYpL1UBi02r6/L5BUAay0+x4lVmlVqBwjk9XWZvAFgrCUY8HPyzFk21b4UC7CbDFhjUUry9vE6CoOBfp/5Za1K+XpzVAiB63m0tnfE796l0EcLRcHA4HtpqnMKjBxWmrl6M1hfm+tMgkMyOATAEACXTfsvy1musnl7NToAAAAASUVORK5CYII='); background-size:cover; background-position:center; flex-shrink:0; }
+header.top .brand { font-weight:700; font-size:15px; letter-spacing:0.3px; line-height:1.2; }
+header.top .brand small { display:block; font-weight:400; font-size:11px; opacity:0.8; letter-spacing:0.5px; text-transform:uppercase; }
+header.top .spacer { flex:1; }
+.hbtn { background:rgba(255,255,255,0.12); color:#fff; border:1px solid rgba(255,255,255,0.28); padding:7px 12px; border-radius:6px; cursor:pointer; font-size:12px; font-weight:500; white-space:nowrap; }
+.hbtn:hover { background:rgba(255,255,255,0.22); }
+.hbtn.primary { background:var(--fe-orange); border-color:var(--fe-orange); color:var(--fe-dark); font-weight:700; }
+.hbtn.primary:hover { background:#ffc794; }
+.seg { display:inline-flex; background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.28); border-radius:6px; overflow:hidden; }
+.seg button { background:transparent; border:none; color:#fff; padding:7px 13px; cursor:pointer; font-size:12px; font-weight:600; }
+.seg button.active { background:var(--fe-orange); color:var(--fe-dark); }
+.seg button:not(.active):hover { background:rgba(255,255,255,0.1); }
+.year-switch { display:inline-flex; align-items:center; background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.28); border-radius:6px; overflow:hidden; }
+.year-switch button { background:transparent; border:none; color:#fff; width:30px; height:32px; cursor:pointer; font-size:15px; }
+.year-switch button:hover:not(:disabled) { background:rgba(255,255,255,0.15); }
+.year-switch button:disabled { opacity:0.3; cursor:default; }
+.year-switch select { background:transparent; color:#fff; border:none; font-size:15px; font-weight:700; font-family:inherit; padding:0 4px; cursor:pointer; appearance:none; text-align:center; }
+.year-switch select option { color:var(--ink); }
+.menu-wrap { position:relative; }
+.menu { position:absolute; right:0; top:calc(100% + 6px); background:#fff; border:1px solid var(--line); border-radius:8px; box-shadow:0 10px 30px rgba(13,40,48,0.2); min-width:230px; padding:6px; display:none; z-index:40; }
+.menu.show { display:block; }
+.menu button { display:block; width:100%; text-align:left; background:none; border:none; padding:9px 10px; border-radius:5px; cursor:pointer; color:var(--ink); font-size:13px; }
+.menu button small { display:block; color:var(--ink-3); font-size:11px; margin-top:1px; }
+.menu button:hover { background:var(--surface-2); }
+.user-menu { display:flex; align-items:center; gap:8px; }
+.user-badge { font-size:11px; color:rgba(255,255,255,0.8); text-align:right; line-height:1.3; }
+.user-badge strong { color:#fff; display:block; font-weight:500; }
+.role-pill { display:inline-block; padding:1px 6px; border-radius:3px; background:rgba(255,255,255,0.15); font-size:10px; text-transform:uppercase; letter-spacing:0.3px; }
+
+/* Filters */
+.filters { display:flex; gap:8px; padding:10px 20px; background:var(--surface); border-bottom:1px solid var(--line); align-items:center; flex-wrap:wrap; }
+.filters input, .filters select { padding:6px 10px; border:1px solid var(--fe-grey); border-radius:6px; font-size:13px; background:#fff; color:var(--ink); font-family:inherit; }
+.filters input.search { flex:1; min-width:180px; max-width:340px; }
+.filters input:focus, .filters select:focus { outline:none; border-color:var(--fe-blue); box-shadow:0 0 0 2px rgba(17,77,93,0.15); }
+.pills { display:flex; gap:6px; flex-wrap:wrap; }
+.pill { padding:5px 11px; border:1px solid var(--fe-grey); border-radius:14px; cursor:pointer; background:#fff; font-size:12px; user-select:none; color:var(--ink-2); font-weight:500; }
+.pill:hover { border-color:var(--fe-light-blue); }
+.pill.active { background:var(--fe-blue); color:#fff; border-color:var(--fe-blue); }
+.pill.warn.active { background:var(--danger); border-color:var(--danger); }
+.filters .count { margin-left:auto; color:var(--ink-3); font-size:12px; white-space:nowrap; }
+.filters .count strong { color:var(--fe-blue); }
+
+/* KPIs */
+.kpis { display:grid; grid-template-columns:repeat(auto-fit, minmax(170px, 1fr)); gap:12px; padding:12px 20px; background:var(--surface); border-bottom:1px solid var(--line); }
+.kpi { background:var(--surface-2); border:1px solid var(--line); border-radius:8px; padding:10px 14px; position:relative; overflow:hidden; }
+.kpi .lbl { font-size:11px; color:var(--ink-2); font-weight:500; }
+.kpi .val { font-size:24px; font-weight:700; color:var(--fe-blue); margin-top:2px; line-height:1.2; }
+.kpi .val small { font-size:14px; color:var(--ink-3); font-weight:500; }
+.kpi .sub { font-size:11px; color:var(--ink-3); margin-top:2px; }
+.kpi.warn { border-color:#f2c4c4; background:#fff7f7; } .kpi.warn .val { color:var(--danger); }
+.kpi.attn .val { color:#b0601a; }
+.meter { height:5px; border-radius:3px; background:#dfe8ea; margin-top:7px; overflow:hidden; }
+.meter > span { display:block; height:100%; border-radius:3px; background:var(--fe-blue); }
+.meter.warn > span { background:var(--danger); }
+.meter.attn > span { background:var(--st-due); }
+
+/* Views */
+.view { flex:1; display:none; flex-direction:column; min-height:0; overflow:hidden; }
+.view.show { display:flex; }
+.banner { display:flex; align-items:center; gap:12px; padding:9px 20px; background:#fff8ee; border-bottom:1px solid #f6dfc2; color:#7a4a14; font-size:12px; }
+.banner button { margin-left:auto; background:var(--fe-blue); color:#fff; border:none; border-radius:5px; padding:6px 12px; font-size:12px; font-weight:600; cursor:pointer; }
+.banner button:hover { background:var(--fe-light-blue); }
+
+/* Calendar grid */
+.grid-wrap { flex:1; overflow:auto; background:#fff; position:relative; min-height:0; }
+table.grid { border-collapse:separate; border-spacing:0; table-layout:fixed; width:100%; min-width:1520px; }
+table.grid col.c-id { width:var(--w-id); } table.grid col.c-name { width:var(--w-name); }
+table.grid col.c-loc { width:var(--w-loc); } table.grid col.c-cont { width:var(--w-cont); }
+table.grid col.c-kwp { width:var(--w-kwp); } table.grid col.c-plan { width:var(--w-plan); }
+table.grid col.c-month { min-width:var(--w-month); }
+table.grid thead th { position:sticky; top:0; background:var(--fe-blue); color:#fff; padding:8px 6px; font-size:11px; font-weight:700; text-align:center; z-index:5; border-right:1px solid rgba(255,255,255,0.12); white-space:nowrap; letter-spacing:0.3px; }
+table.grid thead th.left { text-align:left; padding-left:10px; }
+table.grid thead th.month.current { background:var(--fe-orange); color:var(--fe-dark); }
+table.grid thead th.month.past { background:#5f7f88; }
+table.grid thead th small { display:block; font-weight:400; font-size:9px; opacity:0.75; letter-spacing:0.4px; }
+table.grid tbody td { border-bottom:1px solid var(--line); border-right:1px solid var(--line); padding:5px 6px; font-size:12px; vertical-align:middle; background:#fff; }
+table.grid tbody tr:hover td { background:#f5f9fa; }
+th.s-id, td.s-id { position:sticky; left:0; z-index:4; }
+th.s-name, td.s-name { position:sticky; left:var(--w-id); z-index:4; }
+thead th.s-id, thead th.s-name { z-index:8; background:var(--fe-blue); }
+td.s-id { font-family:ui-monospace,SFMono-Regular,Consolas,monospace; font-size:11px; color:var(--ink-3); padding-left:10px; }
+td.s-name { cursor:pointer; box-shadow:2px 0 4px -2px rgba(13,40,48,0.12); }
+td.s-name .nm { display:flex; align-items:center; gap:6px; }
+td.s-name strong { color:var(--fe-blue); font-weight:700; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+td.s-name:hover strong { text-decoration:underline; text-decoration-style:dotted; }
+td.s-name .meta { font-size:10px; color:var(--ink-3); margin-top:1px; }
+.dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; background:var(--st-upcoming); }
+.dot.overdue { background:var(--st-overdue); } .dot.due { background:var(--st-due); } .dot.ok { background:var(--fe-turquoise); } .dot.none { background:transparent; border:1px dashed var(--ink-3); }
+.clip { font-size:11px; color:var(--ink-3); cursor:help; }
+td.s-loc, td.s-cont { color:var(--ink-2); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+td.s-kwp { text-align:right; color:var(--ink-2); font-variant-numeric:tabular-nums; }
+td.s-plan { font-size:10.5px; line-height:1.5; color:var(--ink-2); font-variant-numeric:tabular-nums; }
+td.s-plan .gap { color:var(--danger); font-weight:700; }
+td.s-plan .na { color:var(--ink-3); }
+table.grid thead th.divider, table.grid tbody td.s-plan { border-right:3px solid var(--fe-blue) !important; }
 td.month-cell { padding:4px; text-align:center; user-select:none; }
-td.month-cell.empty { background:#fafcfc; cursor:cell; }
+td.month-cell.past-col { background:#fbfcfc; }
+td.month-cell.cur-col { background:#fffaf3; }
+td.month-cell.empty { cursor:cell; }
 td.month-cell.empty:hover { background:#eef4f5; }
-.chip-stack { display:flex; flex-direction:column; gap:3px; align-items:stretch; }
-.chip { display:block; padding:3px 6px; border-radius:5px; font-size:10.5px; font-weight:600; line-height:1.4; white-space:nowrap; border:1px solid transparent; font-family:inherit; cursor:pointer; transition:transform 0.08s; }
+td.month-cell.empty.ro { cursor:default; }
+td.month-cell.empty.ro:hover { background:inherit; }
+.chip-stack { display:flex; flex-direction:column; gap:3px; }
+.chip { display:block; padding:3px 5px; border-radius:5px; font-size:10.5px; font-weight:600; line-height:1.4; white-space:nowrap; border:1px solid transparent; cursor:pointer; transition:transform 0.08s; }
 .chip:hover { transform:scale(1.04); }
+.ro .chip, .chip.ro { cursor:default; } .ro .chip:hover, .chip.ro:hover { transform:none; }
 .chip.cln { background:#e7f0f3; color:var(--fe-blue); border-color:var(--fe-grey-blue); }
 .chip.insp { background:#fff1de; color:#7a4a14; border-color:var(--fe-orange); }
-.chip.annual { background:#e0f9f4; color:#0a4a3d; border-color:var(--fe-turquoise); font-weight:700; }
-.chip.done { background:var(--fe-blue) !important; color:#fff !important; border-color:var(--fe-dark) !important; }
-.chip.done::before { content:"\2713 "; font-weight:700; }
-.chip.overdue { background:#fdeaea; color:#a01818; border-color:#d94545; animation: pulse 2s infinite; }
-@keyframes pulse { 0%,100% { box-shadow:0 0 0 0 rgba(217,69,69,0); } 50% { box-shadow:0 0 0 3px rgba(217,69,69,0.25); } }
-.modal-bg { display:none; position:fixed; inset:0; background:rgba(13,40,48,0.65); z-index:50; align-items:center; justify-content:center; }
-.modal-bg.show { display:flex; }
-.modal { background:#fff; border-radius:10px; padding:24px; width:760px; max-width:96vw; max-height:92vh; overflow:auto; box-shadow:0 12px 40px rgba(13,40,48,0.3); border-top:5px solid var(--fe-blue); }
-.modal h2 { margin:0 0 4px 0; color:var(--fe-blue); font-size:18px; font-weight:700; }
-.modal h2 small { display:block; font-size:11px; color:var(--fe-grey-blue); font-weight:500; text-transform:uppercase; letter-spacing:0.3px; margin-top:4px; }
-.modal label.fld { display:block; font-size:11px; font-weight:700; color:var(--fe-light-blue); margin:10px 0 4px; text-transform:uppercase; letter-spacing:0.3px; }
-.modal input.fi, .modal select.fi { width:100%; padding:8px 10px; border:1px solid var(--fe-grey); border-radius:6px; font-size:13px; font-family:inherit; color:var(--fe-dark); }
-.modal input.fi:focus, .modal select.fi:focus { outline:none; border-color:var(--fe-blue); box-shadow:0 0 0 2px rgba(17,77,93,0.15); }
-.modal-actions { display:flex; justify-content:flex-end; gap:10px; margin-top:20px; padding-top:14px; border-top:1px solid var(--fe-grey); }
-.modal-actions .left { margin-right:auto; }
-.modal-actions button { padding:9px 18px; border-radius:6px; border:none; cursor:pointer; font-weight:700; font-size:13px; font-family:inherit; }
-.btn-primary { background:var(--fe-blue); color:#fff; }
-.btn-primary:hover { background:var(--fe-light-blue); }
-.btn-secondary { background:var(--fe-grey); color:var(--fe-dark); }
-.btn-secondary:hover { background:#cbd6d9; }
-.btn-danger { background:#fff; color:#c62828; border:1px solid #c62828 !important; }
-.btn-danger:hover { background:#c62828; color:#fff; }
-.month-toggles { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-top:6px; }
-@media (max-width:640px) { .month-toggles { grid-template-columns:repeat(2,1fr); } }
-.mt { display:flex; flex-direction:column; gap:5px; padding:8px; border:1px solid var(--fe-grey); border-radius:6px; background:#f7fafb; }
-.mt .mn { font-weight:700; color:var(--fe-blue); font-size:12px; text-transform:uppercase; letter-spacing:0.3px; }
-.mt select.cln-sel { padding:4px 6px; font-size:11px; border:1px solid var(--fe-grey); border-radius:4px; font-family:inherit; background:#fff; }
-.mt label.cbx { display:flex; align-items:center; gap:5px; font-size:11px; color:var(--fe-light-blue); cursor:pointer; font-weight:500; }
-.mt label.cbx input { width:14px; height:14px; accent-color:var(--fe-blue); cursor:pointer; }
-.mt .preview { display:inline-block; padding:2px 6px; border-radius:4px; font-size:10px; background:var(--fe-blue); color:#fff; font-weight:600; min-height:14px; }
-.mt .preview:empty { background:transparent; }
+.chip.annual { background:#e0f9f4; color:#0a4a3d; border-color:var(--fe-turquoise); }
+.chip.done { background:var(--st-done) !important; color:#fff !important; border-color:var(--fe-dark) !important; }
+.chip.done::before { content:"\2713  "; }
+.chip.overdue { background:var(--danger-bg); color:#a01818; border-color:#d94545; animation:pulse 2s infinite; }
+@keyframes pulse { 0%,100% { box-shadow:0 0 0 0 rgba(217,69,69,0); } 50% { box-shadow:0 0 0 3px rgba(217,69,69,0.22); } }
+@media (prefers-reduced-motion: reduce) { .chip.overdue { animation:none; } }
+.empty-state { padding:40px 20px; text-align:center; color:var(--ink-3); }
 
-footer.bot { background:#fff; border-top:1px solid var(--fe-grey); padding:8px 20px; font-size:11px; color:var(--fe-light-blue); display:flex; justify-content:space-between; align-items:center; gap:14px; flex-wrap:wrap; }
-.legend { display:flex; gap:14px; align-items:center; flex-wrap:wrap; }
-.legend .item { display:flex; gap:6px; align-items:center; }
-.legend .chip { cursor:default; } .legend .chip:hover { transform:none; }
-.toast { position:fixed; bottom:24px; right:24px; background:var(--fe-blue); color:#fff; padding:10px 18px; border-radius:8px; font-size:13px; font-weight:500; box-shadow:0 6px 20px rgba(13,40,48,0.25); opacity:0; transform:translateY(10px); transition:all 0.25s; z-index:60; }
-.toast.show { opacity:1; transform:translateY(0); }
-.toast.warn { background:#c62828; }
+/* Insights */
+.insights { flex:1; overflow:auto; padding:16px 20px 30px; }
+.cards { display:grid; grid-template-columns:repeat(auto-fit, minmax(460px, 1fr)); gap:16px; }
+.card { background:#fff; border:1px solid var(--line); border-radius:10px; padding:16px 18px; min-width:0; }
+.card.wide { grid-column:1 / -1; }
+.card h3 { margin:0; font-size:14px; color:var(--ink); font-weight:700; }
+.card .desc { font-size:12px; color:var(--ink-3); margin:3px 0 10px; }
+.card-head { display:flex; align-items:flex-start; gap:12px; }
+.card-head .grow { flex:1; min-width:0; }
+.linkbtn { background:none; border:1px solid var(--line); color:var(--ink-2); border-radius:5px; padding:4px 9px; font-size:11px; cursor:pointer; white-space:nowrap; }
+.linkbtn:hover { border-color:var(--fe-light-blue); color:var(--fe-blue); }
+.legend-row { display:flex; gap:14px; flex-wrap:wrap; font-size:11.5px; color:var(--ink-2); margin-bottom:6px; }
+.legend-row .sw { display:inline-block; width:10px; height:10px; border-radius:2px; margin-right:5px; vertical-align:-1px; }
+svg.chart { display:block; width:100%; overflow:visible; }
+svg.chart .grid-line { stroke:#e9eef0; stroke-width:1; }
+svg.chart .axis-line { stroke:#cfd9dc; stroke-width:1; }
+svg.chart text { font-family:inherit; fill:var(--ink-3); font-size:11px; font-variant-numeric:tabular-nums; }
+svg.chart text.cap { fill:var(--ink-2); font-weight:500; }
+svg.chart text.xl { fill:var(--ink-2); }
+svg.chart text.xl.cur { fill:var(--ink); font-weight:700; }
+svg.chart text.rowlbl { fill:var(--ink); font-size:12px; }
+svg.chart .hit { fill:transparent; cursor:default; }
+svg.chart .hit:hover, svg.chart .hit:focus { fill:rgba(17,77,93,0.05); outline:none; }
+.tbl { width:100%; border-collapse:collapse; font-size:12px; }
+.tbl th { text-align:left; font-weight:500; color:var(--ink-3); font-size:11px; padding:6px 8px; border-bottom:1px solid var(--line); white-space:nowrap; }
+.tbl td { padding:6px 8px; border-bottom:1px solid var(--line); color:var(--ink); }
+.tbl td.num, .tbl th.num { text-align:right; font-variant-numeric:tabular-nums; }
+.tbl tr.click { cursor:pointer; } .tbl tr.click:hover td { background:var(--surface-2); }
+.tbl .gap { color:var(--danger); font-weight:700; }
+.tag { display:inline-block; padding:1px 7px; border-radius:10px; font-size:10.5px; font-weight:600; background:var(--surface-2); color:var(--ink-2); border:1px solid var(--line); white-space:nowrap; }
+.tag.red { background:var(--danger-bg); color:#a01818; border-color:#f2c4c4; }
+.tag.amber { background:#fff1de; color:#7a4a14; border-color:#f6dfc2; }
+.tiles { display:grid; grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:10px; margin-bottom:12px; }
+.tile { border:1px solid var(--line); border-radius:8px; padding:9px 12px; cursor:pointer; background:#fff; text-align:left; }
+.tile:hover { border-color:var(--fe-grey-blue); }
+.tile.active { border-color:var(--fe-blue); box-shadow:0 0 0 1px var(--fe-blue) inset; }
+.tile .v { font-size:22px; font-weight:700; color:var(--ink); }
+.tile .l { font-size:11px; color:var(--ink-3); }
+.scroll-y { max-height:420px; overflow:auto; }
+#tooltip { position:fixed; pointer-events:none; background:#fff; border:1px solid var(--line); border-radius:8px; box-shadow:0 8px 24px rgba(13,40,48,0.18); padding:9px 11px; font-size:12px; color:var(--ink); z-index:300; display:none; min-width:150px; }
+#tooltip .tt-title { font-weight:700; margin-bottom:5px; }
+#tooltip .tt-row { display:flex; align-items:center; gap:7px; line-height:1.7; }
+#tooltip .tt-row .key { width:12px; height:3px; border-radius:2px; flex-shrink:0; }
+#tooltip .tt-row .v { font-weight:700; min-width:22px; text-align:right; font-variant-numeric:tabular-nums; }
+#tooltip .tt-row .n { color:var(--ink-2); }
+#tooltip .tt-sep { border-top:1px solid var(--line); margin:5px 0; }
 
-.view-toggle { display:inline-flex; gap:0; background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.3); border-radius:6px; overflow:hidden; }
-.view-toggle button { background:transparent; border:none; color:#fff; padding:7px 14px; cursor:pointer; font-size:12px; font-weight:600; font-family:inherit; border-radius:0; }
-.view-toggle button.active { background:var(--fe-orange); color:var(--fe-dark); }
-.view-toggle button:not(.active):hover { background:rgba(255,255,255,0.1); }
-#mapView { display:none; flex:1; flex-direction:column; background:#fff; min-height:0; }
-#mapView.show { display:flex; }
-#mainArea.hide { display:none; }
-.map-toolbar { display:flex; gap:10px; padding:10px 20px; background:#fff; border-bottom:1px solid var(--fe-grey); align-items:center; flex-wrap:wrap; }
-.map-toolbar .info { color:var(--fe-light-blue); font-size:12px; }
-.map-toolbar .info strong { color:var(--fe-blue); }
+/* Map */
+.map-toolbar { display:flex; gap:12px; padding:9px 20px; background:#fff; border-bottom:1px solid var(--line); align-items:center; flex-wrap:wrap; color:var(--ink-2); font-size:12px; }
+.map-toolbar strong { color:var(--fe-blue); }
 #mapContainer { flex:1; position:relative; min-height:300px; }
 #leafletMap { position:absolute; inset:0; }
-.sel-panel { position:absolute; top:14px; right:14px; background:#fff; border:1px solid var(--fe-grey); border-top:4px solid var(--fe-orange); border-radius:8px; box-shadow:0 6px 20px rgba(13,40,48,0.18); padding:14px; width:300px; z-index:1000; display:none; max-height:calc(100% - 28px); overflow:auto; }
+.sel-panel { position:absolute; top:14px; right:14px; background:#fff; border:1px solid var(--line); border-top:4px solid var(--fe-orange); border-radius:8px; box-shadow:0 6px 20px rgba(13,40,48,0.18); padding:14px; width:300px; z-index:1000; display:none; max-height:calc(100% - 28px); overflow:auto; }
 .sel-panel.show { display:block; }
-.sel-panel h3 { margin:0 0 4px 0; color:var(--fe-blue); font-size:14px; font-weight:700; }
-.sel-panel .count { font-size:11px; color:var(--fe-light-blue); text-transform:uppercase; letter-spacing:0.3px; font-weight:600; margin-bottom:10px; }
-.sel-panel ul.sel-list { list-style:none; padding:0; margin:8px 0 12px 0; max-height:140px; overflow:auto; border:1px solid var(--fe-grey); border-radius:5px; background:#f7fafb; }
-.sel-panel ul.sel-list li { padding:5px 8px; font-size:11px; color:var(--fe-dark); border-bottom:1px solid var(--fe-grey); }
-.sel-panel ul.sel-list li:last-child { border-bottom:none; }
-.sel-panel ul.sel-list li strong { color:var(--fe-blue); }
-.sel-panel label.fld { display:block; font-size:10px; font-weight:700; color:var(--fe-light-blue); margin:8px 0 3px; text-transform:uppercase; letter-spacing:0.3px; }
-.sel-panel select, .sel-panel input { width:100%; padding:6px 8px; border:1px solid var(--fe-grey); border-radius:5px; font-size:12px; font-family:inherit; }
-.sel-panel .btn-row { display:flex; gap:6px; margin-top:10px; }
-.sel-panel button { flex:1; padding:7px 10px; border-radius:5px; border:none; cursor:pointer; font-size:12px; font-weight:700; font-family:inherit; }
-.coord-row { display:flex; gap:6px; align-items:flex-end; }
+.sel-panel h3 { margin:0 0 4px 0; color:var(--fe-blue); font-size:14px; }
+.sel-panel .count { font-size:11px; color:var(--ink-2); margin-bottom:8px; }
+.sel-panel ul { list-style:none; padding:0; margin:6px 0 10px; max-height:140px; overflow:auto; border:1px solid var(--line); border-radius:5px; background:var(--surface-2); }
+.sel-panel li { padding:5px 8px; font-size:11px; border-bottom:1px solid var(--line); }
+.sel-panel li:last-child { border-bottom:none; }
+.sel-panel label.fld { display:block; font-size:11px; font-weight:500; color:var(--ink-2); margin:8px 0 3px; }
+.sel-panel select { width:100%; padding:6px 8px; border:1px solid var(--fe-grey); border-radius:5px; font-size:12px; font-family:inherit; }
+.sel-panel .btn-row { display:flex; gap:6px; margin-top:12px; }
+.sel-panel .btn-row button { flex:1; }
+
+/* Buttons and modal */
+.btn { padding:9px 16px; border-radius:6px; border:none; cursor:pointer; font-weight:700; font-size:13px; }
+.btn-primary { background:var(--fe-blue); color:#fff; } .btn-primary:hover { background:var(--fe-light-blue); }
+.btn-primary:disabled { opacity:0.5; cursor:default; }
+.btn-secondary { background:var(--fe-grey); color:var(--ink); } .btn-secondary:hover { background:#cbd6d9; }
+.btn-danger { background:#fff; color:var(--danger); border:1px solid var(--danger); } .btn-danger:hover { background:var(--danger); color:#fff; }
+.modal-bg { display:none; position:fixed; inset:0; background:rgba(13,40,48,0.6); z-index:50; align-items:center; justify-content:center; padding:16px; }
+.modal-bg.show { display:flex; }
+.modal { background:#fff; border-radius:10px; padding:22px 24px; width:820px; max-width:100%; max-height:94vh; overflow:auto; box-shadow:0 12px 40px rgba(13,40,48,0.3); border-top:5px solid var(--fe-blue); }
+.modal h2 { margin:0; color:var(--fe-blue); font-size:18px; }
+.modal .msub { font-size:12px; color:var(--ink-3); margin-top:3px; }
+.modal .section-title { font-size:12px; font-weight:700; color:var(--ink); margin:18px 0 6px; display:flex; align-items:baseline; gap:8px; }
+.modal .section-title span { font-weight:400; color:var(--ink-3); font-size:11px; }
+.fgrid { display:grid; grid-template-columns:repeat(3, 1fr); gap:10px 12px; }
+.fgrid .span3 { grid-column:span 3; }
+@media (max-width:700px) { .fgrid { grid-template-columns:1fr; } .fgrid .span3 { grid-column:span 1; } }
+.modal label.fld { display:block; font-size:11px; font-weight:500; color:var(--ink-2); margin:0 0 4px; }
+.fi { width:100%; padding:8px 10px; border:1px solid var(--fe-grey); border-radius:6px; font-size:13px; font-family:inherit; color:var(--ink); background:#fff; }
+.fi:focus { outline:none; border-color:var(--fe-blue); box-shadow:0 0 0 2px rgba(17,77,93,0.15); }
+.fi:disabled { background:var(--surface-2); color:var(--ink-2); }
+.modal-actions { display:flex; justify-content:flex-end; gap:10px; margin-top:18px; padding-top:14px; border-top:1px solid var(--line); }
+.modal-actions .left { margin-right:auto; }
+.month-toggles { display:grid; grid-template-columns:repeat(6, 1fr); gap:8px; }
+@media (max-width:820px) { .month-toggles { grid-template-columns:repeat(3, 1fr); } }
+.mt { display:flex; flex-direction:column; gap:5px; padding:8px; border:1px solid var(--line); border-radius:6px; background:var(--surface-2); }
+.mt.has { background:#fff; border-color:var(--fe-grey-blue); }
+.mt .mn { font-weight:700; color:var(--fe-blue); font-size:12px; }
+.mt select { padding:3px 4px; font-size:11px; border:1px solid var(--fe-grey); border-radius:4px; font-family:inherit; background:#fff; }
+.mt label { display:flex; align-items:center; gap:5px; font-size:11px; color:var(--ink-2); cursor:pointer; }
+.mt input { width:14px; height:14px; accent-color:var(--fe-blue); margin:0; }
+.plan-check { margin-top:8px; font-size:12px; color:var(--ink-2); display:flex; gap:14px; flex-wrap:wrap; }
+.plan-check .gap { color:var(--danger); font-weight:700; }
+.plan-check .ok { color:#0b6b5c; font-weight:700; }
+.coord-row { display:flex; gap:8px; align-items:flex-end; }
 .coord-row > div { flex:1; }
-.coord-row button.pickbtn { padding:8px 10px; border-radius:6px; border:1px solid var(--fe-blue); background:#fff; color:var(--fe-blue); cursor:pointer; font-size:11px; font-weight:600; font-family:inherit; white-space:nowrap; }
-.coord-row button.pickbtn:hover { background:var(--fe-blue); color:#fff; }
+.pickbtn { padding:8px 10px; border-radius:6px; border:1px solid var(--fe-blue); background:#fff; color:var(--fe-blue); cursor:pointer; font-size:12px; font-weight:600; white-space:nowrap; }
+.pickbtn:hover { background:var(--fe-blue); color:#fff; }
+.sla-box { background:var(--surface-2); border:1px dashed var(--fe-grey-blue); border-radius:6px; padding:10px; }
+.sla-row { display:flex; align-items:center; gap:10px; }
+.sla-row .meta { flex:1; min-width:0; font-size:12px; }
+.sla-row .meta strong { display:block; color:var(--fe-blue); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.sla-row .meta span { font-size:11px; color:var(--ink-3); }
+.sla-row button, .sla-row label.upl { padding:6px 10px; border-radius:5px; border:1px solid var(--fe-grey); background:#fff; cursor:pointer; font-size:11px; font-weight:600; color:var(--fe-blue); white-space:nowrap; }
+.sla-row button:hover, .sla-row label.upl:hover { background:var(--fe-blue); color:#fff; }
+.sla-row button.danger { color:var(--danger); border-color:var(--danger); } .sla-row button.danger:hover { background:var(--danger); color:#fff; }
+.sla-row input[type=file] { display:none; }
 #pickerOverlay { display:none; position:fixed; inset:0; background:rgba(13,40,48,0.7); z-index:200; align-items:center; justify-content:center; }
 #pickerOverlay.show { display:flex; }
 .picker-box { background:#fff; border-radius:10px; width:90vw; max-width:800px; height:80vh; padding:14px; display:flex; flex-direction:column; }
 .picker-box h3 { margin:0 0 8px 0; color:var(--fe-blue); font-size:15px; }
-#pickerMap { flex:1; border:1px solid var(--fe-grey); border-radius:6px; }
+#pickerMap { flex:1; border:1px solid var(--line); border-radius:6px; }
 .picker-actions { display:flex; gap:8px; justify-content:flex-end; margin-top:10px; }
-.fa-warn { background:#fff8e1; border-left:3px solid var(--fe-orange); padding:6px 8px; border-radius:4px; font-size:11px; color:#7a4a14; margin-top:8px; }
+.note { background:#fff8e1; border-left:3px solid var(--fe-orange); padding:6px 8px; border-radius:4px; font-size:11px; color:#7a4a14; margin-top:8px; }
 
-.sla-section { background:#f7fafb; border:1px dashed var(--fe-grey-blue); border-radius:6px; padding:12px; margin-top:6px; }
-.sla-section .sla-current { display:flex; align-items:center; gap:10px; padding:8px; background:#fff; border:1px solid var(--fe-grey); border-radius:5px; margin-bottom:8px; }
-.sla-section .sla-current .ico { font-size:20px; color:var(--fe-blue); flex-shrink:0; }
-.sla-section .sla-current .meta { flex:1; font-size:12px; color:var(--fe-dark); min-width:0; }
-.sla-section .sla-current .meta strong { display:block; color:var(--fe-blue); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.sla-section .sla-current .meta .sub { font-size:10px; color:var(--fe-grey-blue); }
-.sla-section .sla-actions { display:flex; gap:6px; }
-.sla-section .sla-actions button { padding:6px 10px; border-radius:5px; border:1px solid var(--fe-grey); background:#fff; cursor:pointer; font-size:11px; font-weight:600; font-family:inherit; color:var(--fe-blue); }
-.sla-section .sla-actions button:hover { background:var(--fe-blue); color:#fff; }
-.sla-section .sla-actions button.btn-danger-sm { color:#c62828; border-color:#c62828; }
-.sla-section .sla-actions button.btn-danger-sm:hover { background:#c62828; color:#fff; }
-.sla-empty-row { display:flex; gap:10px; align-items:center; padding:8px; background:#fff; border:1px dashed var(--fe-grey); border-radius:5px; }
-.sla-empty-row .hint { flex:1; font-size:11px; color:var(--fe-grey-blue); }
-.sla-empty-row label.upload-btn { display:inline-block; padding:7px 14px; background:var(--fe-blue); color:#fff; border-radius:5px; cursor:pointer; font-size:12px; font-weight:700; font-family:inherit; }
-.sla-empty-row label.upload-btn:hover { background:var(--fe-light-blue); }
-.sla-empty-row input[type=file] { display:none; }
-.sla-progress { font-size:11px; color:var(--fe-light-blue); margin-top:6px; }
-td.s-name .sla-clip { display:inline-block; margin-left:6px; font-size:11px; color:var(--fe-orange); cursor:help; }
-/* User menu */
-.user-menu { display:flex; align-items:center; gap:8px; }
-.user-menu .user-badge { font-size:11px; color:rgba(255,255,255,0.8); }
-.user-menu .user-badge strong { color:#fff; display:block; }
-.user-menu .user-badge .role-pill { display:inline-block; padding:2px 6px; border-radius:3px; background:rgba(255,255,255,0.15); font-size:10px; text-transform:uppercase; letter-spacing:0.3px; margin-top:1px; }
+footer.bot { background:#fff; border-top:1px solid var(--line); padding:7px 20px; font-size:11px; color:var(--ink-2); display:flex; justify-content:space-between; align-items:center; gap:14px; flex-wrap:wrap; }
+.legend { display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
+.legend .item { display:flex; gap:5px; align-items:center; }
+.legend .chip { cursor:default; } .legend .chip:hover { transform:none; }
+.toast { position:fixed; bottom:24px; right:24px; background:var(--fe-blue); color:#fff; padding:10px 18px; border-radius:8px; font-size:13px; font-weight:500; box-shadow:0 6px 20px rgba(13,40,48,0.25); opacity:0; transform:translateY(10px); transition:all 0.25s; z-index:400; pointer-events:none; }
+.toast.show { opacity:1; transform:translateY(0); }
+.toast.warn { background:var(--danger); }
+.loading { opacity:0.55; transition:opacity 0.2s; }
+@media (max-width:760px) {
+  header.top { padding:10px 16px; } .filters, .kpis { padding-left:16px; padding-right:16px; }
+  .cards { grid-template-columns:1fr; } .user-badge { display:none; }
+  .app { height:auto; min-height:100vh; }
+  .kpis { grid-template-columns:repeat(2, 1fr); gap:8px; }
+  .kpi { padding:8px 10px; } .kpi .val { font-size:20px; }
+  .view.show { min-height:80vh; }
+  .grid-wrap { max-height:80vh; }
+  #mapContainer { min-height:70vh; }
+  .insights { padding:12px 16px 24px; overflow:visible; }
+}
 </style>
-
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
 <link rel="stylesheet" href="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.css">
 <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css">
@@ -185,161 +289,220 @@ td.s-name .sla-clip { display:inline-block; margin-left:6px; font-size:11px; col
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 <script src="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.js"></script>
 <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
-
-<!--[if gte mso 9]><xml>
-<mso:CustomDocumentProperties>
-<mso:MediaServiceImageTags msdt:dt="string"></mso:MediaServiceImageTags>
-<mso:lcf76f155ced4ddcb4097134ff3c332f msdt:dt="string"></mso:lcf76f155ced4ddcb4097134ff3c332f>
-<mso:TaxCatchAll msdt:dt="string"></mso:TaxCatchAll>
-</mso:CustomDocumentProperties>
-</xml><![endif]-->
 </head>
 <body>
 <div class="app">
 <header class="top">
   <div class="logo" aria-hidden="true"></div>
-  <div class="brand">FOREST ENERGY <small>Preventative Maintenance Dashboard 2026</small></div>
-  <div class="spacer"></div>
-  <div class="view-toggle">
-    <button id="btnViewCal" class="active">Calendar</button>
-    <button id="btnViewMap">Map</button>
+  <div class="brand">FOREST ENERGY <small>Preventative Maintenance</small></div>
+  <div class="year-switch" title="Planning year">
+    <button id="yearPrev" aria-label="Previous year">&#8249;</button>
+    <select id="yearSelect" aria-label="Planning year"></select>
+    <button id="yearNext" aria-label="Next year">&#8250;</button>
   </div>
-  <button id="btnAdd" class="primary">+ Add Plant</button>
-  <button id="btnExport">Export JSON</button>
-  <button id="btnImport">Import JSON</button>
-  <button id="btnReset" title="Clear all done-status and added plants">Reset</button>
-  <div class="user-menu" id="userMenu" style="display:none">
-    <div class="user-badge">
-      <strong id="userEmail"></strong>
-      <span class="role-pill" id="userRole"></span>
+  <div class="spacer"></div>
+  <div class="seg" role="tablist">
+    <button data-view="calendar" class="active">Calendar</button>
+    <button data-view="insights">Insights</button>
+    <button data-view="map">Map</button>
+  </div>
+  <button id="btnAdd" class="hbtn primary">+ Add plant</button>
+  <div class="menu-wrap">
+    <button id="btnExportMenu" class="hbtn">Export &#9662;</button>
+    <div class="menu" id="exportMenu">
+      <button id="btnExportCsv">Schedule for <span class="yr"></span> (CSV)<small>Opens in Excel. Respects current filters.</small></button>
+      <button id="btnExportBackup">Full backup (JSON)<small>All sites, all years, all completed ticks</small></button>
     </div>
-    <button id="btnLogout">Logout</button>
+  </div>
+  <button id="btnRefresh" class="hbtn" title="Reload the latest data from the server">&#8635; Refresh</button>
+  <div class="user-menu" id="userMenu" style="display:none">
+    <div class="user-badge"><strong id="userEmail"></strong><span class="role-pill" id="userRole"></span></div>
+    <button id="btnLogout" class="hbtn">Log out</button>
   </div>
 </header>
-<div id="mainArea">
-<section class="kpis" id="kpis"></section>
-<section class="filters">
-  <input type="text" class="search" id="search" placeholder="Search site, location...">
-  <select id="filterContractor"><option value="">All contractors</option></select>
-  <select id="filterRegion"><option value="">All regions</option></select>
-  <span class="pill" data-filter="all">All</span>
-  <span class="pill warn" data-filter="overdue">Overdue</span>
-  <span class="pill" data-filter="due">Due this month</span>
-  <span class="pill" data-filter="upcoming">Upcoming</span>
-</section>
-<div class="grid-wrap"><table class="grid" id="grid"></table></div>
-</div><!-- /mainArea -->
 
-<section id="mapView">
+<section class="filters">
+  <input type="text" class="search" id="search" placeholder="Search site, location or ID">
+  <select id="filterContractor"><option value="">All contractors</option></select>
+  <select id="filterProvince"><option value="">All provinces</option></select>
+  <div class="pills" id="statusPills">
+    <span class="pill active" data-filter="all">All</span>
+    <span class="pill warn" data-filter="overdue">Overdue</span>
+    <span class="pill" data-filter="due">Due this month</span>
+    <span class="pill" data-filter="upcoming">Upcoming</span>
+    <span class="pill" data-filter="unplanned">Nothing planned</span>
+    <span class="pill" data-filter="belowsla">Below SLA</span>
+  </div>
+  <div class="count" id="siteCount"></div>
+</section>
+
+<section class="kpis" id="kpis"></section>
+
+<div id="calendarView" class="view show">
+  <div class="banner" id="copyBanner" style="display:none"></div>
+  <div class="grid-wrap" id="gridWrap"><table class="grid" id="grid"></table></div>
+  <footer class="bot">
+    <div class="legend">
+      <span class="item"><span class="chip cln ro">Clean 1</span> Panel clean</span>
+      <span class="item"><span class="chip insp ro">Partial</span> Partial AC/DC inspection</span>
+      <span class="item"><span class="chip annual ro">Annual</span> Full annual inspection</span>
+      <span class="item"><span class="chip done ro">Done</span></span>
+      <span class="item"><span class="chip overdue ro">Overdue</span></span>
+    </div>
+    <div id="footNote">Click a chip to tick it off. Click a site name to edit it.</div>
+  </footer>
+</div>
+
+<div id="insightsView" class="view">
+  <div class="insights">
+    <div class="cards">
+      <div class="card wide">
+        <div class="card-head"><div class="grow"><h3 id="chMonthlyTitle">Monthly workload</h3><div class="desc">Every scheduled clean and inspection, by month and status. Use it to spot contractor peaks and slipped work.</div></div><button class="linkbtn" data-table-toggle="monthly">Show table</button></div>
+        <div class="legend-row" id="lgMonthly"></div>
+        <div id="chMonthly"></div>
+      </div>
+      <div class="card">
+        <div class="card-head"><div class="grow"><h3>Contractor delivery</h3><div class="desc" id="chContractorDesc">Activities per contractor for the year, by status.</div></div><button class="linkbtn" data-table-toggle="contractor">Show table</button></div>
+        <div class="legend-row" id="lgContractor"></div>
+        <div id="chContractor"></div>
+      </div>
+      <div class="card">
+        <div class="card-head"><div class="grow"><h3>Province spread</h3><div class="desc">Activities per province for the year, by status.</div></div><button class="linkbtn" data-table-toggle="province">Show table</button></div>
+        <div class="legend-row" id="lgProvince"></div>
+        <div id="chProvince"></div>
+      </div>
+      <div class="card wide">
+        <div class="card-head"><div class="grow"><h3 id="chCoverageTitle">Plan versus SLA</h3><div class="desc">Compares what is scheduled this year with each site's SLA. Annual inspections count towards the inspection total. Click a row to fix the plan.</div></div></div>
+        <div class="tiles" id="coverageTiles"></div>
+        <div class="scroll-y" id="coverageTable"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="mapView" class="view">
   <div class="map-toolbar">
-    <div class="info"><strong id="mapSiteCount">0</strong> sites with coordinates / <strong id="mapTotalCount">0</strong> total</div>
-    <div class="info">Use the <strong>polygon</strong> or <strong>rectangle</strong> tool on the left edge to lasso-select sites for batch scheduling.</div>
+    <div><strong id="mapSiteCount">0</strong> of <strong id="mapTotalCount">0</strong> filtered sites have coordinates</div>
+    <div id="mapHint">Use the polygon or rectangle tool on the left to select sites for bulk scheduling.</div>
     <div style="flex:1"></div>
-    <button id="btnClearSel" class="btn-secondary" style="padding:6px 12px; border:none; border-radius:5px; font-weight:600; cursor:pointer; font-size:12px;">Clear selection</button>
+    <button id="btnClearSel" class="btn btn-secondary" style="padding:6px 12px; font-size:12px;">Clear selection</button>
   </div>
   <div id="mapContainer">
     <div id="leafletMap"></div>
     <div id="selPanel" class="sel-panel">
       <h3>Bulk schedule</h3>
       <div class="count"><span id="selCount">0</span> sites selected</div>
-      <ul class="sel-list" id="selList"></ul>
+      <ul id="selList"></ul>
       <label class="fld">Activity</label>
       <select id="bulkActivity">
-        <option value="cln">Panel Clean</option>
-        <option value="insp">Partial Inspection</option>
-        <option value="annual">Full Annual Inspection</option>
+        <option value="cln">Panel clean</option>
+        <option value="insp">Partial inspection</option>
+        <option value="annual">Full annual inspection</option>
       </select>
-      <label class="fld" id="cleanNumLbl">Clean number</label>
-      <select id="bulkCleanNum">
-        <option value="1">Clean 1</option>
-        <option value="2">Clean 2</option>
-        <option value="3">Clean 3</option>
-        <option value="4">Clean 4</option>
-      </select>
-      <label class="fld">Month</label>
+      <div id="bulkCleanWrap"><label class="fld">Clean number</label>
+        <select id="bulkCleanNum"><option value="1">Clean 1</option><option value="2">Clean 2</option><option value="3">Clean 3</option><option value="4">Clean 4</option></select></div>
+      <label class="fld">Month (<span class="yr"></span>)</label>
       <select id="bulkMonth"></select>
-      <div id="bulkWarn" class="fa-warn" style="display:none"></div>
+      <div id="bulkWarn" class="note" style="display:none"></div>
       <div class="btn-row">
-        <button class="btn-secondary" id="btnBulkCancel">Cancel</button>
-        <button class="btn-primary" id="btnBulkApply">Apply to selected</button>
+        <button class="btn btn-secondary" id="btnBulkCancel">Cancel</button>
+        <button class="btn btn-primary" id="btnBulkApply">Apply</button>
       </div>
     </div>
   </div>
-</section>
+</div>
+</div>
+
 <div id="pickerOverlay">
   <div class="picker-box">
     <h3>Click on the map to set this site's location</h3>
     <div id="pickerMap"></div>
     <div class="picker-actions">
-      <button class="btn-secondary" id="pickerCancel" style="padding:8px 16px; border:none; border-radius:5px; cursor:pointer; font-weight:600;">Cancel</button>
-      <button class="btn-primary" id="pickerOk" style="padding:8px 16px; border:none; border-radius:5px; cursor:pointer; font-weight:600;">Use this location</button>
+      <button class="btn btn-secondary" id="pickerCancel">Cancel</button>
+      <button class="btn btn-primary" id="pickerOk">Use this location</button>
     </div>
   </div>
-</div>
-
-<footer class="bot">
-  <div class="legend">
-    <span class="item"><span class="chip cln">cln</span> Panel Clean</span>
-    <span class="item"><span class="chip insp">Insp</span> Partial Inspection</span>
-    <span class="item"><span class="chip annual">F Insp</span> Full Annual Inspection</span>
-    <span class="item"><span class="chip done">Done</span> Completed</span>
-    <span class="item"><span class="chip overdue">Overdue</span> Past, not done</span>
-  </div>
-  <div id="lastSaved">Tip: each chip ticks independently. Click a site name to edit its details.</div>
-</footer>
 </div>
 
 <div class="modal-bg" id="modalPlant">
-  <div class="modal">
-    <h2 id="modalTitle">Add new plant<small id="modalSub">Capture site details and 12-month schedule</small></h2>
-    <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px;">
-      <div><label class="fld">Site ID</label><input class="fi" id="np_id" placeholder="e.g. 26050"></div>
-      <div><label class="fld">Site Name</label><input class="fi" id="np_name" placeholder="e.g. Cape Quarter"></div>
-      <div><label class="fld">Location</label><input class="fi" id="np_location" placeholder="City, Province"></div>
-      <div><label class="fld">Capacity (kWp)</label><input class="fi" id="np_kwp" type="number" step="0.01"></div>
-      <div><label class="fld">Modules</label><input class="fi" id="np_modules" type="number"></div>
-      <div><label class="fld">Contractor</label><select class="fi" id="np_contractor"><option value="">- Select -</option></select></div>
-      <div style="grid-column:span 3"><label class="fld">Coordinates (decimal degrees)</label>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <h2 id="modalTitle">Add new plant</h2>
+    <div class="msub" id="modalSub"></div>
+
+    <div class="section-title">Site details</div>
+    <div class="fgrid">
+      <div><label class="fld" for="np_id">Site ID</label><input class="fi" id="np_id" placeholder="e.g. 26050"></div>
+      <div><label class="fld" for="np_name">Site name</label><input class="fi" id="np_name" placeholder="e.g. Cape Quarter"></div>
+      <div><label class="fld" for="np_location">Location</label><input class="fi" id="np_location" placeholder="City, Province"></div>
+      <div><label class="fld" for="np_kwp">Capacity (kWp)</label><input class="fi" id="np_kwp" type="number" step="0.01"></div>
+      <div><label class="fld" for="np_modules">Modules</label><input class="fi" id="np_modules" type="number"></div>
+      <div><label class="fld" for="np_contractor">Contractor</label><select class="fi" id="np_contractor"></select></div>
+      <div class="span3"><label class="fld">Coordinates (decimal degrees)</label>
         <div class="coord-row">
-          <div><input class="fi" id="np_lat" type="number" step="0.000001" placeholder="Latitude e.g. -33.9249"></div>
-          <div><input class="fi" id="np_lng" type="number" step="0.000001" placeholder="Longitude e.g. 18.4241"></div>
+          <div><input class="fi" id="np_lat" type="number" step="0.000001" placeholder="Latitude e.g. -33.9249" aria-label="Latitude"></div>
+          <div><input class="fi" id="np_lng" type="number" step="0.000001" placeholder="Longitude e.g. 18.4241" aria-label="Longitude"></div>
           <button type="button" class="pickbtn" id="btnPickLoc">Pick on map</button>
         </div></div>
-      <div style="grid-column:span 3"><label class="fld">Service Level Agreement (SLA)</label>
-        <div class="sla-section" id="slaSection">
-          <div id="slaCurrent" style="display:none"></div>
-          <div id="slaEmpty" class="sla-empty-row">
-            <div class="hint">No SLA on file. Upload PDF, DOCX, or image (max 5MB).</div>
-            <label class="upload-btn">Upload SLA<input type="file" id="slaFileInput" accept=".pdf,.docx,.doc,.jpg,.jpeg,.png"></label>
-          </div>
-          <div id="slaProgress" class="sla-progress" style="display:none"></div>
-        </div></div>
-      <div><label class="fld">Cleans / yr (SLA)</label><select class="fi" id="np_cleans"><option value="">-</option><option>1</option><option>2</option><option>3</option><option>4</option></select></div>
-      <div><label class="fld">Partial Insp / yr (SLA)</label><select class="fi" id="np_partial"><option value="">-</option><option>1</option><option>2</option><option>3</option><option>4</option></select></div>
-      <div><label class="fld">Annual Inspection</label><select class="fi" id="np_annual"><option value="1">1 (per year)</option><option value="0">None</option></select></div>
     </div>
-    
 
-    <label class="fld" style="margin-top:18px">Schedule per month</label>
-    <div style="font-size:11px; color:var(--fe-grey-blue); margin-bottom:6px;">Tick which activities happen in each month. Clean # is the sequence (1st, 2nd, 3rd, 4th of the year). Annual is the once-a-year full inspection.</div>
+    <div class="section-title">Service level agreement</div>
+    <div class="fgrid">
+      <div><label class="fld" for="np_cleans">Cleans per year</label><select class="fi" id="np_cleans"><option value="">Not set</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option></select></div>
+      <div><label class="fld" for="np_partial">Partial inspections per year</label><select class="fi" id="np_partial"><option value="">Not set</option><option>1</option><option>2</option><option>3</option><option>4</option></select></div>
+      <div><label class="fld" for="np_annual">Full annual inspection</label><select class="fi" id="np_annual"><option value="1">Yes, once a year</option><option value="0">No</option></select></div>
+      <div class="span3"><div class="sla-box" id="slaBox"></div></div>
+    </div>
+
+    <div class="section-title">Schedule for <span id="modalYear" style="font-size:12px; font-weight:700; color:var(--fe-blue)"></span><span>Clean number is the sequence in the year. Partial and annual inspections cannot share a month.</span></div>
     <div class="month-toggles" id="np_months"></div>
+    <div class="plan-check" id="planCheck"></div>
 
     <div class="modal-actions">
-      <button class="btn-danger left" id="btnDelete" style="display:none">Delete plant</button>
-      <button class="btn-secondary" id="btnCancel">Cancel</button>
-      <button class="btn-primary" id="btnSavePlant">Save plant</button>
+      <button class="btn btn-danger left" id="btnDelete" style="display:none">Delete plant</button>
+      <button class="btn btn-secondary" id="btnCancel">Cancel</button>
+      <button class="btn btn-primary" id="btnSavePlant">Save plant</button>
     </div>
   </div>
 </div>
 
-<input type="file" id="fileImport" accept="application/json" style="display:none">
+<div id="tooltip" role="tooltip"></div>
 <div class="toast" id="toast"></div>
 
 <script>
-// ---- Auth & API helpers ----
+// ============ Constants and state ============
 const TOKEN_KEY = 'fe_om_token';
-let currentUser = null;
+const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const MONTH_NAMES = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+const TODAY = new Date();
+const CURRENT_MONTH_IDX = TODAY.getMonth();
+const CURRENT_YEAR = TODAY.getFullYear();
+const STATUSES = [
+  { key:'done', label:'Done', color:'var(--st-done)' },
+  { key:'overdue', label:'Overdue', color:'var(--st-overdue)' },
+  { key:'due', label:'Due this month', color:'var(--st-due)' },
+  { key:'upcoming', label:'Upcoming', color:'var(--st-upcoming)' }
+];
+const KIND_LABEL = { cln:'Cleans', insp:'Partial inspections', annual:'Annual inspections' };
+// Location suffixes in the data are a mix of cities, abbreviations and provinces
+const PROVINCE_MAP = {
+  'jhb':'Gauteng','johannesburg':'Gauteng','tshwane':'Gauteng','pretoria':'Gauteng','midrand':'Gauteng','gauteng':'Gauteng','gp':'Gauteng','sandton':'Gauteng',
+  'cpt':'Western Cape','cape town':'Western Cape','wcp':'Western Cape','wc':'Western Cape','western cape':'Western Cape',
+  'mpumalanga':'Mpumalanga','mp':'Mpumalanga','limpopo':'Limpopo','lp':'Limpopo','fs':'Free State','free state':'Free State',
+  'north west':'North West','nw':'North West','kzn':'KwaZulu-Natal','kwazulu-natal':'KwaZulu-Natal','durban':'KwaZulu-Natal',
+  'ec':'Eastern Cape','eastern cape':'Eastern Cape','nc':'Northern Cape','northern cape':'Northern Cape'
+};
 
+let state = { sites: [], done: {} };
+let currentUser = null;
+let viewYear = CURRENT_YEAR;
+let activeView = 'calendar';
+let editingId = null;
+let activeStatus = 'all', searchTerm = '', filterContractor = '', filterProvince = '';
+let coverageFilter = 'issues';
+let lastLoadAt = 0;
+const isViewer = () => !currentUser || currentUser.role === 'viewer';
+
+// ============ API ============
 async function apiFetch(path, opts = {}) {
   const token = localStorage.getItem(TOKEN_KEY);
   const headers = { ...(opts.headers || {}) };
@@ -349,786 +512,966 @@ async function apiFetch(path, opts = {}) {
   if (res.status === 401) { localStorage.removeItem(TOKEN_KEY); window.location.href = '/login.html'; return null; }
   return res;
 }
-
-function renderUserMenu() {
-  if (!currentUser) return;
-  document.getElementById('userMenu').style.display = 'flex';
-  document.getElementById('userEmail').textContent = currentUser.email;
-  document.getElementById('userRole').textContent = currentUser.role;
+async function apiError(res, fallback) {
+  try { const j = await res.json(); return j.error || fallback; } catch { return fallback; }
 }
 
-function applyRole(role) {
-  const isViewer = role === 'viewer';
-  ['btnAdd','btnImport','btnReset'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.style.display = isViewer ? 'none' : '';
-  });
-  document.getElementById('btnExport').style.display = '';
-  // Chip clicking is gated inside renderChip via window._isViewer
-  window._isViewer = isViewer;
-}
-
-document.addEventListener('click', e => {
-  if (e.target.id === 'btnLogout') {
-    localStorage.removeItem(TOKEN_KEY);
-    window.location.href = '/login.html';
+async function loadData(quiet) {
+  const views = document.querySelectorAll('.view.show');
+  if (quiet) views.forEach(v => v.classList.add('loading'));
+  try {
+    const [sitesRes, doneRes] = await Promise.all([apiFetch('/api/sites'), apiFetch('/api/done')]);
+    if (!sitesRes || !doneRes) return;
+    if (!sitesRes.ok || !doneRes.ok) throw new Error('load failed');
+    state.sites = await sitesRes.json();
+    state.done = await doneRes.json();
+    lastLoadAt = Date.now();
+    renderAll();
+  } finally {
+    views.forEach(v => v.classList.remove('loading'));
   }
-});
+}
 
 async function init() {
   try {
     const meRes = await apiFetch('/api/auth/me');
     if (!meRes) return;
     currentUser = await meRes.json();
-    const [sitesRes, doneRes] = await Promise.all([apiFetch('/api/sites'), apiFetch('/api/done')]);
-    if (!sitesRes || !doneRes) return;
-    state.sites = await sitesRes.json();
-    state.done = await doneRes.json();
-    applyRole(currentUser.role);
+    applyRole();
     renderUserMenu();
-    renderAll();
-    document.getElementById('lastSaved').textContent = 'Loaded from server';
-  } catch(e) {
+    await loadData();
+  } catch (e) {
     toast('Failed to load data. Please refresh.', true);
   }
 }
-// ---- End Auth ----
 
-const SEED_SITES = [{"id":"26024","name":"Motus","location":"Mbombela, Mpumalanga","capacity_kwp":"57.60","modules":96,"contractor":"Exosolar","cleans_per_year":4,"partial_inspections":4,"annual_inspection":1,"monthly_income":null,"annual_sla":null,"annual_cost":null,"months":{"Jan":"","Feb":"1 cln","Mar":"","Apr":"","May":"2 cln","Jun":"","Jul":"","Aug":"3 cln","Sep":"","Oct":"","Nov":"4 cln 1 Inps","Dec":""}},{"id":"26007","name":"Rynfield","location":"Benoni, JHB","capacity_kwp":"80.59","modules":140,"contractor":"Solar Panel Cleaners","cleans_per_year":3,"partial_inspections":3,"annual_inspection":1,"monthly_income":1795.74,"annual_sla":21548.88,"annual_cost":15180,"months":{"Jan":"","Feb":"1 cln","Mar":"","Apr":"","May":"","Jun":"2 cln","Jul":"","Aug":"","Sep":"3 cln 1 Insp","Oct":"","Nov":"","Dec":""}},{"id":"26008","name":"Randpark","location":"Randburg, JHB","capacity_kwp":"96.6","modules":168,"contractor":"Solar Panel Cleaners","cleans_per_year":3,"partial_inspections":3,"annual_inspection":1,"monthly_income":1885.9,"annual_sla":22630.800000000003,"annual_cost":15180,"months":{"Jan":"","Feb":"1 cln","Mar":"","Apr":"","May":"","Jun":"2 cln","Jul":"","Aug":"","Sep":"3 cln 1 Insp","Oct":"","Nov":"","Dec":""}},{"id":"26012","name":"Raslouw","location":"Centurion, Tshwane","capacity_kwp":"172.80","modules":300,"contractor":"Solar Panel Cleaners","cleans_per_year":3,"partial_inspections":3,"annual_inspection":1,"monthly_income":2722.3,"annual_sla":32667.600000000002,"annual_cost":15180,"months":{"Jan":"","Feb":"1 cln","Mar":"","Apr":"","May":"","Jun":"2 cln","Jul":"","Aug":"","Sep":"","Oct":"3 cln 1 Insp","Nov":"","Dec":""}},{"id":"26011","name":"Pecanwood","location":"Hartbeespoort, North West","capacity_kwp":"149.76","modules":260,"contractor":"Solar Panel Cleaners","cleans_per_year":3,"partial_inspections":3,"annual_inspection":1,"monthly_income":4530.37,"annual_sla":54364.44,"annual_cost":25668,"months":{"Jan":"","Feb":"1 cln","Mar":"","Apr":"","May":"","Jun":"2 cln","Jul":"","Aug":"","Sep":"","Oct":"3 cln 1 Insp","Nov":"","Dec":""}},{"id":"26013","name":"Southdowns","location":"Centurion, Tshwane","capacity_kwp":"369.58","modules":642,"contractor":"Solar Panel Cleaners","cleans_per_year":3,"partial_inspections":3,"annual_inspection":1,"monthly_income":5912.86,"annual_sla":70954.31999999999,"annual_cost":21044.66,"months":{"Jan":"","Feb":"1 cln","Mar":"","Apr":"","May":"","Jun":"2 cln","Jul":"","Aug":"","Sep":"","Oct":"3 cln 1 Insp","Nov":"","Dec":""}},{"id":"26025","name":"Kyalami","location":"Kyalami, Midrand","capacity_kwp":"103.50","modules":180,"contractor":"Solar Panel Cleaners","cleans_per_year":4,"partial_inspections":4,"annual_inspection":1,"monthly_income":2575,"annual_sla":30900,"annual_cost":27600,"months":{"Jan":"","Feb":"","Mar":"1 cln","Apr":"","May":"","Jun":"2 cln","Jul":"","Aug":"","Sep":"3 cln 1 Insp","Oct":"","Nov":"","Dec":"4 cln"}},{"id":"26026","name":"Lonehill Prep","location":"Sandton, JHB","capacity_kwp":"73.60","modules":128,"contractor":"Solar Panel Cleaners","cleans_per_year":4,"partial_inspections":4,"annual_inspection":1,"monthly_income":2550,"annual_sla":30600,"annual_cost":18975,"months":{"Jan":"","Feb":"","Mar":"1 cln","Apr":"","May":"","Jun":"2 cln","Jul":"","Aug":"","Sep":"3 cln 1 Insp","Oct":"","Nov":"","Dec":"4 cln"}},{"id":"26027","name":"Mooikloof","location":"Pretoria, Tshwane","capacity_kwp":"73.81","modules":122,"contractor":"Solar Panel Cleaners","cleans_per_year":4,"partial_inspections":4,"annual_inspection":1,"monthly_income":1740,"annual_sla":20880,"annual_cost":18975,"months":{"Jan":"","Feb":"","Mar":"","Apr":"1 cln","May":"","Jun":"","Jul":"2 cln","Aug":"","Sep":"","Oct":"3 cln 1 Insp","Nov":"","Dec":"4 cln"}},{"id":"24267","name":"Curro Magic Beings","location":"Randburg, JHB","capacity_kwp":63,"modules":114,"contractor":"Solar Panel Cleaners","cleans_per_year":1,"partial_inspections":1,"annual_inspection":1,"monthly_income":2010,"annual_sla":24120,"annual_cost":11040,"months":{"Jan":"","Feb":"","Mar":"","Apr":"1 cln","May":"","Jun":"","Jul":"","Aug":"1 Inps","Sep":"","Oct":"","Nov":"","Dec":""}},{"id":"24263","name":"Irvines Africa TwelveB","location":"Sandton, JHB","capacity_kwp":60,"modules":104,"contractor":"Solar Panel Cleaners","cleans_per_year":null,"partial_inspections":null,"annual_inspection":null,"monthly_income":null,"annual_sla":0,"annual_cost":null,"months":{"Jan":"","Feb":"","Mar":"","Apr":"","May":"","Jun":"","Jul":"","Aug":"","Sep":"","Oct":"","Nov":"","Dec":""}},{"id":"26028","name":"Fourways","location":"Sandton, JHB","capacity_kwp":"142.78","modules":236,"contractor":"Solar Panel Cleaners","cleans_per_year":4,"partial_inspections":4,"annual_inspection":1,"monthly_income":3407,"annual_sla":40884,"annual_cost":11040,"months":{"Jan":"","Feb":"","Mar":"1 cln","Apr":"","May":"","Jun":"2 cln","Jul":"","Aug":"","Sep":"3 cln 1 Insp","Oct":"","Nov":"","Dec":"4 cln"}},{"id":"O26003","name":"Carlswald Shopping Centre","location":"Midrand, JHB","capacity_kwp":"987.28","modules":2408,"contractor":"Solar Panel Cleaners","cleans_per_year":null,"partial_inspections":null,"annual_inspection":null,"monthly_income":null,"annual_sla":0,"annual_cost":null,"months":{"Jan":"","Feb":"","Mar":"","Apr":"","May":"","Jun":"","Jul":"","Aug":"","Sep":"","Oct":"","Nov":"","Dec":""}},{"id":"24232","name":"CFW Assegai","location":"Parow, CPT","capacity_kwp":"217.8","modules":396,"contractor":"Manno Solfield","cleans_per_year":1,"partial_inspections":1,"annual_inspection":1,"monthly_income":null,"annual_sla":0,"annual_cost":null,"months":{"Jan":"","Feb":"","Mar":"","Apr":"1 cln 1 F Insp","May":"","Jun":"","Jul":"","Aug":"","Sep":"","Oct":"","Nov":"","Dec":""}},{"id":"24232b","name":"CFW Parin","location":"Parow, CPT","capacity_kwp":"180.95","modules":329,"contractor":"Manno Solfield","cleans_per_year":1,"partial_inspections":1,"annual_inspection":1,"monthly_income":null,"annual_sla":0,"annual_cost":null,"months":{"Jan":"","Feb":"","Mar":"","Apr":"1 cln 1 F Insp","May":"","Jun":"","Jul":"","Aug":"","Sep":"","Oct":"","Nov":"","Dec":""}},{"id":"24246","name":"Curro Century City","location":"Century City, CPT","capacity_kwp":"70.95","modules":129,"contractor":"Solar Shine Solutions & FE","cleans_per_year":1,"partial_inspections":1,"annual_inspection":1,"monthly_income":2010,"annual_sla":24120,"annual_cost":2888,"months":{"Jan":"","Feb":"","Mar":"","Apr":"1 cln","May":"","Jun":"","Jul":"","Aug":"1 F Inps","Sep":"","Oct":"","Nov":"","Dec":""}},{"id":"24248","name":"Curro Langebaan","location":"Langebaan, WCP","capacity_kwp":"90.48","modules":156,"contractor":"Solar Shine Solutions & FE","cleans_per_year":1,"partial_inspections":1,"annual_inspection":1,"monthly_income":2010,"annual_sla":24120,"annual_cost":4274,"months":{"Jan":"","Feb":"","Mar":"","Apr":"1 cln","May":"","Jun":"","Jul":"","Aug":"","Sep":"1 F Inps","Oct":"","Nov":"","Dec":""}},{"id":"24264","name":"The New National","location":"Parow, CPT","capacity_kwp":"51.7","modules":94,"contractor":"Solar Shine Solutions & FE","cleans_per_year":2,"partial_inspections":1,"annual_inspection":1,"monthly_income":null,"annual_sla":0,"annual_cost":null,"months":{"Jan":"","Feb":"","Mar":"","Apr":"","May":"","Jun":"","Jul":"","Aug":"","Sep":"","Oct":"","Nov":"","Dec":""}},{"id":"24280","name":"Du Kloof","location":"Paarl, WCP","capacity_kwp":"170.6","modules":282,"contractor":"Solar Shine Solutions & FE","cleans_per_year":2,"partial_inspections":4,"annual_inspection":1,"monthly_income":null,"annual_sla":0,"annual_cost":null,"months":{"Jan":"","Feb":"","Mar":"","Apr":"","May":"","Jun":"","Jul":"","Aug":"","Sep":"","Oct":"","Nov":"","Dec":""}},{"id":"22024","name":"Soetendal","location":"Wellington, WCP","capacity_kwp":"45.5","modules":100,"contractor":"Solar Shine Solutions & FE","cleans_per_year":null,"partial_inspections":null,"annual_inspection":null,"monthly_income":null,"annual_sla":0,"annual_cost":null,"months":{"Jan":"","Feb":"","Mar":"","Apr":"","May":"","Jun":"","Jul":"","Aug":"","Sep":"","Oct":"","Nov":"","Dec":""}},{"id":"22059","name":"Voorspoed","location":"Wellington, WCP","capacity_kwp":18,"modules":32,"contractor":"Solar Shine Solutions & FE","cleans_per_year":null,"partial_inspections":null,"annual_inspection":null,"monthly_income":null,"annual_sla":0,"annual_cost":null,"months":{"Jan":"","Feb":"","Mar":"","Apr":"","May":"","Jun":"","Jul":"","Aug":"","Sep":"","Oct":"","Nov":"","Dec":""}},{"id":"24278","name":"CPOA","location":"Grassy Park, CPT","capacity_kwp":90,"modules":148,"contractor":"Solar Shine Solutions & FE","cleans_per_year":null,"partial_inspections":null,"annual_inspection":null,"monthly_income":null,"annual_sla":0,"annual_cost":null,"months":{"Jan":"","Feb":"","Mar":"","Apr":"","May":"","Jun":"","Jul":"","Aug":"","Sep":"","Oct":"","Nov":"","Dec":""}},{"id":"23119","name":"3C Metal","location":"Bellville, CPT","capacity_kwp":361,"modules":656,"contractor":"Solar Shine Solutions & FE","cleans_per_year":null,"partial_inspections":null,"annual_inspection":null,"monthly_income":null,"annual_sla":0,"annual_cost":null,"months":{"Jan":"","Feb":"","Mar":"","Apr":"","May":"","Jun":"","Jul":"","Aug":"","Sep":"","Oct":"","Nov":"","Dec":""}},{"id":"23153","name":"Vastech Electron 23","location":"Stellenbosch, WCP","capacity_kwp":114,"modules":248,"contractor":"Solar Shine Solutions & FE","cleans_per_year":null,"partial_inspections":null,"annual_inspection":null,"monthly_income":null,"annual_sla":0,"annual_cost":null,"months":{"Jan":"","Feb":"","Mar":"","Apr":"","May":"","Jun":"","Jul":"","Aug":"","Sep":"","Oct":"","Nov":"","Dec":""}},{"id":"23187","name":"Groenvlei","location":"Wellington, WCP","capacity_kwp":374,"modules":676,"contractor":"Solar Shine Solutions & FE","cleans_per_year":null,"partial_inspections":null,"annual_inspection":null,"monthly_income":null,"annual_sla":0,"annual_cost":null,"months":{"Jan":"","Feb":"","Mar":"","Apr":"","May":"","Jun":"","Jul":"","Aug":"","Sep":"","Oct":"","Nov":"","Dec":""}},{"id":"23188","name":"CRF","location":"Waterfornt, CPT","capacity_kwp":70,"modules":127,"contractor":"Solar Shine Solutions & FE","cleans_per_year":null,"partial_inspections":null,"annual_inspection":null,"monthly_income":null,"annual_sla":0,"annual_cost":null,"months":{"Jan":"","Feb":"","Mar":"","Apr":"","May":"","Jun":"","Jul":"","Aug":"","Sep":"","Oct":"","Nov":"","Dec":""}},{"id":"23211","name":"Doornekraal","location":"Malmesbury, WCP","capacity_kwp":77,"modules":140,"contractor":"Solar Shine Solutions & FE","cleans_per_year":null,"partial_inspections":null,"annual_inspection":null,"monthly_income":null,"annual_sla":0,"annual_cost":null,"months":{"Jan":"","Feb":"","Mar":"","Apr":"","May":"","Jun":"","Jul":"","Aug":"","Sep":"","Oct":"","Nov":"","Dec":""}},{"id":"23215","name":"Huis Stilbaai","location":"Still Bay, WCP","capacity_kwp":117,"modules":212,"contractor":"Solar Shine Solutions & FE","cleans_per_year":null,"partial_inspections":null,"annual_inspection":null,"monthly_income":null,"annual_sla":0,"annual_cost":null,"months":{"Jan":"","Feb":"","Mar":"","Apr":"","May":"","Jun":"","Jul":"","Aug":"","Sep":"","Oct":"","Nov":"","Dec":""}},{"id":"23216","name":"Vastech Photon 5","location":"Stellenbosch, WCP","capacity_kwp":405,"modules":736,"contractor":"Solar Shine Solutions & FE","cleans_per_year":null,"partial_inspections":null,"annual_inspection":null,"monthly_income":null,"annual_sla":0,"annual_cost":null,"months":{"Jan":"","Feb":"","Mar":"","Apr":"","May":"","Jun":"","Jul":"","Aug":"","Sep":"","Oct":"","Nov":"","Dec":""}},{"id":"23220","name":"Fountain Rez","location":"Rondebosch, CPT","capacity_kwp":50,"modules":90,"contractor":"Solar Shine Solutions & FE","cleans_per_year":null,"partial_inspections":null,"annual_inspection":null,"monthly_income":null,"annual_sla":0,"annual_cost":null,"months":{"Jan":"","Feb":"","Mar":"","Apr":"","May":"","Jun":"","Jul":"","Aug":"","Sep":"","Oct":"","Nov":"","Dec":""}},{"id":"24238","name":"Herfsvreudge","location":"Bonnievale, WCP","capacity_kwp":41,"modules":74,"contractor":"Solar Shine Solutions & FE","cleans_per_year":null,"partial_inspections":null,"annual_inspection":null,"monthly_income":null,"annual_sla":0,"annual_cost":null,"months":{"Jan":"","Feb":"","Mar":"","Apr":"","May":"","Jun":"","Jul":"","Aug":"","Sep":"","Oct":"","Nov":"","Dec":""}},{"id":"24240","name":"Jon Stoffberg","location":"Paarl, WCP","capacity_kwp":45,"modules":82,"contractor":"Solar Shine Solutions & FE","cleans_per_year":null,"partial_inspections":null,"annual_inspection":null,"monthly_income":null,"annual_sla":0,"annual_cost":null,"months":{"Jan":"","Feb":"","Mar":"","Apr":"","May":"","Jun":"","Jul":"","Aug":"","Sep":"","Oct":"","Nov":"","Dec":""}},{"id":"24243","name":"Bay Village","location":"Gordon's Bay, CPT","capacity_kwp":49,"modules":89,"contractor":"Solar Shine Solutions & FE","cleans_per_year":null,"partial_inspections":null,"annual_inspection":null,"monthly_income":null,"annual_sla":0,"annual_cost":null,"months":{"Jan":"","Feb":"","Mar":"","Apr":"","May":"","Jun":"","Jul":"","Aug":"","Sep":"","Oct":"","Nov":"","Dec":""}},{"id":"24254","name":"Meshco Blackheath","location":"Blackheath, CPT","capacity_kwp":933,"modules":1608,"contractor":"Solar Shine Solutions & FE","cleans_per_year":null,"partial_inspections":null,"annual_inspection":null,"monthly_income":null,"annual_sla":0,"annual_cost":null,"months":{"Jan":"","Feb":"","Mar":"","Apr":"","May":"","Jun":"","Jul":"","Aug":"","Sep":"","Oct":"","Nov":"","Dec":""}},{"id":"24258","name":"Baby Foods Office","location":"Ottery, CPT","capacity_kwp":42,"modules":75,"contractor":"Solar Shine Solutions & FE","cleans_per_year":null,"partial_inspections":null,"annual_inspection":null,"monthly_income":null,"annual_sla":0,"annual_cost":null,"months":{"Jan":"","Feb":"","Mar":"","Apr":"","May":"","Jun":"","Jul":"","Aug":"","Sep":"","Oct":"","Nov":"","Dec":""}},{"id":"24259","name":"Baby Foods Factory","location":"Ottery, CPT","capacity_kwp":164,"modules":299,"contractor":"Solar Shine Solutions & FE","cleans_per_year":null,"partial_inspections":null,"annual_inspection":null,"monthly_income":null,"annual_sla":0,"annual_cost":null,"months":{"Jan":"","Feb":"","Mar":"","Apr":"","May":"","Jun":"","Jul":"","Aug":"","Sep":"","Oct":"","Nov":"","Dec":""}},{"id":"24274","name":"Laerskool Marble Hall","location":"Marble Hall, LIMPOPO","capacity_kwp":39,"modules":64,"contractor":"Solar Shine Solutions & FE","cleans_per_year":null,"partial_inspections":null,"annual_inspection":null,"monthly_income":null,"annual_sla":0,"annual_cost":null,"months":{"Jan":"","Feb":"","Mar":"","Apr":"","May":"","Jun":"","Jul":"","Aug":"","Sep":"","Oct":"","Nov":"","Dec":""}},{"id":"24285","name":"Parow Business Park Khusela","location":"Parow, CPT","capacity_kwp":46,"modules":74,"contractor":"Solar Shine Solutions & FE","cleans_per_year":null,"partial_inspections":null,"annual_inspection":null,"monthly_income":null,"annual_sla":0,"annual_cost":null,"months":{"Jan":"","Feb":"","Mar":"","Apr":"","May":"","Jun":"","Jul":"","Aug":"","Sep":"","Oct":"","Nov":"","Dec":""}},{"id":"26014","name":"KWV","location":"Paarl, WCP","capacity_kwp":1002,"modules":1630,"contractor":"Solar Shine Solutions & FE","cleans_per_year":null,"partial_inspections":null,"annual_inspection":null,"monthly_income":null,"annual_sla":0,"annual_cost":null,"months":{"Jan":"","Feb":"","Mar":"","Apr":"","May":"","Jun":"","Jul":"","Aug":"","Sep":"","Oct":"","Nov":"","Dec":""}},{"id":"26019","name":"President Hotel","location":"Sea Point, CPT","capacity_kwp":149,"modules":229,"contractor":"Solar Shine Solutions & FE","cleans_per_year":null,"partial_inspections":null,"annual_inspection":null,"monthly_income":null,"annual_sla":0,"annual_cost":null,"months":{"Jan":"","Feb":"","Mar":"","Apr":"","May":"","Jun":"","Jul":"","Aug":"","Sep":"","Oct":"","Nov":"","Dec":""}},{"id":"O26001","name":"Harbour Bay Mall","location":"Simon's Town, WCP","capacity_kwp":484,"modules":1100,"contractor":"Solar Shine Solutions & FE","cleans_per_year":4,"partial_inspections":4,"annual_inspection":1,"monthly_income":null,"annual_sla":0,"annual_cost":32678.4,"months":{"Jan":"","Feb":"","Mar":"1 cln 1 F Insp","Apr":"","May":"","Jun":"2 cln Insp","Jul":"","Aug":"","Sep":"2 cln Insp","Oct":"","Nov":"","Dec":"2 cln Insp"}},{"id":"O26002","name":"The Walk Shopping Centre","location":"Bloemfontein, FS","capacity_kwp":"369.82","modules":902,"contractor":"Solar Panel Cleaners & FE","cleans_per_year":4,"partial_inspections":4,"annual_inspection":1,"monthly_income":null,"annual_sla":0,"annual_cost":null,"months":{"Jan":"","Feb":"","Mar":"","Apr":"","May":"","Jun":"","Jul":"","Aug":"","Sep":"","Oct":"","Nov":"","Dec":""}}];
-const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-const STORAGE_KEY = "fe_om_dash_v3_2026";
-const TODAY = new Date();
-const CURRENT_MONTH_IDX = TODAY.getMonth();
-const CURRENT_YEAR = TODAY.getFullYear();
-const PLAN_YEAR = 2026;
-const monthIsPast = (idx) => (CURRENT_YEAR > PLAN_YEAR) || (CURRENT_YEAR === PLAN_YEAR && idx < CURRENT_MONTH_IDX);
-const monthIsCurrent = (idx) => (CURRENT_YEAR === PLAN_YEAR && idx === CURRENT_MONTH_IDX);
+// Pick up other people's changes when coming back to the tab
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState !== 'visible' || !currentUser) return;
+  if (Date.now() - lastLoadAt < 60000) return;
+  if (document.getElementById('modalPlant').classList.contains('show')) return;
+  loadData(true).catch(() => {});
+});
 
-let state = { sites: [], done: {} };
-let editingId = null;
-
-function saveState() { /* state is persisted via API calls */ }
-
-function parseActivity(code) {
-  if (!code) return null;
-  const c = code.trim();
-  const cleanMatch = c.match(/(\d+)\s*cln/i);
-  const cleanLabel = cleanMatch ? cleanMatch[0].replace(/\s+/g,' ').trim() : null;
-  let remainder = c.replace(/\d+\s*cln/i, '').trim();
-  let inspectionLabel = remainder || null;
-  const isAnnual = inspectionLabel ? /F\s*Insp/i.test(inspectionLabel) : false;
-  if (inspectionLabel && !/^\d/.test(inspectionLabel) && /Insp/i.test(inspectionLabel)) inspectionLabel = "1 " + inspectionLabel;
-  return { clean: cleanLabel, inspection: inspectionLabel, isAnnual };
+function renderUserMenu() {
+  document.getElementById('userMenu').style.display = 'flex';
+  document.getElementById('userEmail').textContent = currentUser.email;
+  document.getElementById('userRole').textContent = currentUser.role;
 }
+function applyRole() {
+  const v = isViewer();
+  document.getElementById('btnAdd').style.display = v ? 'none' : '';
+  document.getElementById('btnExportBackup').style.display = v ? 'none' : '';
+  document.getElementById('mapHint').style.display = v ? 'none' : '';
+  document.getElementById('footNote').textContent = v ? 'Read-only access. Click a site name to view its details.' : 'Click a chip to tick it off. Click a site name to edit it.';
+}
+document.getElementById('btnLogout').addEventListener('click', () => { localStorage.removeItem(TOKEN_KEY); window.location.href = '/login.html'; });
 
-// Decompose code into structured booleans for the modal
+// ============ Schedule model ============
+function scheduleFor(site, year) { return (site.schedules && site.schedules[String(year)]) || {}; }
+function hasPlan(site, year) { const s = scheduleFor(site, year); return MONTHS.some(m => (s[m] || '').trim()); }
+
+// Accepts both "Insp" and the "Inps" spelling found in the imported data
 function decomposeCode(code) {
   if (!code) return { cleanNum: 0, partial: false, annual: false };
-  const c = code.trim();
-  const cleanMatch = c.match(/(\d+)\s*cln/i);
-  const cleanNum = cleanMatch ? parseInt(cleanMatch[1]) : 0;
+  const c = String(code).trim();
+  const m = c.match(/(\d+)\s*cln/i);
   const remainder = c.replace(/\d+\s*cln/i, '').trim();
-  const annual = /F\s*Insp/i.test(remainder);
-  const partial = !annual && /Insp/i.test(remainder);
-  return { cleanNum, partial, annual };
+  const annual = /F\s*In(sp|ps)/i.test(remainder);
+  const partial = !annual && /In(sp|ps)/i.test(remainder);
+  return { cleanNum: m ? parseInt(m[1], 10) : 0, partial, annual };
 }
-
-// Build code from structured booleans
 function composeCode(cleanNum, partial, annual) {
   const parts = [];
-  if (cleanNum && cleanNum > 0) parts.push(cleanNum + " cln");
-  if (annual) parts.push("1 F Insp");
-  else if (partial) parts.push("1 Insp");
-  return parts.join(" ");
+  if (cleanNum > 0) parts.push(cleanNum + ' cln');
+  if (annual) parts.push('1 F Insp');
+  else if (partial) parts.push('1 Insp');
+  return parts.join(' ');
 }
 
-function doneKey(siteId, monthIdx, comp) { return siteId + "::" + monthIdx + "::" + comp; }
-function isDone(siteId, monthIdx, comp) { return !!state.done[doneKey(siteId, monthIdx, comp)]; }
-async function setDone(siteId, monthIdx, comp, val) {
-  if (window._isViewer) return;
-  const k = doneKey(siteId, monthIdx, comp);
-  if (val) state.done[k] = { at: new Date().toISOString() }; else delete state.done[k];
-  renderGrid(); renderKpis();
-  await apiFetch('/api/done', { method: 'POST', body: JSON.stringify({ site_id: siteId, month_idx: monthIdx, component: comp, done: val }) });
+function doneKey(siteId, year, monthIdx, comp) { return siteId + '::' + year + '::' + monthIdx + '::' + comp; }
+function doneRec(siteId, year, monthIdx, comp) { return state.done[doneKey(siteId, year, monthIdx, comp)] || null; }
+function monthIsPast(idx, year) { return year < CURRENT_YEAR || (year === CURRENT_YEAR && idx < CURRENT_MONTH_IDX); }
+function monthIsCurrent(idx, year) { return year === CURRENT_YEAR && idx === CURRENT_MONTH_IDX; }
+
+// Every activity for a site in a year, with its status
+function siteItems(site, year) {
+  const out = [];
+  const sched = scheduleFor(site, year);
+  MONTHS.forEach((m, idx) => {
+    const d = decomposeCode(sched[m]);
+    const push = (comp, kind, label) => {
+      const rec = doneRec(site.id, year, idx, comp);
+      const status = rec ? 'done' : monthIsPast(idx, year) ? 'overdue' : monthIsCurrent(idx, year) ? 'due' : 'upcoming';
+      out.push({ site, idx, comp, kind, label, status, rec });
+    };
+    if (d.cleanNum) push('cln', 'cln', 'Clean ' + d.cleanNum);
+    if (d.annual) push('insp', 'annual', 'Annual');
+    else if (d.partial) push('insp', 'insp', 'Partial');
+  });
+  return out;
 }
-function clearDoneForSite(siteId) { Object.keys(state.done).forEach(k => { if (k.startsWith(siteId + "::")) delete state.done[k]; }); }
 
-function toast(msg, warn) { const t = document.getElementById('toast'); t.textContent = msg; t.className = 'toast show' + (warn ? ' warn' : ''); setTimeout(() => { t.className = 'toast'; }, 2200); }
-function getRegion(loc) { if (!loc) return "Unknown"; const parts = loc.split(","); return (parts[parts.length-1] || "Unknown").trim(); }
+// Planned counts versus SLA. Annual inspections count towards the inspection total.
+function planVsSla(site, year) {
+  const items = siteItems(site, year);
+  const cleans = items.filter(i => i.kind === 'cln').length;
+  const partial = items.filter(i => i.kind === 'insp').length;
+  const annual = items.filter(i => i.kind === 'annual').length;
+  const slaC = site.cleans_per_year != null && site.cleans_per_year !== '' ? Number(site.cleans_per_year) : null;
+  const slaP = site.partial_inspections != null && site.partial_inspections !== '' ? Number(site.partial_inspections) : null;
+  const slaA = site.annual_inspection ? 1 : 0;
+  const slaInsp = slaP == null ? null : Math.max(slaP, slaA);
+  const hasSpec = slaC != null || slaP != null;
+  const cleanGap = slaC != null && cleans < slaC;
+  const inspGap = slaInsp != null && (partial + annual) < slaInsp;
+  const annualGap = hasSpec && slaA > 0 && annual < slaA;
+  let category;
+  if (!items.length) category = 'unplanned';
+  else if (!hasSpec) category = 'nospec';
+  else if (cleanGap || inspGap || annualGap) category = 'under';
+  else category = 'ok';
+  return { cleans, partial, annual, insp: partial + annual, slaC, slaInsp, slaA, hasSpec, cleanGap, inspGap, annualGap, category };
+}
 
-let activeStatus = "all", searchTerm = "", filterContractor = "", filterRegion = "";
+function provinceOf(loc) {
+  if (!loc) return 'Unknown';
+  const parts = String(loc).split(',');
+  const last = (parts[parts.length - 1] || '').trim();
+  return PROVINCE_MAP[last.toLowerCase()] || last || 'Unknown';
+}
 
-function filteredSites() {
+// ============ Filtering ============
+function baseFiltered() {
+  const q = searchTerm.trim().toLowerCase();
   return state.sites.filter(s => {
-    if (searchTerm) { const q = searchTerm.toLowerCase(); if (!(s.name||"").toLowerCase().includes(q) && !(s.location||"").toLowerCase().includes(q) && !String(s.id).includes(q)) return false; }
+    if (q && !(s.name || '').toLowerCase().includes(q) && !(s.location || '').toLowerCase().includes(q) && !String(s.id).toLowerCase().includes(q)) return false;
     if (filterContractor && s.contractor !== filterContractor) return false;
-    if (filterRegion && getRegion(s.location) !== filterRegion) return false;
-    if (activeStatus !== "all") {
-      let hit = false;
-      MONTHS.forEach((m, idx) => { const parts = parseActivity(s.months[m]); if (!parts) return;
-        ['cln','insp'].forEach(comp => {
-          if (comp === 'cln' && !parts.clean) return; if (comp === 'insp' && !parts.inspection) return;
-          const done = isDone(s.id, idx, comp);
-          if (activeStatus === "overdue" && monthIsPast(idx) && !done) hit = true;
-          if (activeStatus === "due" && monthIsCurrent(idx) && !done) hit = true;
-          if (activeStatus === "upcoming" && !monthIsPast(idx) && !monthIsCurrent(idx)) hit = true;
-        });
-      });
-      if (!hit) return false;
-    }
+    if (filterProvince && provinceOf(s.location) !== filterProvince) return false;
     return true;
   });
 }
-
-function computeKpis() {
-  let tcp=0, cd=0, tpp=0, pd=0, ap=0, ad=0, oc=0, dt=0;
-  state.sites.forEach(s => { MONTHS.forEach((m, idx) => {
-    const parts = parseActivity(s.months[m]); if (!parts) return;
-    if (parts.clean) { tcp++; const d=isDone(s.id, idx, 'cln'); if (d) cd++; if (monthIsPast(idx) && !d) oc++; if (monthIsCurrent(idx) && !d) dt++; }
-    if (parts.inspection) { const d=isDone(s.id, idx, 'insp'); if (parts.isAnnual) { ap++; if (d) ad++; } else { tpp++; if (d) pd++; } if (monthIsPast(idx) && !d) oc++; if (monthIsCurrent(idx) && !d) dt++; }
-  }); });
-  const tot = tcp+tpp+ap, done = cd+pd+ad, comp = tot>0 ? Math.round(done/tot*100) : 0;
-  return { sites: state.sites.length, totalCleansPlanned:tcp, cleansDone:cd, totalPartialPlanned:tpp, partialDone:pd, annualPlanned:ap, annualDone:ad, overdueCount:oc, dueThisMonth:dt, compliance:comp };
+function statusFiltered(sites) {
+  if (activeStatus === 'all') return sites;
+  return sites.filter(s => {
+    const items = siteItems(s, viewYear);
+    if (activeStatus === 'unplanned') return !items.length;
+    if (activeStatus === 'belowsla') return planVsSla(s, viewYear).category === 'under';
+    return items.some(i => i.status === activeStatus);
+  });
 }
 
+// ============ Utilities ============
+function escapeHtml(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+function toast(msg, warn) { const t = document.getElementById('toast'); t.textContent = msg; t.className = 'toast show' + (warn ? ' warn' : ''); clearTimeout(toast._t); toast._t = setTimeout(() => { t.className = 'toast'; }, 2600); }
+function fmtDate(d) { return d ? new Date(d).toLocaleDateString('en-ZA', { day:'numeric', month:'short', year:'numeric' }) : ''; }
+function fmtBytes(n) { if (n == null) return ''; if (n < 1024) return n + ' B'; if (n < 1048576) return (n/1024).toFixed(1) + ' KB'; return (n/1048576).toFixed(2) + ' MB'; }
+function pct(a, b) { return b > 0 ? Math.round(a / b * 100) : null; }
+function plural(n, one, many) { return n + ' ' + (n === 1 ? one : (many || one + 's')); }
+function downloadBlob(blob, name) { const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000); }
+
+// ============ Year controls ============
+function availableYears() {
+  const ys = new Set([CURRENT_YEAR, CURRENT_YEAR + 1, viewYear]);
+  state.sites.forEach(s => Object.keys(s.schedules || {}).forEach(y => { if (hasPlan(s, y)) ys.add(Number(y)); }));
+  Object.keys(state.done).forEach(k => { const y = Number(k.split('::')[1]); if (y) ys.add(y); });
+  const min = Math.min(...ys), max = Math.max(...ys) + 1;
+  const out = []; for (let y = min; y <= max; y++) out.push(y);
+  return out;
+}
+function renderYearControls() {
+  const years = availableYears();
+  const sel = document.getElementById('yearSelect');
+  sel.innerHTML = years.map(y => '<option value="' + y + '"' + (y === viewYear ? ' selected' : '') + '>' + y + '</option>').join('');
+  document.getElementById('yearPrev').disabled = viewYear <= years[0];
+  document.getElementById('yearNext').disabled = viewYear >= years[years.length - 1];
+  document.querySelectorAll('.yr').forEach(e => e.textContent = viewYear);
+  document.title = 'Forest Energy O&M Dashboard ' + viewYear;
+}
+function setYear(y) { viewYear = y; closeSelection(); renderAll(); }
+document.getElementById('yearSelect').addEventListener('change', e => setYear(Number(e.target.value)));
+document.getElementById('yearPrev').addEventListener('click', () => setYear(viewYear - 1));
+document.getElementById('yearNext').addEventListener('click', () => setYear(viewYear + 1));
+
+// ============ Filters UI ============
+function populateFilters() {
+  const contractors = [...new Set(state.sites.map(s => s.contractor).filter(Boolean))].sort();
+  const provinces = [...new Set(state.sites.map(s => provinceOf(s.location)))].sort();
+  if (filterContractor && !contractors.includes(filterContractor)) filterContractor = '';
+  if (filterProvince && !provinces.includes(filterProvince)) filterProvince = '';
+  document.getElementById('filterContractor').innerHTML = '<option value="">All contractors</option>' + contractors.map(c => '<option' + (c === filterContractor ? ' selected' : '') + '>' + escapeHtml(c) + '</option>').join('');
+  document.getElementById('filterProvince').innerHTML = '<option value="">All provinces</option>' + provinces.map(p => '<option' + (p === filterProvince ? ' selected' : '') + '>' + escapeHtml(p) + '</option>').join('');
+  window._contractors = contractors;
+}
+document.getElementById('search').addEventListener('input', e => { searchTerm = e.target.value; renderViews(); });
+document.getElementById('filterContractor').addEventListener('change', e => { filterContractor = e.target.value; renderViews(); });
+document.getElementById('filterProvince').addEventListener('change', e => { filterProvince = e.target.value; renderViews(); });
+document.querySelectorAll('#statusPills .pill').forEach(p => p.addEventListener('click', () => {
+  document.querySelectorAll('#statusPills .pill').forEach(x => x.classList.remove('active'));
+  p.classList.add('active'); activeStatus = p.dataset.filter; renderViews();
+}));
+
+// ============ KPIs ============
 function renderKpis() {
-  const k = computeKpis();
-  document.getElementById('kpis').innerHTML =
-    '<div class="kpi"><div class="lbl">Total Sites</div><div class="val">' + k.sites + '</div></div>'
-    + '<div class="kpi ' + (k.overdueCount>0?'warn':'good') + '"><div class="lbl">Overdue</div><div class="val">' + k.overdueCount + '</div><div class="sub">activities past month, not done</div></div>'
-    + '<div class="kpi"><div class="lbl">Due This Month</div><div class="val">' + k.dueThisMonth + '</div><div class="sub">' + MONTHS[CURRENT_MONTH_IDX] + ' ' + PLAN_YEAR + '</div></div>'
-    + '<div class="kpi"><div class="lbl">Cleans YTD</div><div class="val">' + k.cleansDone + '<span style="font-size:14px; color:#8ca6ae;">/' + k.totalCleansPlanned + '</span></div></div>'
-    + '<div class="kpi"><div class="lbl">Partial Insp YTD</div><div class="val">' + k.partialDone + '<span style="font-size:14px; color:#8ca6ae;">/' + k.totalPartialPlanned + '</span></div></div>'
-    + '<div class="kpi good"><div class="lbl">SLA Compliance</div><div class="val">' + k.compliance + '%</div><div class="sub">' + (k.cleansDone+k.partialDone+k.annualDone) + ' of ' + (k.totalCleansPlanned+k.totalPartialPlanned+k.annualPlanned) + ' done</div></div>';
+  const sites = baseFiltered();
+  const items = sites.flatMap(s => siteItems(s, viewYear));
+  const count = st => items.filter(i => i.status === st).length;
+  const overdue = count('overdue'), due = count('due'), done = count('done');
+  const overdueSites = new Set(items.filter(i => i.status === 'overdue').map(i => i.site.id)).size;
+  const planned = sites.filter(s => hasPlan(s, viewYear)).length;
+  const dueToDate = items.filter(i => monthIsPast(i.idx, viewYear) || monthIsCurrent(i.idx, viewYear));
+  const doneToDate = dueToDate.filter(i => i.status === 'done').length;
+  const delivery = pct(doneToDate, dueToDate.length);
+  const cl = items.filter(i => i.kind === 'cln'), ins = items.filter(i => i.kind !== 'cln');
+  const clDone = cl.filter(i => i.status === 'done').length, insDone = ins.filter(i => i.status === 'done').length;
+  const isCur = viewYear === CURRENT_YEAR;
+  const tile = (cls, lbl, val, sub, meter) => '<div class="kpi ' + cls + '"><div class="lbl">' + lbl + '</div><div class="val">' + val + '</div>' + (sub ? '<div class="sub">' + sub + '</div>' : '') + (meter != null ? '<div class="meter ' + (meter.cls || '') + '"><span style="width:' + Math.max(0, Math.min(100, meter.v)) + '%"></span></div>' : '') + '</div>';
+  let html = '';
+  html += tile('', 'Sites', sites.length, planned + ' with a ' + viewYear + ' plan' + (sites.length - planned ? ', <strong style="color:var(--danger)">' + (sites.length - planned) + ' without</strong>' : ''));
+  html += tile(overdue ? 'warn' : '', 'Overdue', overdue, overdue ? 'across ' + plural(overdueSites, 'site') : 'nothing outstanding');
+  if (isCur) html += tile(due ? 'attn' : '', 'Due in ' + MONTH_NAMES[CURRENT_MONTH_IDX], due, plural(items.filter(i => monthIsCurrent(i.idx, viewYear)).length, 'activity', 'activities') + ' scheduled');
+  else html += tile('', viewYear > CURRENT_YEAR ? 'Planned for ' + viewYear : 'Scheduled in ' + viewYear, items.length, 'cleans and inspections');
+  html += tile(delivery != null && delivery < 80 ? 'warn' : '', 'Delivered to date', delivery == null ? '<small>n/a</small>' : delivery + '%', delivery == null ? 'nothing due yet' : doneToDate + ' of ' + dueToDate.length + ' due so far', delivery == null ? null : { v: delivery, cls: delivery < 80 ? 'warn' : '' });
+  html += tile('', 'Cleans done', clDone + '<small> / ' + cl.length + '</small>', 'planned for ' + viewYear, { v: pct(clDone, cl.length) || 0 });
+  html += tile('', 'Inspections done', insDone + '<small> / ' + ins.length + '</small>', ins.filter(i => i.kind === 'annual').length + ' of them full annual', { v: pct(insDone, ins.length) || 0 });
+  document.getElementById('kpis').innerHTML = html;
 }
 
-function chipHtml(label, baseCls, sid, midx, comp) {
-  const done = isDone(sid, midx, comp); const overdue = !done && monthIsPast(midx);
-  let cls = 'chip ' + baseCls; if (done) cls = 'chip done'; else if (overdue) cls = 'chip overdue';
-  const tt = done?'Done - click to undo':overdue?'OVERDUE - click to mark done':'Click to mark done';
-  return '<span class="' + cls + '" data-comp="' + comp + '" title="' + tt + '">' + escapeHtml(label) + '</span>';
+// ============ Calendar ============
+function siteStatusDot(items) {
+  if (!items.length) return '<span class="dot none" title="Nothing planned this year"></span>';
+  if (items.some(i => i.status === 'overdue')) return '<span class="dot overdue" title="Has overdue work"></span>';
+  if (items.some(i => i.status === 'due')) return '<span class="dot due" title="Work due this month"></span>';
+  if (items.every(i => i.status === 'done')) return '<span class="dot ok" title="All done"></span>';
+  return '<span class="dot" title="On track"></span>';
 }
-
+function planCell(p) {
+  if (p.category === 'unplanned') return '<span class="na">Nothing planned</span>';
+  const line = (lbl, have, need, gap) => lbl + ' ' + (need == null ? have + ' <span class="na">/ ?</span>' : '<span class="' + (gap ? 'gap' : '') + '">' + have + ' / ' + need + '</span>');
+  return line('Cln', p.cleans, p.slaC, p.cleanGap) + '<br>' + line('Insp', p.insp, p.slaInsp, p.inspGap || p.annualGap);
+}
+function chipHtml(item) {
+  let cls = 'chip ' + item.kind; let tt;
+  const when = MONTH_NAMES[item.idx] + ' ' + viewYear;
+  if (item.status === 'done') { cls = 'chip done'; tt = 'Done ' + fmtDate(item.rec.at) + (item.rec.by ? ' by ' + item.rec.by : ''); }
+  else if (item.status === 'overdue') { cls = 'chip overdue'; tt = 'Overdue, scheduled for ' + when; }
+  else tt = 'Scheduled for ' + when;
+  if (!isViewer()) tt += item.status === 'done' ? '. Click to undo.' : '. Click to mark done.';
+  return '<span class="' + cls + '" data-comp="' + item.comp + '" title="' + escapeHtml(tt) + '">' + escapeHtml(item.label) + '</span>';
+}
 function renderGrid() {
   const grid = document.getElementById('grid');
-  const sites = filteredSites();
-  let html = '<colgroup><col class="c-id"><col class="c-name"><col class="c-loc"><col class="c-cont"><col class="c-kwp">';
-  for (let i=0;i<12;i++) html += '<col class="c-month">';
-  html += '</colgroup><thead><tr><th class="s-id">ID</th><th class="s-name">Site</th><th>Location</th><th>Contractor</th><th>kWp</th>';
-  MONTHS.forEach((m, idx) => { let cls = 'month'; if (monthIsPast(idx)) cls += ' past'; if (monthIsCurrent(idx)) cls += ' current'; html += '<th class="' + cls + '">' + m + '</th>'; });
+  const sites = statusFiltered(baseFiltered());
+  const ro = isViewer();
+  let html = '<colgroup><col class="c-id"><col class="c-name"><col class="c-loc"><col class="c-cont"><col class="c-kwp"><col class="c-plan">';
+  for (let i = 0; i < 12; i++) html += '<col class="c-month">';
+  html += '</colgroup><thead><tr><th class="s-id left">ID</th><th class="s-name left">Site</th><th class="left">Location</th><th class="left">Contractor</th><th>kWp</th><th class="divider" title="Planned this year versus SLA requirement">Plan / SLA</th>';
+  MONTHS.forEach((m, idx) => {
+    let cls = 'month';
+    if (monthIsPast(idx, viewYear)) cls += ' past';
+    if (monthIsCurrent(idx, viewYear)) cls += ' current';
+    html += '<th class="' + cls + '">' + m + (monthIsCurrent(idx, viewYear) ? '<small>THIS MONTH</small>' : '') + '</th>';
+  });
   html += '</tr></thead><tbody>';
+  if (!sites.length) html += '<tr><td colspan="18" class="empty-state">No sites match these filters.</td></tr>';
   sites.forEach(s => {
-    html += '<tr><td class="s-id">' + s.id + '</td><td class="s-name" data-edit-site="' + s.id + '" title="Click to edit"><strong>' + escapeHtml(s.name||'') + '</strong>' + (s.sla_filename ? '<span class="sla-clip" title="SLA: ' + escapeHtml(s.sla_filename) + '">📎</span>' : '') + '<span class="edit-hint">edit</span>' + '</td><td>' + escapeHtml(s.location||'') + '</td><td>' + escapeHtml(s.contractor||'') + '</td><td class="s-kwp">' + (s.capacity_kwp||'') + '</td>';
+    const items = siteItems(s, viewYear);
+    const p = planVsSla(s, viewYear);
+    html += '<tr><td class="s-id">' + escapeHtml(s.id) + '</td>'
+      + '<td class="s-name" data-edit-site="' + escapeHtml(s.id) + '" title="' + (ro ? 'View details' : 'Edit site and schedule') + '"><div class="nm">' + siteStatusDot(items) + '<strong>' + escapeHtml(s.name) + '</strong>'
+      + (s.sla_filename ? '<span class="clip" title="SLA on file: ' + escapeHtml(s.sla_filename) + '">&#128206;</span>' : '') + '</div></td>'
+      + '<td class="s-loc" title="' + escapeHtml(s.location) + '">' + escapeHtml(s.location) + '</td>'
+      + '<td class="s-cont" title="' + escapeHtml(s.contractor) + '">' + escapeHtml(s.contractor) + '</td>'
+      + '<td class="s-kwp">' + escapeHtml(s.capacity_kwp != null ? s.capacity_kwp : '') + '</td>'
+      + '<td class="s-plan">' + planCell(p) + '</td>';
     MONTHS.forEach((m, idx) => {
-      const code = (s.months[m]||'').trim();
-      if (!code) html += '<td class="month-cell empty" data-site="' + s.id + '" data-month="' + idx + '" title="Empty - click to schedule"></td>';
-      else {
-        const p = parseActivity(code);
-        let cell = '<td class="month-cell" data-site="' + s.id + '" data-month="' + idx + '"><div class="chip-stack">';
-        if (p.clean) cell += chipHtml(p.clean, 'cln', s.id, idx, 'cln');
-        if (p.inspection) cell += chipHtml(p.inspection, p.isAnnual ? 'annual' : 'insp', s.id, idx, 'insp');
-        cell += '</div></td>'; html += cell;
-      }
+      const colCls = monthIsCurrent(idx, viewYear) ? ' cur-col' : monthIsPast(idx, viewYear) ? ' past-col' : '';
+      const mi = items.filter(i => i.idx === idx);
+      if (!mi.length) html += '<td class="month-cell empty' + colCls + (ro ? ' ro' : '') + '" data-site="' + escapeHtml(s.id) + '" data-month="' + idx + '"' + (ro ? '' : ' title="Click to schedule"') + '></td>';
+      else html += '<td class="month-cell' + colCls + (ro ? ' ro' : '') + '" data-site="' + escapeHtml(s.id) + '" data-month="' + idx + '"><div class="chip-stack">' + mi.map(chipHtml).join('') + '</div></td>';
     });
     html += '</tr>';
   });
   html += '</tbody>';
   grid.innerHTML = html;
+  const total = baseFiltered().length;
+  document.getElementById('siteCount').innerHTML = 'Showing <strong>' + sites.length + '</strong> of ' + state.sites.length + ' sites' + (total !== state.sites.length && sites.length === total ? '' : '');
+}
+document.getElementById('grid').addEventListener('click', e => {
+  const chip = e.target.closest('span.chip[data-comp]');
+  if (chip) {
+    if (isViewer()) return;
+    const td = chip.closest('td');
+    const site = state.sites.find(s => String(s.id) === td.dataset.site);
+    const idx = parseInt(td.dataset.month, 10);
+    const comp = chip.dataset.comp;
+    const rec = doneRec(site.id, viewYear, idx, comp);
+    if (rec && !confirm('Mark ' + chip.textContent.replace(/^✓\s*/, '') + ' at ' + site.name + ' (' + MONTHS[idx] + ' ' + viewYear + ') as NOT done?\n\nIt was ticked ' + fmtDate(rec.at) + (rec.by ? ' by ' + rec.by : '') + '.')) return;
+    setDone(site, viewYear, idx, comp, !rec);
+    return;
+  }
+  const emptyCell = e.target.closest('td.month-cell.empty');
+  if (emptyCell) { if (!isViewer()) openEditModal(emptyCell.dataset.site); return; }
+  const nameCell = e.target.closest('td.s-name[data-edit-site]');
+  if (nameCell) openEditModal(nameCell.dataset.editSite);
+});
 
-  grid.querySelectorAll('span.chip[data-comp]').forEach(chip => {
-    chip.addEventListener('click', e => { e.stopPropagation(); const td = chip.closest('td'); const sid = td.dataset.site; const midx = parseInt(td.dataset.month); const comp = chip.dataset.comp;
-      const currently = isDone(sid, midx, comp); setDone(sid, midx, comp, !currently); renderAll(); toast(currently ? "Marked as not done" : "Marked as done");
+async function setDone(site, year, idx, comp, val) {
+  const k = doneKey(site.id, year, idx, comp);
+  const prev = state.done[k];
+  if (val) state.done[k] = { at: new Date().toISOString(), by: currentUser.email }; else delete state.done[k];
+  renderViews();
+  try {
+    const res = await apiFetch('/api/done', { method:'POST', body: JSON.stringify({ site_id: site.id, year, month_idx: idx, component: comp, done: val }) });
+    if (!res) return;
+    if (!res.ok) throw new Error(await apiError(res, 'Save failed'));
+    const j = await res.json();
+    if (val && j.at) state.done[k] = { at: j.at, by: j.by || currentUser.email };
+    toast(val ? 'Marked done: ' + site.name + ', ' + MONTHS[idx] : 'Marked not done: ' + site.name + ', ' + MONTHS[idx]);
+  } catch (err) {
+    if (prev) state.done[k] = prev; else delete state.done[k];
+    renderViews();
+    toast('Not saved: ' + err.message + '. Change undone.', true);
+  }
+}
+
+// Offer to copy last year's plan into an empty year
+function renderCopyBanner() {
+  const b = document.getElementById('copyBanner');
+  const from = viewYear - 1;
+  const candidates = state.sites.filter(s => !hasPlan(s, viewYear) && hasPlan(s, from));
+  if (isViewer() || !candidates.length) { b.style.display = 'none'; return; }
+  b.style.display = 'flex';
+  b.innerHTML = '<span><strong>' + plural(candidates.length, 'site') + '</strong> ' + (candidates.length === 1 ? 'has' : 'have') + ' a ' + from + ' plan but nothing planned for ' + viewYear + '. Copy the ' + from + ' months across as a starting point? Sites that already have a ' + viewYear + ' plan are left alone, and no ticks are copied.</span><button id="btnCopyYear">Copy ' + from + ' plan into ' + viewYear + '</button>';
+  document.getElementById('btnCopyYear').addEventListener('click', async () => {
+    if (!confirm('Copy the ' + from + ' schedule into ' + viewYear + ' for ' + plural(candidates.length, 'site') + '?\n\nOnly sites with nothing planned for ' + viewYear + ' are affected. You can adjust each site afterwards.')) return;
+    const res = await apiFetch('/api/sites/copy-year', { method:'POST', body: JSON.stringify({ from, to: viewYear }) });
+    if (!res) return;
+    if (!res.ok) { toast(await apiError(res, 'Copy failed'), true); return; }
+    const j = await res.json();
+    mergeSites(j.sites);
+    renderAll();
+    toast('Copied ' + from + ' plan into ' + viewYear + ' for ' + plural(j.count, 'site'));
+  });
+}
+function mergeSites(updated) {
+  (updated || []).forEach(u => {
+    const i = state.sites.findIndex(s => String(s.id) === String(u.id));
+    if (i >= 0) state.sites[i] = u; else state.sites.push(u);
+  });
+}
+
+// ============ Charts ============
+const tooltip = document.getElementById('tooltip');
+function showTooltip(evt, title, rows, extra) {
+  tooltip.textContent = '';
+  const t = document.createElement('div'); t.className = 'tt-title'; t.textContent = title; tooltip.appendChild(t);
+  const addRows = list => list.forEach(r => {
+    const row = document.createElement('div'); row.className = 'tt-row';
+    if (r.color) { const k = document.createElement('span'); k.className = 'key'; k.style.background = r.color; row.appendChild(k); }
+    const v = document.createElement('span'); v.className = 'v'; v.textContent = r.value; row.appendChild(v);
+    const n = document.createElement('span'); n.className = 'n'; n.textContent = r.label; row.appendChild(n);
+    tooltip.appendChild(row);
+  });
+  addRows(rows);
+  if (extra && extra.length) { const sep = document.createElement('div'); sep.className = 'tt-sep'; tooltip.appendChild(sep); addRows(extra); }
+  tooltip.style.display = 'block';
+  positionTooltip(evt);
+}
+function positionTooltip(evt) {
+  let x, y;
+  if (evt.clientX != null && evt.type !== 'focus') { x = evt.clientX; y = evt.clientY; }
+  else { const r = evt.target.getBoundingClientRect(); x = r.left + r.width / 2; y = r.top; }
+  const w = tooltip.offsetWidth, h = tooltip.offsetHeight;
+  let left = x + 14, top = y + 14;
+  if (left + w > window.innerWidth - 8) left = x - w - 14;
+  if (top + h > window.innerHeight - 8) top = y - h - 14;
+  tooltip.style.left = Math.max(8, left) + 'px'; tooltip.style.top = Math.max(8, top) + 'px';
+}
+function hideTooltip() { tooltip.style.display = 'none'; }
+
+function niceScale(max) {
+  const raw = Math.max(1, max) / 4;
+  const p = Math.pow(10, Math.floor(Math.log10(raw)));
+  const n = raw / p;
+  const step = Math.max(1, (n <= 1 ? 1 : n <= 2 ? 2 : n <= 5 ? 5 : 10) * p);
+  return { step, top: Math.ceil(Math.max(1, max) / step) * step };
+}
+// Rect with rounded data-end; square at the baseline
+function barPath(x, y, w, h, dir, r) {
+  r = Math.min(r, h / 2, w / 2);
+  if (h <= 0 || w <= 0) return '';
+  if (dir === 'up') return 'M' + x + ',' + (y + h) + 'V' + (y + r) + 'Q' + x + ',' + y + ' ' + (x + r) + ',' + y + 'H' + (x + w - r) + 'Q' + (x + w) + ',' + y + ' ' + (x + w) + ',' + (y + r) + 'V' + (y + h) + 'Z';
+  return 'M' + x + ',' + y + 'H' + (x + w - r) + 'Q' + (x + w) + ',' + y + ' ' + (x + w) + ',' + (y + r) + 'V' + (y + h - r) + 'Q' + (x + w) + ',' + (y + h) + ' ' + (x + w - r) + ',' + (y + h) + 'H' + x + 'Z';
+}
+function legendHtml() { return STATUSES.map(s => '<span><span class="sw" style="background:' + s.color + '"></span>' + s.label + '</span>').join(''); }
+const tableMode = { monthly:false, contractor:false, province:false };
+document.querySelectorAll('[data-table-toggle]').forEach(b => b.addEventListener('click', () => {
+  const k = b.dataset.tableToggle; tableMode[k] = !tableMode[k];
+  b.textContent = tableMode[k] ? 'Show chart' : 'Show table';
+  renderInsights();
+}));
+function statusCounts(items) { const c = { done:0, overdue:0, due:0, upcoming:0 }; items.forEach(i => c[i.status]++); return c; }
+function statusTable(firstCol, rows) {
+  let h = '<table class="tbl"><thead><tr><th>' + firstCol + '</th>' + STATUSES.map(s => '<th class="num">' + s.label + '</th>').join('') + '<th class="num">Total</th><th class="num">Delivered to date</th></tr></thead><tbody>';
+  rows.forEach(r => {
+    const tot = STATUSES.reduce((a, s) => a + r.c[s.key], 0);
+    const dueSoFar = r.c.done + r.c.overdue + r.c.due;
+    const p = pct(r.c.done, dueSoFar);
+    h += '<tr><td>' + escapeHtml(r.label) + '</td>' + STATUSES.map(s => '<td class="num">' + r.c[s.key] + '</td>').join('') + '<td class="num"><strong>' + tot + '</strong></td><td class="num">' + (p == null ? '-' : p + '%') + '</td></tr>';
+  });
+  return h + '</tbody></table>';
+}
+
+function renderMonthlyChart(el, items) {
+  const rows = MONTHS.map((m, idx) => {
+    const mi = items.filter(i => i.idx === idx);
+    return { label: m, idx, c: statusCounts(mi), kinds: { cln: mi.filter(i => i.kind === 'cln').length, insp: mi.filter(i => i.kind === 'insp').length, annual: mi.filter(i => i.kind === 'annual').length } };
+  });
+  if (tableMode.monthly) { el.innerHTML = statusTable('Month', rows.map(r => ({ label: MONTH_NAMES[r.idx], c: r.c }))); return; }
+  const W = Math.max(320, el.clientWidth || 800), H = 270, m = { t: 22, r: 8, b: 30, l: 34 };
+  const iw = W - m.l - m.r, ih = H - m.t - m.b;
+  const totals = rows.map(r => STATUSES.reduce((a, s) => a + r.c[s.key], 0));
+  const { step, top } = niceScale(Math.max(...totals));
+  const y = v => m.t + ih - v / top * ih;
+  const band = iw / 12, bw = Math.min(28, band * 0.56);
+  let s = '<svg class="chart" viewBox="0 0 ' + W + ' ' + H + '" height="' + H + '" role="img" aria-label="Monthly workload by status for ' + viewYear + '">';
+  for (let v = 0; v <= top; v += step) s += '<line class="grid-line" x1="' + m.l + '" x2="' + (W - m.r) + '" y1="' + y(v) + '" y2="' + y(v) + '"/><text x="' + (m.l - 8) + '" y="' + (y(v) + 4) + '" text-anchor="end">' + v + '</text>';
+  rows.forEach((r, i) => {
+    const x = m.l + band * i + (band - bw) / 2;
+    const segs = STATUSES.filter(st => r.c[st.key] > 0);
+    let base = 0;
+    segs.forEach((st, j) => {
+      const v = r.c[st.key];
+      const y0 = y(base), y1 = y(base + v);
+      base += v;
+      const gap = j > 0 ? 2 : 0;
+      const h = y0 - y1 - gap;
+      if (h <= 0) return;
+      s += j === segs.length - 1 ? '<path d="' + barPath(x, y1, bw, h, 'up', 4) + '" fill="' + st.color + '"/>' : '<rect x="' + x + '" y="' + y1 + '" width="' + bw + '" height="' + h + '" fill="' + st.color + '"/>';
     });
+    if (totals[i]) s += '<text class="cap" x="' + (x + bw / 2) + '" y="' + (y(totals[i]) - 6) + '" text-anchor="middle">' + totals[i] + '</text>';
+    const cur = monthIsCurrent(r.idx, viewYear);
+    s += '<text class="xl' + (cur ? ' cur' : '') + '" x="' + (x + bw / 2) + '" y="' + (H - 10) + '" text-anchor="middle">' + r.label + '</text>';
+    s += '<rect class="hit" tabindex="0" data-i="' + i + '" x="' + (m.l + band * i) + '" y="' + m.t + '" width="' + band + '" height="' + ih + '" rx="4"/>';
   });
-  grid.querySelectorAll('td.month-cell.empty').forEach(td => {
-    td.addEventListener('click', () => { const sid = td.dataset.site; const midx = parseInt(td.dataset.month); const site = state.sites.find(x => x.id == sid); if (!site) return; openEditModal(sid); });
-  });
-  grid.querySelectorAll('td.s-name[data-edit-site]').forEach(td => {
-    td.addEventListener('click', () => openEditModal(td.dataset.editSite));
+  s += '<line class="axis-line" x1="' + m.l + '" x2="' + (W - m.r) + '" y1="' + y(0) + '" y2="' + y(0) + '"/></svg>';
+  el.innerHTML = s;
+  el.querySelectorAll('.hit').forEach(h => {
+    const r = rows[+h.dataset.i];
+    const show = e => showTooltip(e, MONTH_NAMES[r.idx] + ' ' + viewYear,
+      STATUSES.filter(st => r.c[st.key]).map(st => ({ color: st.color, value: r.c[st.key], label: st.label })).concat(totals[+h.dataset.i] ? [] : [{ value: 0, label: 'Nothing scheduled' }]),
+      Object.keys(r.kinds).filter(k => r.kinds[k]).map(k => ({ value: r.kinds[k], label: KIND_LABEL[k] })));
+    h.addEventListener('pointermove', show); h.addEventListener('focus', show);
+    h.addEventListener('pointerleave', hideTooltip); h.addEventListener('blur', hideTooltip);
   });
 }
 
-function escapeHtml(s) { return String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
-
-function populateFilters() {
-  const contractors = [...new Set(state.sites.map(s => s.contractor).filter(Boolean))].sort();
-  const regions = [...new Set(state.sites.map(s => getRegion(s.location)).filter(Boolean))].sort();
-  document.getElementById('filterContractor').innerHTML = '<option value="">All contractors</option>' + contractors.map(c => '<option>' + escapeHtml(c) + '</option>').join('');
-  document.getElementById('filterRegion').innerHTML = '<option value="">All regions</option>' + regions.map(r => '<option>' + escapeHtml(r) + '</option>').join('');
-  window._contractors = contractors;
+function renderStackedRows(el, rows, unit) {
+  if (!rows.length) { el.innerHTML = '<div class="empty-state">Nothing scheduled for these filters.</div>'; return; }
+  const W = Math.max(320, el.clientWidth || 500), rowH = 34, m = { t: 6, r: 96, b: 22, l: Math.min(190, Math.max(110, W * 0.32)) };
+  const H = m.t + m.b + rows.length * rowH;
+  const iw = W - m.l - m.r;
+  const totals = rows.map(r => STATUSES.reduce((a, s) => a + r.c[s.key], 0));
+  const { step, top } = niceScale(Math.max(...totals));
+  const x = v => m.l + v / top * iw;
+  let s = '<svg class="chart" viewBox="0 0 ' + W + ' ' + H + '" height="' + H + '" role="img" aria-label="Activities by ' + unit + ' and status">';
+  for (let v = 0; v <= top; v += step) s += '<line class="grid-line" x1="' + x(v) + '" x2="' + x(v) + '" y1="' + m.t + '" y2="' + (H - m.b) + '"/><text x="' + x(v) + '" y="' + (H - 6) + '" text-anchor="middle">' + v + '</text>';
+  rows.forEach((r, i) => {
+    const cy = m.t + i * rowH + rowH / 2, bh = 16, by = cy - bh / 2;
+    const segs = STATUSES.filter(st => r.c[st.key] > 0);
+    let base = 0;
+    segs.forEach((st, j) => {
+      const v = r.c[st.key];
+      const x0 = x(base) + (j > 0 ? 2 : 0), x1 = x(base + v);
+      base += v;
+      if (x1 - x0 <= 0) return;
+      s += j === segs.length - 1 ? '<path d="' + barPath(x0, by, x1 - x0, bh, 'right', 4) + '" fill="' + st.color + '"/>' : '<rect x="' + x0 + '" y="' + by + '" width="' + (x1 - x0) + '" height="' + bh + '" fill="' + st.color + '"/>';
+    });
+    const maxChars = Math.floor((m.l - 14) / 6.6);
+    const label = r.label.length > maxChars ? r.label.slice(0, maxChars - 1) + '…' : r.label;
+    s += '<text class="rowlbl" x="' + (m.l - 10) + '" y="' + (cy + 4) + '" text-anchor="end">' + escapeHtml(label) + '</text>';
+    const dueSoFar = r.c.done + r.c.overdue + r.c.due;
+    s += '<text class="cap" x="' + (x(totals[i]) + 8) + '" y="' + (cy + 4) + '">' + r.c.done + ' of ' + totals[i] + ' done</text>';
+    s += '<rect class="hit" tabindex="0" data-i="' + i + '" x="0" y="' + (cy - rowH / 2) + '" width="' + W + '" height="' + rowH + '" rx="4"/>';
+  });
+  s += '<line class="axis-line" x1="' + m.l + '" x2="' + m.l + '" y1="' + m.t + '" y2="' + (H - m.b) + '"/></svg>';
+  el.innerHTML = s;
+  el.querySelectorAll('.hit').forEach(h => {
+    const r = rows[+h.dataset.i];
+    const dueSoFar = r.c.done + r.c.overdue + r.c.due;
+    const p = pct(r.c.done, dueSoFar);
+    const show = e => showTooltip(e, r.label,
+      STATUSES.filter(st => r.c[st.key]).map(st => ({ color: st.color, value: r.c[st.key], label: st.label })),
+      [{ value: p == null ? '-' : p + '%', label: 'delivered of work due so far' }, { value: r.sites, label: r.sites === 1 ? 'site' : 'sites' }]);
+    h.addEventListener('pointermove', show); h.addEventListener('focus', show);
+    h.addEventListener('pointerleave', hideTooltip); h.addEventListener('blur', hideTooltip);
+  });
+}
+function groupRows(sites, keyFn) {
+  const g = {};
+  sites.forEach(s => {
+    const k = keyFn(s) || 'Unassigned';
+    if (!g[k]) g[k] = { label: k, items: [], sites: 0 };
+    g[k].items.push(...siteItems(s, viewYear)); g[k].sites++;
+  });
+  return Object.values(g).map(r => ({ label: r.label, sites: r.sites, c: statusCounts(r.items) }))
+    .filter(r => STATUSES.some(s => r.c[s.key]))
+    .sort((a, b) => STATUSES.reduce((t, s) => t + b.c[s.key], 0) - STATUSES.reduce((t, s) => t + a.c[s.key], 0));
 }
 
-function renderAll() { renderKpis(); populateFilters(); document.getElementById('filterContractor').value = filterContractor; document.getElementById('filterRegion').value = filterRegion; renderGrid(); }
+function renderCoverage(sites) {
+  const rows = sites.map(s => ({ s, p: planVsSla(s, viewYear) }));
+  const cats = [
+    { key:'ok', label:'Plan meets SLA' },
+    { key:'under', label:'Plan below SLA' },
+    { key:'nospec', label:'No SLA terms captured' },
+    { key:'unplanned', label:'Nothing planned' }
+  ];
+  const n = k => rows.filter(r => r.p.category === k).length;
+  if (!['issues', 'ok', 'under', 'nospec', 'unplanned'].includes(coverageFilter)) coverageFilter = 'issues';
+  document.getElementById('coverageTiles').innerHTML = cats.map(c => '<button class="tile' + (coverageFilter === c.key ? ' active' : '') + '" data-cov="' + c.key + '"><div class="v">' + n(c.key) + '</div><div class="l">' + c.label + '</div></button>').join('')
+    + '<button class="tile' + (coverageFilter === 'issues' ? ' active' : '') + '" data-cov="issues"><div class="v">' + (rows.length - n('ok')) + '</div><div class="l">All needing attention</div></button>';
+  document.querySelectorAll('#coverageTiles .tile').forEach(t => t.addEventListener('click', () => { coverageFilter = t.dataset.cov; renderCoverage(baseFiltered()); }));
+  const list = rows.filter(r => coverageFilter === 'issues' ? r.p.category !== 'ok' : r.p.category === coverageFilter)
+    .sort((a, b) => cats.findIndex(c => c.key === a.p.category) - cats.findIndex(c => c.key === b.p.category) || String(a.s.name).localeCompare(b.s.name));
+  const tagFor = { ok:'<span class="tag">Meets SLA</span>', under:'<span class="tag red">Below SLA</span>', nospec:'<span class="tag amber">No SLA terms</span>', unplanned:'<span class="tag red">Nothing planned</span>' };
+  const cell = (have, need, gap) => need == null ? have + ' <span style="color:var(--ink-3)">/ ?</span>' : '<span class="' + (gap ? 'gap' : '') + '">' + have + ' / ' + need + '</span>';
+  let h = '<table class="tbl"><thead><tr><th>Site</th><th>Contractor</th><th>Province</th><th class="num">Cleans planned / SLA</th><th class="num">Inspections planned / SLA</th><th class="num">Full annual</th><th>Status</th></tr></thead><tbody>';
+  if (!list.length) h += '<tr><td colspan="7" class="empty-state">No sites in this group.</td></tr>';
+  list.forEach(({ s, p }) => {
+    h += '<tr class="click" data-site="' + escapeHtml(s.id) + '"><td><strong style="color:var(--fe-blue)">' + escapeHtml(s.name) + '</strong> <span style="color:var(--ink-3); font-size:11px">' + escapeHtml(s.id) + '</span></td><td>' + escapeHtml(s.contractor) + '</td><td>' + escapeHtml(provinceOf(s.location)) + '</td>'
+      + '<td class="num">' + cell(p.cleans, p.slaC, p.cleanGap) + '</td><td class="num">' + cell(p.insp, p.slaInsp, p.inspGap) + '</td><td class="num">' + cell(p.annual, p.hasSpec ? p.slaA : null, p.annualGap) + '</td><td>' + tagFor[p.category] + '</td></tr>';
+  });
+  document.getElementById('coverageTable').innerHTML = h + '</tbody></table>';
+  document.querySelectorAll('#coverageTable tr.click').forEach(tr => tr.addEventListener('click', () => openEditModal(tr.dataset.site)));
+}
 
-document.getElementById('search').addEventListener('input', e => { searchTerm = e.target.value; renderGrid(); });
-document.getElementById('filterContractor').addEventListener('change', e => { filterContractor = e.target.value; renderGrid(); });
-document.getElementById('filterRegion').addEventListener('change', e => { filterRegion = e.target.value; renderGrid(); });
-document.querySelectorAll('.pill').forEach(p => { p.addEventListener('click', () => { document.querySelectorAll('.pill').forEach(x => x.classList.remove('active')); p.classList.add('active'); activeStatus = p.dataset.filter; renderGrid(); }); });
-document.querySelector('.pill[data-filter="all"]').classList.add('active');
+function renderInsights() {
+  const sites = baseFiltered();
+  const items = sites.flatMap(s => siteItems(s, viewYear));
+  document.getElementById('chMonthlyTitle').textContent = 'Monthly workload, ' + viewYear;
+  document.getElementById('chCoverageTitle').textContent = 'Plan versus SLA, ' + viewYear;
+  ['lgMonthly', 'lgContractor', 'lgProvince'].forEach(id => document.getElementById(id).innerHTML = legendHtml());
+  renderMonthlyChart(document.getElementById('chMonthly'), items);
+  const contractorRows = groupRows(sites, s => s.contractor);
+  const provinceRows = groupRows(sites, s => provinceOf(s.location));
+  if (tableMode.contractor) document.getElementById('chContractor').innerHTML = statusTable('Contractor', contractorRows);
+  else renderStackedRows(document.getElementById('chContractor'), contractorRows, 'contractor');
+  if (tableMode.province) document.getElementById('chProvince').innerHTML = statusTable('Province', provinceRows);
+  else renderStackedRows(document.getElementById('chProvince'), provinceRows, 'province');
+  renderCoverage(sites);
+  document.getElementById('siteCount').innerHTML = 'Showing <strong>' + sites.length + '</strong> of ' + state.sites.length + ' sites';
+}
+let resizeT;
+window.addEventListener('resize', () => { clearTimeout(resizeT); resizeT = setTimeout(() => { if (activeView === 'insights') renderInsights(); }, 150); });
 
-// Build the per-month tile UI
-function buildMonthTiles() {
+// ============ View switching ============
+function renderAll() { renderYearControls(); populateFilters(); renderViews(); }
+function renderViews() {
+  renderKpis();
+  document.getElementById('statusPills').style.display = activeView === 'calendar' ? '' : 'none';
+  if (activeView === 'calendar') { renderCopyBanner(); renderGrid(); }
+  else if (activeView === 'insights') renderInsights();
+  else if (activeView === 'map') refreshMapMarkers();
+}
+document.querySelectorAll('.seg button[data-view]').forEach(b => b.addEventListener('click', () => {
+  activeView = b.dataset.view;
+  document.querySelectorAll('.seg button[data-view]').forEach(x => x.classList.toggle('active', x === b));
+  document.getElementById('calendarView').classList.toggle('show', activeView === 'calendar');
+  document.getElementById('insightsView').classList.toggle('show', activeView === 'insights');
+  document.getElementById('mapView').classList.toggle('show', activeView === 'map');
+  hideTooltip();
+  if (activeView === 'map') setTimeout(() => { initMap(); renderViews(); leafletMap.invalidateSize(); }, 30);
+  else renderViews();
+}));
+
+// ============ Export ============
+const exportMenu = document.getElementById('exportMenu');
+document.getElementById('btnExportMenu').addEventListener('click', e => { e.stopPropagation(); exportMenu.classList.toggle('show'); });
+document.addEventListener('click', e => { if (!e.target.closest('.menu-wrap')) exportMenu.classList.remove('show'); });
+document.getElementById('btnExportCsv').addEventListener('click', () => {
+  exportMenu.classList.remove('show');
+  const q = v => { const s = String(v == null ? '' : v); return /[",\n;]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; };
+  const head = ['Site ID','Site','Location','Province','Contractor','kWp','SLA cleans/yr','SLA partial insp/yr','SLA annual insp', ...MONTHS.map(m => m + ' ' + viewYear), 'Cleans planned','Inspections planned','Done','Overdue'];
+  const lines = [head.map(q).join(',')];
+  statusFiltered(baseFiltered()).forEach(s => {
+    const items = siteItems(s, viewYear);
+    const p = planVsSla(s, viewYear);
+    const months = MONTHS.map((m, idx) => items.filter(i => i.idx === idx).map(i => i.label + (i.status === 'done' ? ' (done ' + new Date(i.rec.at).toISOString().slice(0, 10) + ')' : i.status === 'overdue' ? ' (overdue)' : '')).join('; '));
+    lines.push([s.id, s.name, s.location, provinceOf(s.location), s.contractor, s.capacity_kwp, s.cleans_per_year, s.partial_inspections, s.annual_inspection ? 'Yes' : 'No', ...months, p.cleans, p.insp, items.filter(i => i.status === 'done').length, items.filter(i => i.status === 'overdue').length].map(q).join(','));
+  });
+  downloadBlob(new Blob(['﻿' + lines.join('\r\n')], { type: 'text/csv;charset=utf-8' }), 'FE_OM_Schedule_' + viewYear + '_' + new Date().toISOString().slice(0, 10) + '.csv');
+  toast('Schedule exported');
+});
+document.getElementById('btnExportBackup').addEventListener('click', async () => {
+  exportMenu.classList.remove('show');
+  const res = await apiFetch('/api/export');
+  if (!res) return;
+  if (!res.ok) { toast(await apiError(res, 'Backup failed'), true); return; }
+  downloadBlob(await res.blob(), 'FE_OM_backup_' + new Date().toISOString().slice(0, 10) + '.json');
+  toast('Full backup downloaded');
+});
+document.getElementById('btnRefresh').addEventListener('click', async () => {
+  try { await loadData(true); toast('Up to date'); } catch { toast('Could not reach the server', true); }
+});
+
+// ============ Edit plant modal ============
+function buildMonthTiles(ro) {
   const wrap = document.getElementById('np_months');
   wrap.innerHTML = MONTHS.map(m => {
-    const cleanOpts = ['<option value="0">Clean: -</option>'];
-    for (let i=1;i<=4;i++) cleanOpts.push('<option value="'+i+'">Clean ' + i + '</option>');
-    return '<div class="mt" data-month="' + m + '">'
-      + '<div style="display:flex; align-items:center; justify-content:space-between;"><span class="mn">' + m + '</span><span class="preview" data-preview="' + m + '"></span></div>'
-      + '<select class="cln-sel" data-field="clean" data-month="' + m + '">' + cleanOpts.join('') + '</select>'
-      + '<label class="cbx"><input type="checkbox" data-field="partial" data-month="' + m + '"> Partial Insp</label>'
-      + '<label class="cbx"><input type="checkbox" data-field="annual" data-month="' + m + '"> Annual Insp</label>'
-      + '</div>';
+    let opts = '<option value="0">No clean</option>';
+    for (let i = 1; i <= 6; i++) opts += '<option value="' + i + '">Clean ' + i + '</option>';
+    return '<div class="mt" data-month="' + m + '"><span class="mn">' + m + '</span>'
+      + '<select data-field="clean" data-month="' + m + '" aria-label="' + m + ' clean"' + (ro ? ' disabled' : '') + '>' + opts + '</select>'
+      + '<label><input type="checkbox" data-field="partial" data-month="' + m + '"' + (ro ? ' disabled' : '') + '> Partial insp</label>'
+      + '<label><input type="checkbox" data-field="annual" data-month="' + m + '"' + (ro ? ' disabled' : '') + '> Annual insp</label></div>';
   }).join('');
-  // Listeners to update preview & enforce annual XOR partial
-  wrap.querySelectorAll('select.cln-sel, input[type=checkbox]').forEach(el => {
-    el.addEventListener('change', () => {
-      const m = el.dataset.month;
-      // Annual and partial are mutually exclusive (you don't do partial in the same month as annual full)
-      if (el.dataset.field === 'annual' && el.checked) {
-        const p = wrap.querySelector('input[data-month="'+m+'"][data-field="partial"]');
-        if (p) p.checked = false;
-      }
-      if (el.dataset.field === 'partial' && el.checked) {
-        const a = wrap.querySelector('input[data-month="'+m+'"][data-field="annual"]');
-        if (a) a.checked = false;
-      }
-      updateMonthPreview(m);
-    });
+  wrap.querySelectorAll('select, input').forEach(el => el.addEventListener('change', () => {
+    const m = el.dataset.month;
+    if (el.dataset.field === 'annual' && el.checked) wrap.querySelector('input[data-month="' + m + '"][data-field="partial"]').checked = false;
+    if (el.dataset.field === 'partial' && el.checked) wrap.querySelector('input[data-month="' + m + '"][data-field="annual"]').checked = false;
+    updateTileState(); updatePlanCheck();
+  }));
+}
+function tileValues() {
+  const wrap = document.getElementById('np_months'); const out = {};
+  MONTHS.forEach(m => {
+    out[m] = composeCode(parseInt(wrap.querySelector('select[data-month="' + m + '"]').value, 10),
+      wrap.querySelector('input[data-month="' + m + '"][data-field="partial"]').checked,
+      wrap.querySelector('input[data-month="' + m + '"][data-field="annual"]').checked);
   });
+  return out;
 }
-
-function updateMonthPreview(m) {
-  const wrap = document.getElementById('np_months');
-  const cleanSel = wrap.querySelector('select[data-month="'+m+'"][data-field="clean"]');
-  const partial = wrap.querySelector('input[data-month="'+m+'"][data-field="partial"]');
-  const annual = wrap.querySelector('input[data-month="'+m+'"][data-field="annual"]');
-  const code = composeCode(parseInt(cleanSel.value), partial.checked, annual.checked);
-  const prev = wrap.querySelector('span[data-preview="'+m+'"]');
-  prev.textContent = code;
-}
-
-function setMonthTilesFromSite(site) {
+function updateTileState() { const v = tileValues(); document.querySelectorAll('#np_months .mt').forEach(t => t.classList.toggle('has', !!v[t.dataset.month])); }
+function setMonthTiles(sched) {
   const wrap = document.getElementById('np_months');
   MONTHS.forEach(m => {
-    const code = site && site.months ? site.months[m] : '';
-    const d = decomposeCode(code);
-    wrap.querySelector('select[data-month="'+m+'"][data-field="clean"]').value = String(d.cleanNum);
-    wrap.querySelector('input[data-month="'+m+'"][data-field="partial"]').checked = d.partial;
-    wrap.querySelector('input[data-month="'+m+'"][data-field="annual"]').checked = d.annual;
-    updateMonthPreview(m);
+    const d = decomposeCode(sched[m]);
+    wrap.querySelector('select[data-month="' + m + '"]').value = String(Math.min(d.cleanNum, 6));
+    wrap.querySelector('input[data-month="' + m + '"][data-field="partial"]').checked = d.partial;
+    wrap.querySelector('input[data-month="' + m + '"][data-field="annual"]').checked = d.annual;
   });
+  updateTileState();
 }
+function updatePlanCheck() {
+  const p = planVsSla({ id: '__draft__', schedules: { [viewYear]: tileValues() }, cleans_per_year: document.getElementById('np_cleans').value || null, partial_inspections: document.getElementById('np_partial').value || null, annual_inspection: document.getElementById('np_annual').value === '1' ? 1 : 0 }, viewYear);
+  const part = (lbl, have, need, gap) => '<span>' + lbl + ': ' + (need == null ? have + ' planned (SLA not set)' : '<span class="' + (gap ? 'gap' : 'ok') + '">' + have + ' of ' + need + '</span>') + '</span>';
+  document.getElementById('planCheck').innerHTML = '<span style="color:var(--ink)">Planned for ' + viewYear + ' versus SLA</span>' + part('Cleans', p.cleans, p.slaC, p.cleanGap) + part('Inspections', p.insp, p.slaInsp, p.inspGap) + part('Full annual', p.annual, p.hasSpec ? p.slaA : null, p.annualGap);
+}
+['np_cleans', 'np_partial', 'np_annual'].forEach(id => document.getElementById(id).addEventListener('change', updatePlanCheck));
 
-function populateContractorSelect(currentValue) {
+function populateContractorSelect(current) {
   const sel = document.getElementById('np_contractor');
   const list = (window._contractors || []).slice();
-  if (currentValue && !list.includes(currentValue)) list.unshift(currentValue);
-  sel.innerHTML = '<option value="">- Select -</option>'
-    + list.map(c => '<option' + (c===currentValue?' selected':'') + '>' + escapeHtml(c) + '</option>').join('')
-    + '<option value="__add_new__">+ Add new contractor...</option>';
+  if (current && !list.includes(current)) list.unshift(current);
+  sel.innerHTML = '<option value="">Select contractor</option>' + list.map(c => '<option' + (c === current ? ' selected' : '') + '>' + escapeHtml(c) + '</option>').join('') + (isViewer() ? '' : '<option value="__add_new__">+ Add new contractor</option>');
 }
-document.addEventListener('change', e => {
-  if (e.target && e.target.id === 'np_contractor' && e.target.value === '__add_new__') {
-    const name = prompt('Enter new contractor name:');
-    if (name && name.trim()) {
-      const v = name.trim();
-      if (!window._contractors) window._contractors = [];
-      if (!window._contractors.includes(v)) window._contractors.push(v);
-      populateContractorSelect(v);
-    } else {
-      e.target.value = '';
-    }
-  }
+document.getElementById('np_contractor').addEventListener('change', e => {
+  if (e.target.value !== '__add_new__') return;
+  const name = (prompt('New contractor name:') || '').trim();
+  if (!name) { e.target.value = ''; return; }
+  if (!window._contractors.includes(name)) window._contractors.push(name);
+  populateContractorSelect(name);
 });
-
-
-
-async function saveSlaBlob(siteId, file) {
-  const form = new FormData();
-  form.append('file', file);
-  const res = await apiFetch('/api/sites/' + siteId + '/sla', { method: 'POST', body: form });
-  if (!res || !res.ok) throw new Error('Upload failed');
-  return await res.json();
-}
-async function getSlaBlob(siteId) {
-  const res = await apiFetch('/api/sites/' + siteId + '/sla');
-  if (!res || !res.ok) return null;
-  return await res.blob();
-}
-async function deleteSlaBlob(siteId) {
-  await apiFetch('/api/sites/' + siteId + '/sla', { method: 'DELETE' });
-}
-
-function fmtBytes(n) {
-  if (n == null) return "";
-  if (n < 1024) return n + " B";
-  if (n < 1024*1024) return (n/1024).toFixed(1) + " KB";
-  return (n/1024/1024).toFixed(2) + " MB";
-}
 
 function renderSlaSection(site) {
-  const cur = document.getElementById('slaCurrent');
-  const empty = document.getElementById('slaEmpty');
-  if (site && site.sla_filename) {
-    cur.style.display = 'block';
-    empty.style.display = 'none';
+  const box = document.getElementById('slaBox');
+  const ro = isViewer();
+  if (!site) { box.innerHTML = '<div class="sla-row"><div class="meta"><span>Save the plant first, then open it again to upload the signed SLA.</span></div></div>'; return; }
+  if (site.sla_filename) {
     const ext = (site.sla_filename.split('.').pop() || '').toUpperCase();
-    const ico = ext === 'PDF' ? '📄' : (ext.match(/JPG|JPEG|PNG/) ? '🖼' : '📝');
-    cur.innerHTML = '<div class="sla-current">'
-      + '<div class="ico">' + ico + '</div>'
-      + '<div class="meta"><strong>' + escapeHtml(site.sla_filename) + '</strong>'
-      + '<div class="sub">' + (ext || 'FILE') + ' / ' + fmtBytes(site.sla_size) + ' / Uploaded ' + (site.sla_uploaded_at ? new Date(site.sla_uploaded_at).toLocaleDateString() : '-') + '</div></div>'
-      + '<div class="sla-actions">'
+    box.innerHTML = '<div class="sla-row"><div style="font-size:20px">' + (ext === 'PDF' ? '&#128196;' : /JPG|JPEG|PNG/.test(ext) ? '&#128444;' : '&#128221;') + '</div>'
+      + '<div class="meta"><strong>' + escapeHtml(site.sla_filename) + '</strong><span>' + ext + ', ' + fmtBytes(site.sla_size) + ', uploaded ' + fmtDate(site.sla_uploaded_at) + '</span></div>'
       + '<button type="button" id="slaDownload">Download</button>'
-      + '<button type="button" id="slaReplace">Replace</button>'
-      + '<button type="button" class="btn-danger-sm" id="slaRemove">Remove</button>'
-      + '</div></div>';
+      + (ro ? '' : '<label class="upl">Replace<input type="file" id="slaFileInput" accept=".pdf,.docx,.jpg,.jpeg,.png"></label><button type="button" class="danger" id="slaRemove">Remove</button>') + '</div>';
     document.getElementById('slaDownload').addEventListener('click', () => downloadSla(site.id, site.sla_filename));
-    document.getElementById('slaReplace').addEventListener('click', () => document.getElementById('slaFileInput').click());
-    document.getElementById('slaRemove').addEventListener('click', () => removeSla(site.id));
+    if (!ro) document.getElementById('slaRemove').addEventListener('click', () => removeSla(site.id));
   } else {
-    cur.style.display = 'none';
-    empty.style.display = 'flex';
+    box.innerHTML = '<div class="sla-row"><div class="meta"><span>No SLA on file.' + (ro ? '' : ' PDF, DOCX or image, max 5 MB.') + '</span></div>' + (ro ? '' : '<label class="upl">Upload SLA<input type="file" id="slaFileInput" accept=".pdf,.docx,.jpg,.jpeg,.png"></label>') + '</div><div id="slaProgress" style="font-size:11px; color:var(--ink-2); margin-top:6px; display:none"></div>';
   }
+  const input = document.getElementById('slaFileInput');
+  if (input) input.addEventListener('change', e => uploadSla(site.id, e.target));
 }
-
+async function uploadSla(siteId, input) {
+  const file = input.files[0]; if (!file) return;
+  if (file.size > 5 * 1024 * 1024) { toast('File too large (max 5 MB)', true); input.value = ''; return; }
+  toast('Uploading ' + file.name + '...');
+  const form = new FormData(); form.append('file', file);
+  const res = await apiFetch('/api/sites/' + encodeURIComponent(siteId) + '/sla', { method:'POST', body: form });
+  if (!res) return;
+  if (!res.ok) { toast('Upload failed: ' + await apiError(res, 'error'), true); return; }
+  const j = await res.json();
+  const site = state.sites.find(s => String(s.id) === String(siteId));
+  Object.assign(site, { sla_filename: j.filename, sla_size: j.size, sla_uploaded_at: j.uploaded_at, sla_mime: j.mime, _version: j._version });
+  renderSlaSection(site); renderViews();
+  toast('SLA uploaded');
+}
 async function downloadSla(siteId, filename) {
-  try {
-    const blob = await getSlaBlob(siteId);
-    if (!blob) { toast("File not found in browser storage", true); return; }
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a'); a.href = url; a.download = filename || ('SLA_' + siteId);
-    a.click(); URL.revokeObjectURL(url);
-  } catch(e) { toast("Could not download: " + e.message, true); }
+  const res = await apiFetch('/api/sites/' + encodeURIComponent(siteId) + '/sla');
+  if (!res) return;
+  if (!res.ok) { toast(await apiError(res, 'File not found'), true); return; }
+  downloadBlob(await res.blob(), filename || ('SLA_' + siteId));
 }
-
 async function removeSla(siteId) {
-  if (!confirm("Remove the SLA file for this site?")) return;
-  try {
-    await deleteSlaBlob(siteId);
-    const idx = state.sites.findIndex(s => String(s.id) === String(siteId));
-    if (idx >= 0) {
-      delete state.sites[idx].sla_filename;
-      delete state.sites[idx].sla_size;
-      delete state.sites[idx].sla_uploaded_at;
-      delete state.sites[idx].sla_mime;
-      saveState();
-      renderSlaSection(state.sites[idx]);
-    }
-    renderAll();
-    toast("SLA removed");
-  } catch(e) { toast("Could not remove: " + e.message, true); }
+  if (!confirm('Remove the SLA file for this site? The file is deleted from the server.')) return;
+  const res = await apiFetch('/api/sites/' + encodeURIComponent(siteId) + '/sla', { method:'DELETE' });
+  if (!res) return;
+  if (!res.ok) { toast(await apiError(res, 'Could not remove'), true); return; }
+  const j = await res.json();
+  const site = state.sites.find(s => String(s.id) === String(siteId));
+  Object.assign(site, { sla_filename: null, sla_size: null, sla_uploaded_at: null, sla_mime: null, _version: j._version });
+  renderSlaSection(site); renderViews();
+  toast('SLA removed');
 }
-
-document.getElementById('slaFileInput').addEventListener('change', async e => {
-  const file = e.target.files[0];
-  if (!file) return;
-  if (file.size > 5 * 1024 * 1024) { toast("File too large (max 5MB)", true); e.target.value = ''; return; }
-  let siteId = editingId;
-  if (!siteId) {
-    siteId = document.getElementById('np_id').value.trim();
-    if (!siteId) { toast("Enter a Site ID first, then upload SLA", true); e.target.value = ''; return; }
-  }
-  const prog = document.getElementById('slaProgress');
-  prog.style.display = 'block'; prog.textContent = 'Uploading ' + file.name + ' (' + fmtBytes(file.size) + ')...';
-  try {
-    await saveSlaBlob(siteId, file);
-    const idx = state.sites.findIndex(s => String(s.id) === String(siteId));
-    const meta = { sla_filename: file.name, sla_size: file.size, sla_uploaded_at: new Date().toISOString(), sla_mime: file.type };
-    if (idx >= 0) {
-      Object.assign(state.sites[idx], meta);
-      saveState();
-      renderSlaSection(state.sites[idx]);
-      renderAll();
-    } else {
-      window._pendingSlaMeta = meta;
-      renderSlaSection({ id: siteId, ...meta });
-    }
-    prog.textContent = 'Uploaded ' + file.name;
-    setTimeout(() => { prog.style.display = 'none'; }, 1500);
-    toast("SLA uploaded");
-  } catch(err) {
-    prog.textContent = 'Upload failed: ' + err.message;
-    toast("Upload failed", true);
-  }
-  e.target.value = '';
-});
 
 function openModal() { document.getElementById('modalPlant').classList.add('show'); }
 function closeModal() { document.getElementById('modalPlant').classList.remove('show'); editingId = null; }
-window.closeModal = closeModal;
 document.getElementById('modalPlant').addEventListener('click', e => { if (e.target.id === 'modalPlant') closeModal(); });
 document.getElementById('btnCancel').addEventListener('click', closeModal);
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && document.getElementById('modalPlant').classList.contains('show')) closeModal(); });
+
+function setModalReadOnly(ro) {
+  ['np_name','np_location','np_kwp','np_modules','np_contractor','np_lat','np_lng','np_cleans','np_partial','np_annual'].forEach(id => document.getElementById(id).disabled = ro);
+  document.getElementById('btnPickLoc').style.display = ro ? 'none' : '';
+  document.getElementById('btnSavePlant').style.display = ro ? 'none' : '';
+  document.getElementById('btnCancel').textContent = ro ? 'Close' : 'Cancel';
+}
 
 document.getElementById('btnAdd').addEventListener('click', () => {
   editingId = null;
-  document.getElementById('modalTitle').firstChild.textContent = 'Add new plant';
-  document.getElementById('modalSub').textContent = 'Capture site details and 12-month schedule';
+  document.getElementById('modalTitle').textContent = 'Add new plant';
+  document.getElementById('modalSub').textContent = 'Capture the site, its SLA terms and the ' + viewYear + ' schedule';
+  document.getElementById('modalYear').textContent = viewYear;
   document.getElementById('btnDelete').style.display = 'none';
-  // Reset fields
   ['np_id','np_name','np_location','np_kwp','np_modules','np_lat','np_lng'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('np_id').disabled = false;
   populateContractorSelect('');
   document.getElementById('np_cleans').value = '3';
   document.getElementById('np_partial').value = '3';
   document.getElementById('np_annual').value = '1';
-  document.getElementById('np_id').disabled = false;
-  buildMonthTiles();
-  setMonthTilesFromSite(null);
+  setModalReadOnly(false);
+  buildMonthTiles(false); setMonthTiles({}); updatePlanCheck();
   renderSlaSection(null);
-  window._pendingSlaMeta = null;
   openModal();
+  document.getElementById('np_id').focus();
 });
 
 function openEditModal(siteId) {
   const site = state.sites.find(s => String(s.id) === String(siteId));
   if (!site) return;
+  const ro = isViewer();
   editingId = site.id;
-  document.getElementById('modalTitle').firstChild.textContent = 'Edit plant';
-  document.getElementById('modalSub').textContent = site.name + ' - ID ' + site.id;
-  document.getElementById('btnDelete').style.display = 'inline-block';
+  document.getElementById('modalTitle').textContent = site.name;
+  document.getElementById('modalSub').textContent = 'Site ID ' + site.id + (ro ? ' (read only)' : '');
+  document.getElementById('modalYear').textContent = viewYear;
+  document.getElementById('btnDelete').style.display = ro ? 'none' : 'inline-block';
   document.getElementById('np_id').value = site.id;
-  document.getElementById('np_id').disabled = true; // ID is the key, don't allow change
-  document.getElementById('np_name').value = site.name||'';
-  document.getElementById('np_location').value = site.location||'';
-  document.getElementById('np_kwp').value = site.capacity_kwp||'';
-  document.getElementById('np_modules').value = site.modules||'';
-  populateContractorSelect(site.contractor||'');
+  document.getElementById('np_id').disabled = true;
+  document.getElementById('np_name').value = site.name || '';
+  document.getElementById('np_location').value = site.location || '';
+  document.getElementById('np_kwp').value = site.capacity_kwp != null ? site.capacity_kwp : '';
+  document.getElementById('np_modules').value = site.modules != null ? site.modules : '';
+  populateContractorSelect(site.contractor || '');
   document.getElementById('np_cleans').value = site.cleans_per_year != null ? String(site.cleans_per_year) : '';
   document.getElementById('np_partial').value = site.partial_inspections != null ? String(site.partial_inspections) : '';
+  document.getElementById('np_annual').value = site.annual_inspection ? '1' : '0';
   document.getElementById('np_lat').value = site.lat != null ? site.lat : '';
   document.getElementById('np_lng').value = site.lng != null ? site.lng : '';
-  document.getElementById('np_annual').value = site.annual_inspection ? '1' : '0';
-  buildMonthTiles();
-  setMonthTilesFromSite(site);
+  setModalReadOnly(ro);
+  buildMonthTiles(ro); setMonthTiles(scheduleFor(site, viewYear)); updatePlanCheck();
   renderSlaSection(site);
   openModal();
 }
 
 document.getElementById('btnSavePlant').addEventListener('click', async () => {
+  const btn = document.getElementById('btnSavePlant');
   const id = document.getElementById('np_id').value.trim();
   const name = document.getElementById('np_name').value.trim();
-  if (!id || !name) { toast("Site ID and Name are required", true); return; }
-
-  // Build months from tiles
-  const months = {};
-  MONTHS.forEach(m => {
-    const cleanSel = document.querySelector('#np_months select[data-month="'+m+'"][data-field="clean"]');
-    const partial = document.querySelector('#np_months input[data-month="'+m+'"][data-field="partial"]');
-    const annual = document.querySelector('#np_months input[data-month="'+m+'"][data-field="annual"]');
-    months[m] = composeCode(parseInt(cleanSel.value), partial.checked, annual.checked);
-  });
-
-  const latVal = document.getElementById('np_lat').value; const lngVal = document.getElementById('np_lng').value;
-  const payload = {
-    id: id, name: name,
+  if (!id || !name) { toast('Site ID and name are required', true); return; }
+  if (!/^[A-Za-z0-9_-]+$/.test(id)) { toast('Site ID may only contain letters, numbers, - and _', true); return; }
+  const contractor = document.getElementById('np_contractor').value;
+  const latVal = document.getElementById('np_lat').value, lngVal = document.getElementById('np_lng').value;
+  const details = {
+    name,
     location: document.getElementById('np_location').value.trim(),
     capacity_kwp: document.getElementById('np_kwp').value,
-    modules: parseInt(document.getElementById('np_modules').value)||null,
-    contractor: document.getElementById('np_contractor').value.trim(),
-    cleans_per_year: parseInt(document.getElementById('np_cleans').value)||null,
-    partial_inspections: parseInt(document.getElementById('np_partial').value)||null,
+    modules: parseInt(document.getElementById('np_modules').value, 10) || null,
+    contractor: contractor === '__add_new__' ? '' : contractor,
+    cleans_per_year: parseInt(document.getElementById('np_cleans').value, 10) || null,
+    partial_inspections: parseInt(document.getElementById('np_partial').value, 10) || null,
     annual_inspection: document.getElementById('np_annual').value === '1' ? 1 : 0,
     lat: latVal === '' ? null : parseFloat(latVal),
-    lng: lngVal === '' ? null : parseFloat(lngVal),
-    monthly_income: null, annual_sla: null, annual_cost: null,
-    months: months
+    lng: lngVal === '' ? null : parseFloat(lngVal)
   };
-
-  if (editingId) {
-    const idx = state.sites.findIndex(s => String(s.id) === String(editingId));
-    if (idx >= 0) {
-      payload.monthly_income = state.sites[idx].monthly_income;
-      payload.annual_sla = state.sites[idx].annual_sla;
-      payload.annual_cost = state.sites[idx].annual_cost;
-      if (state.sites[idx].sla_filename) {
-        payload.sla_filename = state.sites[idx].sla_filename;
-        payload.sla_size = state.sites[idx].sla_size;
-        payload.sla_uploaded_at = state.sites[idx].sla_uploaded_at;
-        payload.sla_mime = state.sites[idx].sla_mime;
-      }
-      const res = await apiFetch('/api/sites/' + editingId, { method: 'PUT', body: JSON.stringify(payload) });
-      if (!res || !res.ok) { toast('Save failed', true); return; }
-      state.sites[idx] = payload;
-      closeModal(); renderAll(); toast("Updated " + name);
-      return;
+  const schedules = { [viewYear]: tileValues() };
+  btn.disabled = true;
+  try {
+    if (editingId) {
+      const site = state.sites.find(s => String(s.id) === String(editingId));
+      const res = await apiFetch('/api/sites/' + encodeURIComponent(editingId), { method:'PUT', body: JSON.stringify({ ...details, schedules, _version: site._version }) });
+      if (!res) return;
+      if (res.status === 409) { toast(await apiError(res, 'Changed by someone else'), true); await loadData(true); closeModal(); openEditModal(editingId || site.id); return; }
+      if (!res.ok) { toast('Save failed: ' + await apiError(res, 'error'), true); return; }
+      mergeSites([await res.json()]);
+      closeModal(); renderAll(); toast('Saved ' + name);
+    } else {
+      if (state.sites.some(s => String(s.id) === id)) { toast('Site ID already exists', true); return; }
+      const res = await apiFetch('/api/sites', { method:'POST', body: JSON.stringify({ id, ...details, schedules }) });
+      if (!res) return;
+      if (!res.ok) { toast(await apiError(res, 'Save failed'), true); return; }
+      mergeSites([await res.json()]);
+      closeModal(); renderAll(); toast('Plant added: ' + name);
     }
-  }
-
-  if (state.sites.some(s => String(s.id) === id)) { toast("Site ID already exists", true); return; }
-  if (window._pendingSlaMeta) { Object.assign(payload, window._pendingSlaMeta); window._pendingSlaMeta = null; }
-  const res = await apiFetch('/api/sites', { method: 'POST', body: JSON.stringify(payload) });
-  if (!res || !res.ok) { const err = await res?.json(); toast(err?.error || 'Save failed', true); return; }
-  state.sites.push(payload);
-  closeModal(); renderAll(); toast("Plant added: " + name);
+  } finally { btn.disabled = false; }
 });
 
 document.getElementById('btnDelete').addEventListener('click', async () => {
-  if (!editingId) return;
   const site = state.sites.find(s => String(s.id) === String(editingId));
   if (!site) return;
-  if (!confirm("Delete plant '" + site.name + "' (ID " + site.id + ")? This also clears its done-status. Cannot be undone.")) return;
-  const res = await apiFetch('/api/sites/' + editingId, { method: 'DELETE' });
-  if (!res || !res.ok) { toast('Delete failed', true); return; }
-  deleteSlaBlob(site.id).catch(()=>{});
-  state.sites = state.sites.filter(s => String(s.id) !== String(editingId));
-  clearDoneForSite(site.id);
-  closeModal(); renderAll(); toast("Deleted " + site.name);
+  const ticks = Object.keys(state.done).filter(k => k.startsWith(site.id + '::')).length;
+  const typed = prompt('Delete "' + site.name + '" (ID ' + site.id + ')?\n\nThis removes the site, every year of its schedule and ' + plural(ticks, 'completed tick') + '. A copy is kept in the audit log.\n\nType the site ID to confirm:');
+  if (typed == null) return;
+  if (typed.trim() !== String(site.id)) { toast('Site ID did not match. Nothing deleted.', true); return; }
+  const res = await apiFetch('/api/sites/' + encodeURIComponent(site.id), { method:'DELETE' });
+  if (!res) return;
+  if (!res.ok) { toast(await apiError(res, 'Delete failed'), true); return; }
+  state.sites = state.sites.filter(s => String(s.id) !== String(site.id));
+  Object.keys(state.done).forEach(k => { if (k.startsWith(site.id + '::')) delete state.done[k]; });
+  closeModal(); renderAll(); toast('Deleted ' + site.name);
 });
 
-document.getElementById('btnExport').addEventListener('click', () => {
-  const blob = new Blob([JSON.stringify({ sites: state.sites, done: state.done, exported_at: new Date().toISOString() }, null, 2)], { type: 'application/json' });
-  const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'fe_om_dashboard_' + new Date().toISOString().slice(0,10) + '.json'; a.click(); URL.revokeObjectURL(url);
-  toast("Exported JSON to downloads");
-});
-document.getElementById('btnImport').addEventListener('click', () => { document.getElementById('fileImport').click(); });
-document.getElementById('fileImport').addEventListener('change', e => {
-  const f = e.target.files[0]; if (!f) return; const r = new FileReader();
-  r.onload = ev => { try { const data = JSON.parse(ev.target.result); if (data.sites) state.sites = data.sites; if (data.done) state.done = data.done; saveState(); renderAll(); toast("Imported " + (data.sites?data.sites.length:0) + " sites"); } catch(err) { toast("Invalid JSON file", true); } };
-  r.readAsText(f); e.target.value = '';
-});
-document.getElementById('btnReset').addEventListener('click', async () => {
-  if (!confirm("Reload all data from server? This will refresh sites and done-status.")) return;
-  const [sitesRes, doneRes] = await Promise.all([apiFetch('/api/sites'), apiFetch('/api/done')]);
-  if (!sitesRes || !doneRes) return;
-  state.sites = await sitesRes.json();
-  state.done = await doneRes.json();
-  renderAll(); toast("Reloaded from server");
-});
-
-
-// =========================
-// MAP VIEW
-// =========================
-let leafletMap = null, markerCluster = null, drawnItems = null, drawControl = null;
-let siteMarkers = {}; // id -> marker
+// ============ Map ============
+let leafletMap = null, markerCluster = null, drawnItems = null;
 let selectedSiteIds = new Set();
 let pickerMap = null, pickerMarker = null;
 
 function initMap() {
   if (leafletMap) return;
-  leafletMap = L.map('leafletMap').setView([-30.5, 24], 5); // South Africa
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19, attribution: '&copy; OpenStreetMap'
-  }).addTo(leafletMap);
+  leafletMap = L.map('leafletMap').setView([-30.5, 24], 5);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '&copy; OpenStreetMap' }).addTo(leafletMap);
   markerCluster = L.markerClusterGroup({ chunkedLoading: true, showCoverageOnHover: false });
   leafletMap.addLayer(markerCluster);
   drawnItems = new L.FeatureGroup().addTo(leafletMap);
-  drawControl = new L.Control.Draw({
-    draw: {
-      polygon: { allowIntersection:false, showArea:false, shapeOptions:{ color:'#114d5d', weight:2 } },
-      rectangle: { shapeOptions:{ color:'#114d5d', weight:2 } },
-      polyline:false, circle:false, marker:false, circlemarker:false
-    },
-    edit: { featureGroup: drawnItems, edit:false, remove:true }
-  });
-  leafletMap.addControl(drawControl);
-  leafletMap.on(L.Draw.Event.CREATED, e => {
-    drawnItems.clearLayers();
-    drawnItems.addLayer(e.layer);
-    selectSitesInLayer(e.layer);
-  });
-  leafletMap.on(L.Draw.Event.DELETED, () => clearSelection());
-  populateBulkMonthSelect();
+  if (!isViewer()) {
+    leafletMap.addControl(new L.Control.Draw({
+      draw: { polygon: { allowIntersection:false, showArea:false, shapeOptions:{ color:'#114d5d', weight:2 } }, rectangle: { shapeOptions:{ color:'#114d5d', weight:2 } }, polyline:false, circle:false, marker:false, circlemarker:false },
+      edit: { featureGroup: drawnItems, edit:false, remove:true }
+    }));
+    leafletMap.on(L.Draw.Event.CREATED, e => { drawnItems.clearLayers(); drawnItems.addLayer(e.layer); selectSitesInLayer(e.layer); });
+    leafletMap.on(L.Draw.Event.DELETED, closeSelection);
+  }
+  document.getElementById('bulkMonth').innerHTML = MONTHS.map((m, i) => '<option value="' + m + '"' + (i === CURRENT_MONTH_IDX ? ' selected' : '') + '>' + MONTH_NAMES[i] + '</option>').join('');
 }
-
-function populateBulkMonthSelect() {
-  const sel = document.getElementById('bulkMonth');
-  sel.innerHTML = MONTHS.map(m => '<option value="' + m + '">' + m + '</option>').join('');
-}
-
-function pointInPolygon(point, polygon) {
-  // point: [lat, lng]; polygon: array of [lat, lng]
+function pointInPolygon(lat, lng, poly) {
   let inside = false;
-  for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
-    const xi = polygon[i][0], yi = polygon[i][1];
-    const xj = polygon[j][0], yj = polygon[j][1];
-    const intersect = ((yi > point[1]) !== (yj > point[1])) && (point[0] < (xj - xi) * (point[1] - yi) / (yj - yi) + xi);
-    if (intersect) inside = !inside;
+  for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+    const yi = poly[i].lat, xi = poly[i].lng, yj = poly[j].lat, xj = poly[j].lng;
+    if (((yi > lat) !== (yj > lat)) && (lng < (xj - xi) * (lat - yi) / (yj - yi) + xi)) inside = !inside;
   }
   return inside;
 }
-
 function selectSitesInLayer(layer) {
   selectedSiteIds.clear();
-  state.sites.forEach(s => {
+  baseFiltered().forEach(s => {
     if (s.lat == null || s.lng == null) return;
-    let inside = false;
-    if (layer instanceof L.Rectangle) {
-      const b = layer.getBounds();
-      inside = b.contains([s.lat, s.lng]);
-    } else if (layer instanceof L.Polygon) {
-      const latlngs = layer.getLatLngs()[0].map(p => [p.lat, p.lng]);
-      inside = pointInPolygon([s.lng, s.lat], latlngs.map(p => [p[1], p[0]]));
-    }
+    const inside = layer instanceof L.Rectangle ? layer.getBounds().contains([s.lat, s.lng]) : pointInPolygon(s.lat, s.lng, layer.getLatLngs()[0]);
     if (inside) selectedSiteIds.add(String(s.id));
   });
   renderSelectionPanel();
 }
-
-function clearSelection() {
+function closeSelection() {
   selectedSiteIds.clear();
-  drawnItems.clearLayers();
+  if (drawnItems) drawnItems.clearLayers();
   document.getElementById('selPanel').classList.remove('show');
-  refreshMapMarkers();
+  if (leafletMap) refreshMapMarkers();
 }
-
 function renderSelectionPanel() {
   const panel = document.getElementById('selPanel');
-  if (selectedSiteIds.size === 0) { panel.classList.remove('show'); refreshMapMarkers(); return; }
+  if (!selectedSiteIds.size) { panel.classList.remove('show'); refreshMapMarkers(); return; }
   panel.classList.add('show');
   document.getElementById('selCount').textContent = selectedSiteIds.size;
-  const sites = state.sites.filter(s => selectedSiteIds.has(String(s.id)));
-  document.getElementById('selList').innerHTML = sites.map(s => '<li><strong>' + escapeHtml(s.name||'') + '</strong> - ' + escapeHtml(s.location||'') + '</li>').join('');
-  refreshMapMarkers();
-  updateBulkWarn();
+  document.getElementById('selList').innerHTML = state.sites.filter(s => selectedSiteIds.has(String(s.id))).map(s => '<li><strong>' + escapeHtml(s.name) + '</strong>, ' + escapeHtml(s.location) + '</li>').join('');
+  refreshMapMarkers(); updateBulkWarn();
 }
-
 function updateBulkWarn() {
   const month = document.getElementById('bulkMonth').value;
-  const conflicts = [];
-  state.sites.forEach(s => {
-    if (!selectedSiteIds.has(String(s.id))) return;
-    const existing = (s.months[month]||'').trim();
-    if (existing) conflicts.push(s.name + ' (currently: ' + existing + ')');
-  });
+  const conflicts = state.sites.filter(s => selectedSiteIds.has(String(s.id)) && (scheduleFor(s, viewYear)[month] || '').trim());
   const w = document.getElementById('bulkWarn');
-  if (conflicts.length) {
-    w.style.display = 'block';
-    w.innerHTML = '<strong>' + conflicts.length + ' site' + (conflicts.length>1?'s':'') + '</strong> already have something in ' + month + '. Activity will be merged.';
-  } else { w.style.display = 'none'; }
+  w.style.display = conflicts.length ? 'block' : 'none';
+  w.innerHTML = conflicts.length ? '<strong>' + plural(conflicts.length, 'site') + '</strong> already ' + (conflicts.length === 1 ? 'has' : 'have') + ' work in ' + month + ' ' + viewYear + '. The new activity is merged in.' : '';
 }
-
 function refreshMapMarkers() {
   if (!markerCluster) return;
   markerCluster.clearLayers();
-  siteMarkers = {};
+  const sites = baseFiltered();
   let withCoords = 0;
-  state.sites.forEach(s => {
+  sites.forEach(s => {
     if (s.lat == null || s.lng == null) return;
     withCoords++;
-    const isSelected = selectedSiteIds.has(String(s.id));
-    // Compute overdue/due indicator for this site
-    let overdue = 0, due = 0;
-    MONTHS.forEach((m, idx) => {
-      const parts = parseActivity(s.months[m]); if (!parts) return;
-      ['cln','insp'].forEach(comp => {
-        if (comp === 'cln' && !parts.clean) return; if (comp === 'insp' && !parts.inspection) return;
-        const d = isDone(s.id, idx, comp);
-        if (monthIsPast(idx) && !d) overdue++;
-        if (monthIsCurrent(idx) && !d) due++;
-      });
-    });
+    const items = siteItems(s, viewYear);
+    const overdue = items.filter(i => i.status === 'overdue').length, due = items.filter(i => i.status === 'due').length;
     let color = '#114d5d';
-    if (overdue > 0) color = '#c62828';
-    else if (due > 0) color = '#ffb977';
-    if (isSelected) color = '#16e7cf';
-    const html = '<div style="background:' + color + '; width:22px; height:22px; border-radius:50% 50% 50% 0; transform:rotate(-45deg); border:2px solid #fff; box-shadow:0 2px 4px rgba(0,0,0,0.3); display:flex; align-items:center; justify-content:center;"><span style="transform:rotate(45deg); color:#fff; font-size:10px; font-weight:700;">' + (overdue||'') + '</span></div>';
-    const icon = L.divIcon({ html: html, className: 'fe-marker', iconSize:[24,24], iconAnchor:[12,24] });
-    const m = L.marker([s.lat, s.lng], { icon }).bindPopup(
-      '<strong style="color:#114d5d;">' + escapeHtml(s.name||'') + '</strong><br>' +
-      '<span style="font-size:11px; color:#46717e;">ID ' + s.id + ' / ' + escapeHtml(s.contractor||'-') + '</span><br>' +
-      '<span style="font-size:11px;">' + escapeHtml(s.location||'') + '</span><br>' +
-      (overdue ? '<span style="color:#c62828; font-weight:600;">' + overdue + ' overdue</span><br>' : '') +
-      (due ? '<span style="color:#ffb977; font-weight:600;">' + due + ' due this month</span><br>' : '') +
-      (s.sla_filename ? '<a href="#" data-sla-id="' + s.id + '" data-sla-name="' + escapeHtml(s.sla_filename) + '" style="color:#114d5d; font-size:11px; display:block; margin-top:4px;">📎 ' + escapeHtml(s.sla_filename) + '</a>' : '') +
-      '<a href="#" data-edit-id="' + s.id + '" style="color:#114d5d; font-size:11px;">Edit details</a>'
-    );
-    m.on('popupopen', e => {
-      const link = e.popup.getElement().querySelector('a[data-edit-id]');
-      if (link) link.addEventListener('click', ev => { ev.preventDefault(); openEditModal(link.dataset.editId); leafletMap.closePopup(); });
-      const slaLink = e.popup.getElement().querySelector('a[data-sla-id]');
-      if (slaLink) slaLink.addEventListener('click', ev => { ev.preventDefault(); downloadSla(slaLink.dataset.slaId, slaLink.dataset.slaName); });
+    if (overdue) color = '#c62828'; else if (due) color = '#f0a050';
+    if (selectedSiteIds.has(String(s.id))) color = '#16e7cf';
+    const html = '<div style="background:' + color + ';width:22px;height:22px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:2px solid #fff;box-shadow:0 2px 4px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;"><span style="transform:rotate(45deg);color:#fff;font-size:10px;font-weight:700;">' + (overdue || '') + '</span></div>';
+    const marker = L.marker([s.lat, s.lng], { icon: L.divIcon({ html, className:'fe-marker', iconSize:[24,24], iconAnchor:[12,24] }) }).bindPopup(
+      '<strong style="color:#114d5d">' + escapeHtml(s.name) + '</strong><br><span style="font-size:11px;color:#46717e">ID ' + escapeHtml(s.id) + ' / ' + escapeHtml(s.contractor || '-') + '</span><br><span style="font-size:11px">' + escapeHtml(s.location) + '</span><br>'
+      + (overdue ? '<span style="color:#c62828;font-weight:600">' + overdue + ' overdue in ' + viewYear + '</span><br>' : '')
+      + (due ? '<span style="color:#b0601a;font-weight:600">' + due + ' due this month</span><br>' : '')
+      + (s.sla_filename ? '<a href="#" data-sla-id="' + escapeHtml(s.id) + '" style="color:#114d5d;font-size:11px;display:block;margin-top:4px">&#128206; ' + escapeHtml(s.sla_filename) + '</a>' : '')
+      + '<a href="#" data-edit-id="' + escapeHtml(s.id) + '" style="color:#114d5d;font-size:11px">' + (isViewer() ? 'View details' : 'Edit details') + '</a>');
+    marker.on('popupopen', e => {
+      const el = e.popup.getElement();
+      const link = el.querySelector('a[data-edit-id]');
+      if (link) link.addEventListener('click', ev => { ev.preventDefault(); leafletMap.closePopup(); openEditModal(link.dataset.editId); });
+      const sla = el.querySelector('a[data-sla-id]');
+      if (sla) sla.addEventListener('click', ev => { ev.preventDefault(); downloadSla(s.id, s.sla_filename); });
     });
-    siteMarkers[s.id] = m;
-    markerCluster.addLayer(m);
+    markerCluster.addLayer(marker);
   });
   document.getElementById('mapSiteCount').textContent = withCoords;
-  document.getElementById('mapTotalCount').textContent = state.sites.length;
+  document.getElementById('mapTotalCount').textContent = sites.length;
 }
-
-// View toggle
-document.getElementById('btnViewCal').addEventListener('click', () => {
-  document.getElementById('btnViewCal').classList.add('active');
-  document.getElementById('btnViewMap').classList.remove('active');
-  document.getElementById('mainArea').classList.remove('hide');
-  document.getElementById('mapView').classList.remove('show');
-});
-document.getElementById('btnViewMap').addEventListener('click', () => {
-  document.getElementById('btnViewMap').classList.add('active');
-  document.getElementById('btnViewCal').classList.remove('active');
-  document.getElementById('mainArea').classList.add('hide');
-  document.getElementById('mapView').classList.add('show');
-  setTimeout(() => { initMap(); refreshMapMarkers(); leafletMap.invalidateSize(); }, 50);
-});
-
-// Bulk schedule controls
-document.getElementById('btnBulkCancel').addEventListener('click', clearSelection);
-document.getElementById('btnClearSel').addEventListener('click', clearSelection);
-document.getElementById('bulkActivity').addEventListener('change', () => {
-  const v = document.getElementById('bulkActivity').value;
-  document.getElementById('cleanNumLbl').style.display = v === 'cln' ? 'block' : 'none';
-  document.getElementById('bulkCleanNum').style.display = v === 'cln' ? 'block' : 'none';
-});
+document.getElementById('btnBulkCancel').addEventListener('click', closeSelection);
+document.getElementById('btnClearSel').addEventListener('click', closeSelection);
+document.getElementById('bulkActivity').addEventListener('change', e => { document.getElementById('bulkCleanWrap').style.display = e.target.value === 'cln' ? '' : 'none'; });
 document.getElementById('bulkMonth').addEventListener('change', updateBulkWarn);
-
-document.getElementById('btnBulkApply').addEventListener('click', () => {
-  if (selectedSiteIds.size === 0) return;
+document.getElementById('btnBulkApply').addEventListener('click', async () => {
+  if (!selectedSiteIds.size) return;
   const month = document.getElementById('bulkMonth').value;
   const activity = document.getElementById('bulkActivity').value;
-  const cleanNum = parseInt(document.getElementById('bulkCleanNum').value);
-  let count = 0;
-  state.sites.forEach(s => {
-    if (!selectedSiteIds.has(String(s.id))) return;
-    const existing = (s.months[month]||'').trim();
-    const dec = decomposeCode(existing);
-    if (activity === 'cln') dec.cleanNum = cleanNum;
-    else if (activity === 'insp') { dec.partial = true; dec.annual = false; }
-    else if (activity === 'annual') { dec.annual = true; dec.partial = false; }
-    s.months[month] = composeCode(dec.cleanNum, dec.partial, dec.annual);
-    count++;
-  });
-  saveState();
-  toast('Applied to ' + count + ' sites in ' + month);
-  clearSelection();
-  renderAll();
+  const btn = document.getElementById('btnBulkApply');
+  btn.disabled = true;
+  try {
+    const res = await apiFetch('/api/sites/bulk-schedule', { method:'POST', body: JSON.stringify({ year: viewYear, month, activity, clean_num: parseInt(document.getElementById('bulkCleanNum').value, 10), site_ids: [...selectedSiteIds] }) });
+    if (!res) return;
+    if (!res.ok) { toast(await apiError(res, 'Bulk schedule failed'), true); return; }
+    const j = await res.json();
+    mergeSites(j.sites);
+    toast('Scheduled for ' + plural(j.sites.length, 'site') + ' in ' + month + ' ' + viewYear);
+    closeSelection(); renderAll();
+  } finally { btn.disabled = false; }
 });
 
-// Pick-on-map helper for the modal
 document.getElementById('btnPickLoc').addEventListener('click', () => {
-  const overlay = document.getElementById('pickerOverlay');
-  overlay.classList.add('show');
+  document.getElementById('pickerOverlay').classList.add('show');
   setTimeout(() => {
     if (!pickerMap) {
       pickerMap = L.map('pickerMap').setView([-30.5, 24], 5);
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution:'&copy; OpenStreetMap' }).addTo(pickerMap);
-      pickerMap.on('click', e => {
-        if (pickerMarker) pickerMarker.setLatLng(e.latlng);
-        else pickerMarker = L.marker(e.latlng).addTo(pickerMap);
-      });
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '&copy; OpenStreetMap' }).addTo(pickerMap);
+      pickerMap.on('click', e => { if (pickerMarker) pickerMarker.setLatLng(e.latlng); else pickerMarker = L.marker(e.latlng).addTo(pickerMap); });
     }
-    const lat = parseFloat(document.getElementById('np_lat').value);
-    const lng = parseFloat(document.getElementById('np_lng').value);
-    if (!isNaN(lat) && !isNaN(lng)) {
-      if (pickerMarker) pickerMarker.setLatLng([lat,lng]); else pickerMarker = L.marker([lat,lng]).addTo(pickerMap);
-      pickerMap.setView([lat,lng], 14);
-    }
+    const lat = parseFloat(document.getElementById('np_lat').value), lng = parseFloat(document.getElementById('np_lng').value);
+    if (!isNaN(lat) && !isNaN(lng)) { if (pickerMarker) pickerMarker.setLatLng([lat, lng]); else pickerMarker = L.marker([lat, lng]).addTo(pickerMap); pickerMap.setView([lat, lng], 14); }
     pickerMap.invalidateSize();
   }, 50);
 });
-document.getElementById('pickerCancel').addEventListener('click', () => { document.getElementById('pickerOverlay').classList.remove('show'); });
+document.getElementById('pickerCancel').addEventListener('click', () => document.getElementById('pickerOverlay').classList.remove('show'));
 document.getElementById('pickerOk').addEventListener('click', () => {
-  if (pickerMarker) {
-    const ll = pickerMarker.getLatLng();
-    document.getElementById('np_lat').value = ll.lat.toFixed(6);
-    document.getElementById('np_lng').value = ll.lng.toFixed(6);
-  }
+  if (pickerMarker) { const ll = pickerMarker.getLatLng(); document.getElementById('np_lat').value = ll.lat.toFixed(6); document.getElementById('np_lng').value = ll.lng.toFixed(6); }
   document.getElementById('pickerOverlay').classList.remove('show');
 });
-
-// Refresh map when state changes (already covered via renderAll, but markers need explicit refresh)
-const _oldRenderAll = renderAll;
-renderAll = function() { _oldRenderAll(); if (leafletMap) refreshMapMarkers(); };
-
 
 init();
 </script>
